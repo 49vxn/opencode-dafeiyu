@@ -1,0 +1,13 @@
+{
+  "name": "dafeiyu-widget",
+  "version": "0.2.0",
+  "private": true,
+  "description": "dafeiyu — desktop mascot widget",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron ."
+  },
+  "devDependencies": {
+    "electron": "^45.2.3"
+  }
+}

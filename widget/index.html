@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta http-equiv="Content-Security-Policy"
+      content="default-src 'self'; img-src 'self' data:; style-src 'self' 'unsafe-inline'; script-src 'self'">
+<title>dafeiyu</title>
+<style>
+  html, body {
+    margin: 0; padding: 0;
+    width: max-content; height: max-content;
+    background: transparent;
+    overflow: hidden;
+    cursor: grab;
+    user-select: none;
+    -webkit-user-select: none;
+    font-family: ui-monospace, "Cascadia Mono", Consolas, monospace;
+  }
+  body.dragging { cursor: grabbing; }
+
+  #row {
+    display: flex;
+    width: max-content;
+    align-items: flex-end;
+    gap: 10px;
+    padding: 4px;
+  }
+
+  .cell {
+    flex: 0 0 128px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2px;
+    width: 128px;
+  }
+
+  .tag {
+    max-width: 126px;
+    padding: 2px 6px;
+    border-radius: 3px;
+    background: rgba(0, 0, 0, 0.62);
+    color: #ffffff;
+    font-size: 10px;
+    font-weight: 700;
+    line-height: 14px;
+    letter-spacing: .02em;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    text-shadow: 1px 1px 0 rgba(0, 0, 0, .95);
+  }
+  .cell.working .tag { color: #9fe6b0; }
+  .cell.idle .tag    { color: #ffffff; }
+
+  canvas {
+    display: block;
+    width: 128px;
+    height: 128px;
+    image-rendering: pixelated;
+    image-rendering: crisp-edges;
+    background: transparent;
+  }
+</style>
+</head>
+<body>
+  <div id="row"></div>
+  <script src="renderer.js"></script>
+</body>
+</html>

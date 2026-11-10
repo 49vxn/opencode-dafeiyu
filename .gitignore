@@ -1,0 +1,13 @@
+# allowlist: only the bare-bones working tree may ever be staged
+/*
+!.gitignore
+!/README.md
+!/widget/
+
+# inside widget, build and local-state artifacts stay out
+node_modules/
+runtime/
+*.zip
+*.tmp
+.DS_Store
+Thumbs.db
