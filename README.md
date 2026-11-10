@@ -21,13 +21,6 @@ with the app; each one is used only when its agent's local database exists:
 Interaction: click to feed rice, drag to move, Ctrl+Shift+X toggles
 click-through, Ctrl+Shift+R re-centers.
 
-## Feedback channels
-
-- `http://127.0.0.1:8791/state` — Freebuff feed
-- `http://127.0.0.1:8792/state` — OpenCode feed
-
-If a source can't be found, the whale falls back to cycling states; it never
-sits dead.
 
 ## States
 
