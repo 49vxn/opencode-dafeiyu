@@ -4,49 +4,87 @@ A pixel whale that sits on your desktop and reacts to what your coding agent is
 actually doing — thinking, reading files, running commands, proposing diffs,
 compacting, waiting on you.
 
-Not a toy that guesses. It reads the agent's local session database, read-only,
-and maps real events to animation frames.
+Not a timer that guesses. It reads your agent's local session database,
+read-only, and maps real events to real frames.
 
-![states](widget/assets/frames/idle/idle-00.png)
+![dafeiyu cycling through states](widget/assets/demo-a.gif)
 
-## What it does
+---
 
-- 33 animation states, 64×64 pixel art, transparent overlay
-- One whale per active session, with a nametag, up to three side by side
-- Click a whale and it eats a bowl of rice
-- Drag to move, position remembered, click-through by default
-- No network, no telemetry, nothing leaves the machine
+## What it actually looks like
+
+| | state | when you see it |
+|---|---|---|
+| ![idle](widget/assets/gifs/idle.gif) | `idle` | nothing running |
+| ![long-think](widget/assets/gifs/long-think.gif) | `long-think` | the reasoning trace is streaming |
+| ![running-cmd](widget/assets/gifs/running-cmd.gif) | `running-cmd` | a shell command is executing |
+| ![read-file](widget/assets/gifs/read-file.gif) | `read-file` | it's reading source |
+| ![propose-diff](widget/assets/gifs/propose-diff.gif) | `propose-diff` | an edit is being staged |
+| ![compacting](widget/assets/gifs/compacting.gif) | `compacting` | context is being compacted |
+| ![sleeping](widget/assets/gifs/sleeping.gif) | `sleeping` | idle for a while |
+| ![boba](widget/assets/gifs/boba.gif) | `boba` | click it |
+
+![four states at once](widget/assets/demo-b.gif)
+
+---
+
+## Why this exists
+
+Checking whether your agent finished means alt-tabbing out of what you're doing.
+So the agent gets a face instead: one whale per live session, a nametag over each
+one, and a state you can read from three metres away.
+
+- **33 animation states**, 64×64 pixel art, transparent overlay
+- **Up to three sessions** shown side by side, each with its own nametag
+- **Click a whale** and it eats a bowl of rice
+- **Click-through by default** — it never eats your clicks, only when you hover it
+- **No network, no telemetry, no account.** Nothing leaves the machine
 
 ## Sources
 
-It ships with two adapters and picks automatically:
+It ships two adapters and picks automatically:
 
 | adapter | reads | notes |
 |---|---|---|
 | **opencode** | `~/.local/share/opencode/opencode.db` | preferred when a turn is running |
 | **freebuff** | `~/.config/freebuff-desktop/projects/*/desktop-v2.db` | fallback source |
 
-Both open the database **read-only**. Neither writes to it. A source only counts
-as live if its state file updated in the last 15 seconds, so a leftover file from
+Both open the database **read-only** and never write to it. A source only counts
+as live if its state file updated in the last 15 seconds, so a file left behind by
 a crash can't keep the whale pretending to work.
 
-Whichever one has a turn in flight wins; opencode takes over only when it is busy
-and the other is not.
+Whichever source has a turn in flight wins; the other takes over only when it is
+busy and the first is not.
 
-## Requirements
+---
 
-- Windows 10/11
-- Node.js 22 or newer (`node:sqlite` is built in — no native modules)
+## Install
 
-## Run it
+**You need Node.js 22 or newer.** There are no native modules — `node:sqlite`
+ships with Node — so `npm install` is one package tree and nothing compiles.
 
 ```bash
+git clone https://github.com/49vxn/opencode-dafeiyu.git
+cd opencode-dafeiyu/widget
 npm install
 npm start
 ```
 
-The window appears in the bottom-right corner. It is click-through until you
-hover the whale itself.
+The whale appears in the bottom-right corner. It is click-through until you hover
+the whale itself.
+
+### Check it found your agent
+
+```bash
+node opencode-hook.js     # prints one state sample
+node freebuff-hook.js
+```
+
+During a live turn you should see `"turn": "running"` and a tool or part name.
+If it prints `"no sessions"`, the adapter can't see your database — that's the
+first thing to fix.
+
+### Controls
 
 | action | result |
 |---|---|
@@ -55,14 +93,7 @@ hover the whale itself.
 | drag | move the widget |
 | tray icon | click-through toggle, reset position, quit |
 
-To check a source is reading correctly:
-
-```bash
-node opencode-hook.js     # prints one state sample
-node freebuff-hook.js
-```
-
-During a live turn you should see `"turn": "running"` and a tool or part name.
+---
 
 ## How it works
 
@@ -73,37 +104,35 @@ agent's SQLite  ──read-only, 200ms──▶  hook (child process)
                                           │
                                     main process  ──IPC──▶  renderer
                                           │
-                              http://127.0.0.1:8791/state     (freebuff)
-                              http://127.0.0.1:8792/state     (opencode)
+                              http://127.0.0.1:8791/state   (freebuff)
+                              http://127.0.0.1:8792/state   (opencode)
 ```
 
-Both hooks also serve their state over loopback HTTP + SSE, so anything local
-can drive off the same feed. CORS is open; there is no auth because there is
-nothing to protect — it is read-only and machine-local.
+Both hooks also serve their state over loopback HTTP and SSE, so anything local
+can drive off the same feed. CORS is restricted to loopback origins.
 
-## State vocabulary
+### State vocabulary
 
-`long-think`, `streaming`, `thinking`, `read-file`, `writing-code`,
-`running-cmd`, `searching`, `propose-diff`, `compacting`, `tool-call`,
-`tests-fail`, `blocked`, `waiting-prompt`, `idle`, `sleeping`, `chonk-idle`,
-`error`.
+`long-think` `streaming` `thinking` `read-file` `writing-code` `running-cmd`
+`searching` `propose-diff` `compacting` `tool-call` `tests-fail` `blocked`
+`waiting-prompt` `idle` `sleeping` `chonk-idle` `error`
 
 A state must persist ~250ms before it is adopted and is held ~380ms once shown,
-so a flapping tool/reasoning boundary doesn't strobe the sprite.
+so a flapping tool/reasoning boundary can't strobe the sprite.
+
+---
 
 ## Known gaps
 
-- **`blocked` is a heuristic.** A tool part stuck in `running` for 45s is assumed
-  to be a permission prompt. It is usually right, not always.
+- **`blocked` is a heuristic.** A tool stuck in `running` for 45s is assumed to be
+  a permission prompt. Usually right, not always.
 - **`success` and `tests-pass` never fire.** A finished turn is recorded as
-  `completed`, not as a success event, so those two need an edge rule that isn't
-  written yet.
-- **Windows only.** The transparency and click-through handling is Win32-specific.
-- **Schema drift.** Both adapters read private databases that the host apps can
-  change without notice. If a source stops reporting, that's the first suspect.
+  `completed`, not as a success event, so those two need an edge rule.
 - **Some states never play.** Roughly sixteen of the 33 in the manifest — the
-  chonk family, yawn, look-around, pop-idea, success, done-flop — are art
-  waiting on a trigger. Only click-driven ones (boba, eating-rice) fire today.
+  chonk family, yawn, look-around, pop-idea — are art waiting on a trigger.
+- **Windows only.** The transparency and click-through handling is Win32-specific.
+- **Schema drift.** Both adapters read private databases the host apps can change
+  without notice. If a source stops reporting, that's the first suspect.
 
 ## Licence
 
