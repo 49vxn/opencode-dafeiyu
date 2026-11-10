@@ -36,19 +36,19 @@ function readStoredPart(db,threadId){try{
 const msg=db.prepare(`\n      select parts_json from messages where thread_id = ? order by seq desc limit 1\n    `).get(threadId)
 ;if(!msg)return null;const parts=JSON.parse(msg.parts_json).filter(p=>p&&typeof p==="object"&&p.kind!=="ad")
 ;return parts.length?shape(parts[parts.length-1]):null}catch{return null}}function classify(snap,now){
-const{thread:thread,part:part,outType:outType,queueRunning:queueRunning}=snap;if(!thread)return{state:"idle",
-detail:"no session",confident:false};const alive=thread.turn_alive_at?now-thread.turn_alive_at:Infinity
-;if(thread.turn_state==="running"){if(alive>STALE_MS)return{state:"idle",detail:"abandoned turn",confident:false}
-;if(outType==="error")return{state:"error",detail:"turn failed",confident:true};if(!part){return{state:"thinking",
-detail:"starting",confident:false}}switch(part.kind){case"reasoning":return{state:"long-think",detail:"reasoning",
-confident:true};case"text":return{state:"streaming",detail:"answering",confident:true};case"changes":return{
-state:"propose-diff",detail:"editing files",confident:true};case"compaction":return{state:"compacting",
+const{thread:thread,part:part,outType:outType,queueRunning:queueRunning,toolLive:toolLive}=snap;if(!thread)return{
+state:"idle",detail:"no session",confident:false};const alive=thread.turn_alive_at?now-thread.turn_alive_at:Infinity
+;if(thread.turn_state==="running"){if(alive>STALE_MS&&!toolLive){return{state:"idle",detail:"abandoned turn",
+confident:false}}if(outType==="error")return{state:"error",detail:"turn failed",confident:true};if(!part){return{
+state:"thinking",detail:"starting",confident:false}}switch(part.kind){case"reasoning":return{state:"long-think",
+detail:"reasoning",confident:true};case"text":return{state:"streaming",detail:"answering",confident:true};case"changes":
+return{state:"propose-diff",detail:"editing files",confident:true};case"compaction":return{state:"compacting",
 detail:"compacting context",confident:true};case"agent":return{state:"tool-call",detail:"subagent",confident:true}
 ;case"tool":{if(part.status==="failure"||typeof part.exitCode==="number"&&part.exitCode!==0){return{state:"tests-fail",
 detail:`${part.toolName||"tool"} failed`,confident:true}}const mapped=TOOL_STATE[part.toolName];return{
 state:mapped||"tool-call",detail:part.toolName||"tool",confident:true}}default:return{state:"tool-call",
 detail:part.kind||"tool",confident:true}}}if(thread.last_turn_outcome==="failed"){return{state:"error",
-detail:"turn failed",confident:true}}
+detail:"turn failed",confident:true}}if(queueRunning){return{state:"running-cmd",detail:"queue running",confident:true}}
 const sinceEnd=thread.last_turn_finished_at?now-thread.last_turn_finished_at:Infinity;if(sinceEnd<60000)return{
 state:"waiting-prompt",detail:"finished",confident:true};if(sinceEnd<10*60000)return{state:"idle",detail:"resting",
 confident:true};if(sinceEnd<30*60000)return{state:"sleeping",detail:"asleep",confident:true};return{state:"chonk-idle",
@@ -64,19 +64,25 @@ this.current={state:cand.state,detail:cand.detail,confident:cand.confident};this
 function sample(smoother){const candidates=activeDbs(3);if(!candidates.length){return smoother.push({state:"idle",
 detail:"freebuff not found",confident:false},Date.now())}let db=null;let thread=null;let bestScore=-1;const pool=[]
 ;const now0=Date.now();for(const c of candidates){let handle=null;try{handle=new DatabaseSync(c.db,{readOnly:true})
-;handle.exec("PRAGMA busy_timeout = 400");const t=readThread(handle);if(!t){handle.close();continue}
-const fresh=t.turn_state==="running"&&t.turn_alive_at&&now0-t.turn_alive_at<STALE_MS
-;const score=(fresh?1e15:0)+(t.updated_at||0);pool.push({t:t,fresh:fresh,score:score});if(score>bestScore){if(db){try{
-db.close()}catch{}}db=handle;thread=t;bestScore=score}else{handle.close()}}catch{try{handle&&handle.close()}catch{}}}
-if(!db||!thread){return smoother.push({state:"idle",detail:"no threads",confident:false},Date.now())}try{let part=null
-;let outType=null;if(thread.turn_state==="running"){const live=readLiveParts(db,thread.id)
-;outType=partsCache.outType??null;const usable=live.filter(p=>p&&typeof p==="object"&&p.kind!=="ad")
-;if(usable.length)part=shape(usable[usable.length-1])}else{partsCache.at=0;partsCache.threadId=null;partsCache.parts=[]
-;part=readStoredPart(db,thread.id)}let queueRunning=false;try{
+;handle.exec("PRAGMA busy_timeout = 400");const t=readThread(handle);if(!t){handle.close();continue}let toolLive=false
+;if(t.turn_state==="running"){const live=readLiveParts(handle,t.id).filter(p=>p&&typeof p==="object"&&p.kind!=="ad")
+;const last=live.length?shape(live[live.length-1]):null
+;toolLive=!!(last&&last.kind==="tool"&&(last.status==="running"||last.status==="pending"||last.status==null))}
+const aliveAge=t.turn_alive_at?now0-t.turn_alive_at:Infinity
+;const fresh=t.turn_state==="running"&&(aliveAge<STALE_MS||toolLive);const score=(fresh?1e15:0)+(t.updated_at||0)
+;pool.push({t:t,fresh:fresh,score:score});if(score>bestScore){if(db){try{db.close()}catch{}}db=handle;thread=t
+;bestScore=score}else{handle.close()}}catch{try{handle&&handle.close()}catch{}}}if(!db||!thread){return smoother.push({
+state:"idle",detail:"no threads",confident:false},Date.now())}try{let part=null;let outType=null;let toolLive=false
+;if(thread.turn_state==="running"){const live=readLiveParts(db,thread.id);outType=partsCache.outType??null
+;const usable=live.filter(p=>p&&typeof p==="object"&&p.kind!=="ad");if(usable.length){
+part=shape(usable[usable.length-1])
+;toolLive=part.kind==="tool"&&(part.status==="running"||part.status==="pending"||part.status==null)}}else{
+partsCache.at=0;partsCache.threadId=null;partsCache.parts=[];part=readStoredPart(db,thread.id)}let queueRunning=false
+;try{
 const q=db.prepare(`\n        select count(*) c from queue_items where thread_id = ? and state = 'running'\n      `).get(thread.id)
 ;queueRunning=!!(q&&q.c)}catch{}const now=Date.now();const cand=classify({thread:thread,part:part,outType:outType,
-queueRunning:queueRunning},now);const chosen=smoother.push(cand,now);return{...chosen,thread:thread.id.slice(0,8),
-mode:thread.agent_mode,turn:thread.turn_state,ts:now,
+queueRunning:queueRunning,toolLive:toolLive},now);const chosen=smoother.push(cand,now);return{...chosen,
+thread:thread.id.slice(0,8),mode:thread.agent_mode,turn:thread.turn_state,ts:now,
 agents:(pool.length?pool.sort((a,b)=>b.score-a.score).slice(0,MAX_AGENTS):[{t:thread,
 fresh:thread.turn_state==="running",score:0}]).map(({t:t,fresh:fresh})=>({id:t.id.slice(0,8),
 title:t.title&&t.title.trim()||t.id.slice(0,6),state:t.id===thread.id?chosen.state:coarseState(t,now),running:!!fresh
