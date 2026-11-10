@@ -60,11 +60,19 @@ busy and the first is not.
 
 ## Install
 
-**You need Node.js 22 or newer.** There are no native modules — `node:sqlite`
-ships with Node — so `npm install` is one package tree and nothing compiles.
+**Windows only for now.** You need [Node.js 22 or newer](https://nodejs.org) —
+there are no native modules, so nothing compiles.
 
 ```bash
 git clone https://github.com/49vxn/opencode-dafeiyu.git
+```
+
+Then **double-click `widget\start.cmd`**. It installs once, starts the widget, and
+leaves no terminal open. Second run is instant.
+
+Prefer the terminal:
+
+```bash
 cd opencode-dafeiyu/widget
 npm install
 npm start
@@ -73,18 +81,40 @@ npm start
 The whale appears in the bottom-right corner. It is click-through until you hover
 the whale itself.
 
-### Check it found your agent
+## Something not working?
+
+Run the doctor:
 
 ```bash
-node opencode-hook.js     # prints one state sample
-node freebuff-hook.js
+cd widget
+node doctor.js
 ```
 
-During a live turn you should see `"turn": "running"` and a tool or part name.
-If it prints `"no sessions"`, the adapter can't see your database — that's the
-first thing to fix.
+It prints what it found — which agents are installed, the newest session in each,
+and whether the hooks are listening:
 
-### Controls
+```
+  ok     node 24.18.0
+  ok     electron installed
+  ok     opencode database found
+         newest session: review pass  (2m ago)
+  ok     freebuff: 37 project database(s)
+         most recently written: my-project  (0m ago)
+```
+
+If a source is missing it says so instead of failing quietly. The two databases
+are the only things it touches, and it opens them read-only.
+
+**Common causes of "it just sits there":**
+
+| symptom | cause |
+|---|---|
+| whale idle, doctor says no database | agent not installed, or never run a turn |
+| doctor finds a database but the whale is still | the agent finished — it'll move on the next turn |
+| nothing appears on screen | transparency failed; check `runtime/*.log` |
+| hooks not listening on 8791/8792 | the widget isn't running |
+
+## Controls
 
 | action | result |
 |---|---|
@@ -92,8 +122,6 @@ first thing to fix.
 | click a whale | it eats a bowl of rice |
 | drag | move the widget |
 | tray icon | click-through toggle, reset position, quit |
-
----
 
 ## How it works
 
