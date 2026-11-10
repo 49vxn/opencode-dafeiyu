@@ -33,3 +33,7 @@ click-through, Ctrl+Shift+R re-centers.
 © 2026 Kevin. Provided to a named tester for local evaluation only.
 Do not redistribute. Unofficial fan project — not affiliated with any agent
 vendor.
+
+p.s. I have a couple easter eggs --
+
+the first one -- click to watch it eat rice
