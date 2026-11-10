@@ -30,7 +30,7 @@ click-through, Ctrl+Shift+R re-centers.
 
 ## Ownership
 
-© 2026 Kevin. Provided to a named tester for local evaluation only.
+© 2026.
 Do not redistribute. Unofficial fan project — not affiliated with any agent
 vendor.
 
