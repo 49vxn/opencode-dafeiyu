@@ -71,10 +71,10 @@ thread:null,directory:null,mode:null,turn:null,agents:[],source:"opencode",stale
 ;const tmp=file+".tmp";fs.writeFileSync(tmp,JSON.stringify(data));fs.renameSync(tmp,file)}
 if(process.argv.includes("--watch")){const smoother=new Smoother;const clients=new Set;let latest=null
 ;let lastLogged=null;const broadcast=payload=>{const frame=`event: state\ndata: ${JSON.stringify(payload)}\n\n`
-;for(const res of clients){try{res.write(frame)}catch{clients.delete(res)}}};const publish=payload=>{latest=payload
-;writeAtomic(OUT,payload);broadcast(payload);if(payload.state!==lastLogged){lastLogged=payload.state
+;for(const res of clients){try{res.write(frame)}catch{clients.delete(res)}}};let lastSig=null,lastWrite=0;const publish=payload=>{latest=payload
+;const sig=payload.state+"|"+(payload.detail||"")+"|"+(payload.agents||[]).map(a=>a.id+":"+a.state).join(",");const n=Date.now();if(sig!==lastSig||n-lastWrite>3000){lastSig=sig;lastWrite=n;writeAtomic(OUT,payload)}broadcast(payload);if(payload.state!==lastLogged){lastLogged=payload.state
 ;console.log(`[oc-hook] ${String(payload.state).padEnd(14)} ${payload.detail??""}`)}}
-;const server=http.createServer((req,res)=>{const cors={"Access-Control-Allow-Origin":"*","Cache-Control":"no-store"}
+;function corsFor(req){const o=req.headers.origin;const ok=typeof o==="string"&&/^http:\/\/(localhost|127\.0\.0\.1)(:\d+)?$/.test(o);const h={"Cache-Control":"no-store"};if(ok){h["Access-Control-Allow-Origin"]=o;h.Vary="Origin"}return h};;const server=http.createServer((req,res)=>{const cors=corsFor(req)
 ;if(req.url==="/state"){res.writeHead(200,{...cors,"Content-Type":"application/json"});res.end(JSON.stringify(latest??{
 state:"idle",ts:Date.now()}));return}if(req.url==="/events"){res.writeHead(200,{...cors,
 "Content-Type":"text/event-stream",Connection:"keep-alive"});res.write("retry: 1000\n\n")

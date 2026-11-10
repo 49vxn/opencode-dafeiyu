@@ -54,8 +54,6 @@ hover the whale itself.
 | click a whale | it eats a bowl of rice |
 | drag | move the widget |
 | tray icon | click-through toggle, reset position, quit |
-| `Ctrl+Shift+X` | toggle click-through |
-| `Ctrl+Shift+R` | reset position |
 
 To check a source is reading correctly:
 
@@ -103,6 +101,9 @@ so a flapping tool/reasoning boundary doesn't strobe the sprite.
 - **Windows only.** The transparency and click-through handling is Win32-specific.
 - **Schema drift.** Both adapters read private databases that the host apps can
   change without notice. If a source stops reporting, that's the first suspect.
+- **Some states never play.** Roughly sixteen of the 33 in the manifest — the
+  chonk family, yawn, look-around, pop-idea, success, done-flop — are art
+  waiting on a trigger. Only click-driven ones (boba, eating-rice) fire today.
 
 ## Licence
 
