@@ -12,7 +12,7 @@ const cell=document.createElement("div");cell.className="cell";const tag=documen
 ;ctx.imageSmoothingEnabled=false;cell.append(tag,canvas);document.getElementById("row").appendChild(cell);a={id:id,
 title:title,cell:cell,tag:tag,canvas:canvas,ctx:ctx,state:null,startedAt:0,lastDrawn:-1};agents.set(id,a);return a}
 function dropAgents(keep){for(const[id,a]of agents){if(!keep.has(id)){a.cell.remove();agents.delete(id)}}}
-function setState(a,name){if(!manifest.states[name]||a.state===name)return;a.state=name;a.startedAt=performance.now()
+const ALIAS={blocked:"waiting-prompt"};function setState(a,name){name=ALIAS[name]||name;if(!manifest.states[name]||a.state===name)return;a.state=name;a.startedAt=performance.now()
 ;a.lastDrawn=-1;warm(name);api.stateChanged(name)}let layoutQueued=false;function queueLayout(){if(layoutQueued)return
 ;layoutQueued=true;requestAnimationFrame(()=>{layoutQueued=false
 ;const r=document.getElementById("row").getBoundingClientRect();const w=Math.ceil(r.width);const h=Math.ceil(r.height)

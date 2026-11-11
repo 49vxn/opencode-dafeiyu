@@ -28,7 +28,7 @@ row=db.prepare(`\n      select id, time_updated, json_extract(data, '$.finish') 
 const parsed=JSON.parse(row.data);content=parsed&&Array.isArray(parsed.content)?parsed.content:[]}catch{
 content=partsCache.content}}if(!content.length)content=partsCache.content;partsCache.id=row.id;partsCache.at=now
 ;partsCache.content=content;return{row:row,content:content}}function classify(snap,now){
-const{session:session,live:live,anchorAt:anchorAt}=snap;if(!session)return{state:"idle",detail:"no session",
+const{session:session,live:live,anchorAt:anchorAt,lastType}=snap;if(!session)return{state:"idle",detail:"no session",
 confident:false};if(live&&live.row.finish==null){const heart=now-live.row.time_updated;if(heart>STALE_MS)return{
 state:"idle",detail:"abandoned turn",confident:false};const usable=live.content.filter(p=>p&&typeof p==="object")
 ;const part=usable.length?shape(usable[usable.length-1]):null;if(!part){return{state:"thinking",detail:"starting",
@@ -39,7 +39,7 @@ if(heart>=BLOCK_AFTER_MS&&(part.status==="running"||part.status==="pending")){re
 detail:"waiting for you",confident:true}}const mapped=TOOL_STATE[part.name];return{
 state:part.status==="running"||part.status==="pending"?mapped||"tool-call":"thinking",detail:part.name||"tool",
 confident:part.status==="running"||part.status==="pending"}}default:return{state:"tool-call",detail:part.type||"part",
-confident:true}}}const sinceAnchor=anchorAt?now-anchorAt:Infinity;if(sinceAnchor<START_GRACE_MS&&sinceAnchor<45*60000){
+confident:true}}}const sinceAnchor=anchorAt?now-anchorAt:Infinity;const busy=session.time_busy||0,idleAt=session.time_idle||0;const beginning=lastType==="user"||busy>idleAt&&now-(session.time_updated||0)<STALE_MS;if(beginning&&sinceAnchor<START_GRACE_MS&&sinceAnchor<45*60000){
 return{state:"thinking",detail:"starting",confident:true}}const sinceEnd=sinceAnchor;if(sinceEnd<60000)return{
 state:"waiting-prompt",detail:"finished",confident:true};if(sinceEnd<10*60000)return{state:"idle",detail:"resting",
 confident:true};if(sinceEnd<30*60000)return{state:"sleeping",detail:"asleep",confident:true};return{state:"chonk-idle",
@@ -56,10 +56,10 @@ function sample(smoother){const stamp=dbStamp();if(!stamp){return smoother.push(
 detail:"opencode not found",confident:false},Date.now())}let db;try{db=new DatabaseSync(DB(),{readOnly:true})
 ;db.exec("PRAGMA busy_timeout = 400");const session=readSession(db);if(!session){return smoother.push({state:"idle",
 detail:"no sessions",confident:false},Date.now())}const live=readLiveTurn(db,session.id)
-;let anchorAt=session.time_updated||0;try{
-const m=db.prepare(`\n        select time_updated from session_message\n        where session_id = ? order by seq desc limit 1\n      `).get(session.id)
-;if(m&&m.time_updated)anchorAt=Math.max(anchorAt,m.time_updated)}catch{}const now=Date.now();const cand=classify({
-session:session,live:live,anchorAt:anchorAt},now);const chosen=smoother.push(cand,now)
+;let anchorAt=session.time_updated||0;let lastType=null;try{
+const m=db.prepare(`\n        select time_updated, type from session_message\n        where session_id = ? order by seq desc limit 1\n      `).get(session.id)
+;if(m){if(m.time_updated)anchorAt=Math.max(anchorAt,m.time_updated);lastType=m.type}}catch{}const now=Date.now();const cand=classify({
+session:session,live:live,anchorAt:anchorAt,lastType},now);const chosen=smoother.push(cand,now)
 ;const running=!!(live&&live.row.finish==null&&now-live.row.time_updated<STALE_MS);return{...chosen,ts:now,
 thread:session.id.slice(0,8),directory:session.directory||null,mode:session.agent,turn:running?"running":"idle",
 agents:readAgents(db,now).map(s=>({id:s.id.slice(0,8),title:s.title&&s.title.trim()||s.id.slice(0,6),
@@ -84,7 +84,8 @@ state:"idle",ts:Date.now()}));return}if(req.url==="/events"){res.writeHead(200,{
 ;if(latest)res.write(`event: state\ndata: ${JSON.stringify(latest)}\n\n`);clients.add(res)
 ;req.on("close",()=>clients.delete(res));return}res.writeHead(404,cors)
 ;res.end("dafeiyu opencode hook: try /state or /events\n")})
-;server.on("error",err=>console.error(`[oc-hook] HTTP ${PORT}: ${err.message}`));server.listen(PORT,"127.0.0.1",()=>{
+;server.on("error",err=>{console.error(`[oc-hook] HTTP ${PORT}: ${err.message}`)
+;if(err.code==="EADDRINUSE")process.exit(1)});server.listen(PORT,"127.0.0.1",()=>{
 console.log(`[oc-hook] http://127.0.0.1:${PORT}/state`)});const tick=()=>{try{publish(sample(smoother))}catch(err){
 console.error("[oc-hook] tick failed:",err.message)}};tick();setInterval(tick,POLL_MS)
 ;console.log(`[oc-hook] watching ${DB()}`)}else{console.log(JSON.stringify(sample(new Smoother),null,2))}

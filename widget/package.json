@@ -1,9 +1,9 @@
 {
   "name": "dafeiyu",
   "productName": "dafeiyu",
-  "version": "0.3.0",
+  "version": "0.4.0",
   "private": true,
-  "description": "dafeiyu — desktop mascot widget",
+  "description": "dafeiyu \u00e2\u20ac\u201d desktop mascot widget",
   "author": "dafeiyu",
   "main": "main.js",
   "scripts": {

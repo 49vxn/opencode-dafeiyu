@@ -45,7 +45,7 @@ Checking whether your agent finished means alt-tabbing out of what you're doing.
 So the agent gets a face instead: one whale per live session, a nametag over each
 one, and a state you can read from three metres away.
 
-- **33 animation states**, 64×64 pixel art, transparent overlay
+- **89 animation states** — 55 base plus 34 chonk variants, 64×64 pixel art, transparent overlay
 - **Up to three sessions** shown side by side, each with its own nametag
 - **Click a whale** and it eats a bowl of rice
 - **Click-through by default** — it never eats your clicks, only when you hover it
@@ -116,7 +116,7 @@ tailing catches the state up on its own the next time the whale starts.
 
 ### One-click installer
 
-[**Download dafeiyu-Setup-0.3.0.exe**](https://github.com/49vxn/opencode-dafeiyu/releases/latest)
+[**Download dafeiyu-Setup-0.4.0.exe**](https://github.com/49vxn/opencode-dafeiyu/releases/latest)
 — Windows 10/11, 64-bit, about 110 MB.
 
 It installs per user (no admin prompt), starts the whale in the corner, and puts a
@@ -223,9 +223,13 @@ can drive off the same feed. CORS is restricted to loopback origins.
 
 ### State vocabulary
 
-`long-think` `streaming` `thinking` `read-file` `writing-code` `running-cmd`
-`searching` `propose-diff` `compacting` `tool-call` `tests-fail` `blocked`
-`waiting-prompt` `idle` `sleeping` `chonk-idle` `error`
+89 states across three clocks: what the agent is doing, what *you* are doing, and the
+whale's own life. Representative samples —
+
+`thinking` `long-think` `plan` `streaming` `read-file` `searching` `writing-code`
+`running-cmd` `propose-diff` `compacting` `waiting-prompt` `tests-pass` `tests-fail`
+`blocked` `interrupted` `subagent` · `idle` `sleeping` `doze-off` `walk-away`
+`typing-along` · `chonk-idle` `sulk` `fish-chase` `boba-return` `too-full-rice`
 
 A state must persist ~250ms before it is adopted and is held ~380ms once shown,
 so a flapping tool/reasoning boundary can't strobe the sprite.

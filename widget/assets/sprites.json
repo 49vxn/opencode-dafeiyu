@@ -1,454 +1,1248 @@
 {
-  "cell": 64,
-  "cols": 12,
-  "rows": 33,
-  "states": {
-    "idle": {
-      "row": 0,
-      "frames": [
-        "idle-00.png",
-        "idle-01.png",
-        "idle-02.png",
-        "idle-03.png",
-        "idle-04.png",
-        "idle-05.png",
-        "idle-06.png",
-        "idle-07.png"
-      ],
-      "fps": 6,
-      "loop": "loop"
-    },
-    "idle-left": {
-      "row": 1,
-      "frames": [
-        "idle-left-00.png",
-        "idle-left-01.png",
-        "idle-left-02.png",
-        "idle-left-03.png",
-        "idle-left-04.png",
-        "idle-left-05.png",
-        "idle-left-06.png",
-        "idle-left-07.png"
-      ],
-      "fps": 6,
-      "loop": "loop"
-    },
-    "idle-right": {
-      "row": 2,
-      "frames": [
-        "idle-right-00.png",
-        "idle-right-01.png",
-        "idle-right-02.png",
-        "idle-right-03.png",
-        "idle-right-04.png",
-        "idle-right-05.png",
-        "idle-right-06.png",
-        "idle-right-07.png"
-      ],
-      "fps": 6,
-      "loop": "loop"
-    },
-    "look-around": {
-      "row": 3,
-      "frames": [
-        "look-around-00.png",
-        "look-around-01.png",
-        "look-around-02.png",
-        "look-around-03.png",
-        "look-around-04.png",
-        "look-around-05.png",
-        "look-around-06.png",
-        "look-around-07.png"
-      ],
-      "fps": 5,
-      "loop": "once"
-    },
-    "yawn": {
-      "row": 4,
-      "frames": [
-        "yawn-00.png",
-        "yawn-01.png",
-        "yawn-02.png",
-        "yawn-03.png",
-        "yawn-04.png",
-        "yawn-05.png"
-      ],
-      "fps": 6,
-      "loop": "once"
-    },
-    "thinking": {
-      "row": 5,
-      "frames": [
-        "thinking-00.png",
-        "thinking-01.png",
-        "thinking-02.png",
-        "thinking-03.png",
-        "thinking-04.png",
-        "thinking-05.png"
-      ],
-      "fps": 8,
-      "loop": "loop"
-    },
-    "reading": {
-      "row": 6,
-      "frames": [
-        "reading-00.png",
-        "reading-01.png",
-        "reading-02.png",
-        "reading-03.png",
-        "reading-04.png"
-      ],
-      "fps": 6,
-      "loop": "loop"
-    },
-    "writing-code": {
-      "row": 7,
-      "frames": [
-        "writing-code-00.png",
-        "writing-code-01.png",
-        "writing-code-02.png",
-        "writing-code-03.png",
-        "writing-code-04.png",
-        "writing-code-05.png",
-        "writing-code-06.png",
-        "writing-code-07.png"
-      ],
-      "fps": 10,
-      "loop": "loop"
-    },
-    "pop-idea": {
-      "row": 8,
-      "frames": [
-        "pop-idea-00.png",
-        "pop-idea-01.png",
-        "pop-idea-02.png",
-        "pop-idea-03.png"
-      ],
-      "fps": 8,
-      "loop": "once"
-    },
-    "pop-flip": {
-      "row": 9,
-      "frames": [
-        "pop-flip-00.png",
-        "pop-flip-01.png",
-        "pop-flip-02.png",
-        "pop-flip-03.png"
-      ],
-      "fps": 10,
-      "loop": "once"
-    },
-    "running-cmd": {
-      "row": 10,
-      "frames": [
-        "running-cmd-00.png",
-        "running-cmd-01.png",
-        "running-cmd-02.png",
-        "running-cmd-03.png",
-        "running-cmd-04.png",
-        "running-cmd-05.png"
-      ],
-      "fps": 6,
-      "loop": "loop"
-    },
-    "searching": {
-      "row": 11,
-      "frames": [
-        "searching-00.png",
-        "searching-01.png",
-        "searching-02.png",
-        "searching-03.png",
-        "searching-04.png",
-        "searching-05.png"
-      ],
-      "fps": 6,
-      "loop": "loop"
-    },
-    "success": {
-      "row": 12,
-      "frames": [
-        "success-00.png",
-        "success-01.png",
-        "success-02.png",
-        "success-03.png",
-        "success-04.png",
-        "success-05.png"
-      ],
-      "fps": 10,
-      "loop": "once"
-    },
-    "error": {
-      "row": 13,
-      "frames": [
-        "error-00.png",
-        "error-01.png",
-        "error-02.png",
-        "error-03.png",
-        "error-04.png",
-        "error-05.png"
-      ],
-      "fps": 10,
-      "loop": "once"
-    },
-    "blocked": {
-      "row": 14,
-      "frames": [
-        "blocked-00.png",
-        "blocked-01.png",
-        "blocked-02.png",
-        "blocked-03.png",
-        "blocked-04.png"
-      ],
-      "fps": 8,
-      "loop": "once"
-    },
-    "sleeping": {
-      "row": 15,
-      "frames": [
-        "sleeping-00.png",
-        "sleeping-01.png",
-        "sleeping-02.png",
-        "sleeping-03.png",
-        "sleeping-04.png",
-        "sleeping-05.png",
-        "sleeping-06.png",
-        "sleeping-07.png"
-      ],
-      "fps": 4,
-      "loop": "loop"
-    },
-    "boba": {
-      "row": 16,
-      "frames": [
-        "boba-00.png",
-        "boba-01.png",
-        "boba-02.png",
-        "boba-03.png",
-        "boba-04.png",
-        "boba-05.png"
-      ],
-      "fps": 6,
-      "loop": "loop"
-    },
-    "eating-rice": {
-      "row": 17,
-      "frames": [
-        "eating-rice-00.png",
-        "eating-rice-01.png",
-        "eating-rice-02.png",
-        "eating-rice-03.png",
-        "eating-rice-04.png",
-        "eating-rice-05.png"
-      ],
-      "fps": 6,
-      "loop": "once"
-    },
-    "chonk-idle": {
-      "row": 18,
-      "frames": [
-        "chonk-idle-00.png",
-        "chonk-idle-01.png",
-        "chonk-idle-02.png",
-        "chonk-idle-03.png",
-        "chonk-idle-04.png",
-        "chonk-idle-05.png"
-      ],
-      "fps": 5,
-      "loop": "loop"
-    },
-    "headband-on": {
-      "row": 19,
-      "frames": [
-        "headband-on-00.png",
-        "headband-on-01.png",
-        "headband-on-02.png",
-        "headband-on-03.png"
-      ],
-      "fps": 6,
-      "loop": "once"
-    },
-    "chonk-writing-code": {
-      "row": 20,
-      "frames": [
-        "chonk-writing-code-00.png",
-        "chonk-writing-code-01.png",
-        "chonk-writing-code-02.png",
-        "chonk-writing-code-03.png"
-      ],
-      "fps": 12,
-      "loop": "loop"
-    },
-    "chonk-success": {
-      "row": 21,
-      "frames": [
-        "chonk-success-00.png",
-        "chonk-success-01.png",
-        "chonk-success-02.png",
-        "chonk-success-03.png"
-      ],
-      "fps": 8,
-      "loop": "once"
-    },
-    "slim-down": {
-      "row": 22,
-      "frames": [
-        "slim-down-00.png",
-        "slim-down-01.png",
-        "slim-down-02.png",
-        "slim-down-03.png",
-        "slim-down-04.png",
-        "slim-down-05.png"
-      ],
-      "fps": 8,
-      "loop": "once"
-    },
-    "long-think": {
-      "row": 23,
-      "frames": [
-        "long-think-00.png",
-        "long-think-01.png",
-        "long-think-02.png",
-        "long-think-03.png",
-        "long-think-04.png",
-        "long-think-05.png",
-        "long-think-06.png",
-        "long-think-07.png",
-        "long-think-08.png",
-        "long-think-09.png"
-      ],
-      "fps": 6,
-      "loop": "loop"
-    },
-    "streaming": {
-      "row": 24,
-      "frames": [
-        "streaming-00.png",
-        "streaming-01.png",
-        "streaming-02.png",
-        "streaming-03.png",
-        "streaming-04.png",
-        "streaming-05.png",
-        "streaming-06.png",
-        "streaming-07.png",
-        "streaming-08.png",
-        "streaming-09.png",
-        "streaming-10.png",
-        "streaming-11.png"
-      ],
-      "fps": 10,
-      "loop": "loop"
-    },
-    "tool-call": {
-      "row": 25,
-      "frames": [
-        "tool-call-00.png",
-        "tool-call-01.png",
-        "tool-call-02.png",
-        "tool-call-03.png",
-        "tool-call-04.png",
-        "tool-call-05.png"
-      ],
-      "fps": 8,
-      "loop": "loop"
-    },
-    "read-file": {
-      "row": 26,
-      "frames": [
-        "read-file-00.png",
-        "read-file-01.png",
-        "read-file-02.png",
-        "read-file-03.png",
-        "read-file-04.png",
-        "read-file-05.png"
-      ],
-      "fps": 5,
-      "loop": "loop"
-    },
-    "propose-diff": {
-      "row": 27,
-      "frames": [
-        "propose-diff-00.png",
-        "propose-diff-01.png",
-        "propose-diff-02.png",
-        "propose-diff-03.png",
-        "propose-diff-04.png",
-        "propose-diff-05.png"
-      ],
-      "fps": 5,
-      "loop": "loop"
-    },
-    "tests-pass": {
-      "row": 28,
-      "frames": [
-        "tests-pass-00.png",
-        "tests-pass-01.png",
-        "tests-pass-02.png",
-        "tests-pass-03.png",
-        "tests-pass-04.png",
-        "tests-pass-05.png",
-        "tests-pass-06.png",
-        "tests-pass-07.png"
-      ],
-      "fps": 7,
-      "loop": "once"
-    },
-    "tests-fail": {
-      "row": 29,
-      "frames": [
-        "tests-fail-00.png",
-        "tests-fail-01.png",
-        "tests-fail-02.png",
-        "tests-fail-03.png",
-        "tests-fail-04.png",
-        "tests-fail-05.png",
-        "tests-fail-06.png",
-        "tests-fail-07.png"
-      ],
-      "fps": 7,
-      "loop": "once"
-    },
-    "compacting": {
-      "row": 30,
-      "frames": [
-        "compacting-00.png",
-        "compacting-01.png",
-        "compacting-02.png",
-        "compacting-03.png",
-        "compacting-04.png",
-        "compacting-05.png",
-        "compacting-06.png",
-        "compacting-07.png"
-      ],
-      "fps": 6,
-      "loop": "once"
-    },
-    "waiting-prompt": {
-      "row": 31,
-      "frames": [
-        "waiting-prompt-00.png",
-        "waiting-prompt-01.png",
-        "waiting-prompt-02.png",
-        "waiting-prompt-03.png",
-        "waiting-prompt-04.png",
-        "waiting-prompt-05.png",
-        "waiting-prompt-06.png",
-        "waiting-prompt-07.png"
-      ],
-      "fps": 4,
-      "loop": "loop"
-    },
-    "done-flop": {
-      "row": 32,
-      "frames": [
-        "done-flop-00.png",
-        "done-flop-01.png",
-        "done-flop-02.png",
-        "done-flop-03.png",
-        "done-flop-04.png",
-        "done-flop-05.png"
-      ],
-      "fps": 5,
-      "loop": "loop"
-    }
+ "cell": 64,
+ "cols": 12,
+ "rows": 89,
+ "states": {
+  "idle": {
+   "row": 0,
+   "frames": [
+    "idle-00.png",
+    "idle-01.png",
+    "idle-02.png",
+    "idle-03.png",
+    "idle-04.png",
+    "idle-05.png",
+    "idle-06.png",
+    "idle-07.png"
+   ],
+   "fps": 6,
+   "loop": "loop"
+  },
+  "idle-left": {
+   "row": 1,
+   "frames": [
+    "idle-left-00.png",
+    "idle-left-01.png",
+    "idle-left-02.png",
+    "idle-left-03.png",
+    "idle-left-04.png",
+    "idle-left-05.png",
+    "idle-left-06.png",
+    "idle-left-07.png"
+   ],
+   "fps": 6,
+   "loop": "loop"
+  },
+  "idle-right": {
+   "row": 2,
+   "frames": [
+    "idle-right-00.png",
+    "idle-right-01.png",
+    "idle-right-02.png",
+    "idle-right-03.png",
+    "idle-right-04.png",
+    "idle-right-05.png",
+    "idle-right-06.png",
+    "idle-right-07.png"
+   ],
+   "fps": 6,
+   "loop": "loop"
+  },
+  "look-around": {
+   "row": 3,
+   "frames": [
+    "look-around-00.png",
+    "look-around-01.png",
+    "look-around-02.png",
+    "look-around-03.png",
+    "look-around-04.png",
+    "look-around-05.png",
+    "look-around-06.png",
+    "look-around-07.png"
+   ],
+   "fps": 5,
+   "loop": "once"
+  },
+  "yawn": {
+   "row": 4,
+   "frames": [
+    "yawn-00.png",
+    "yawn-01.png",
+    "yawn-02.png",
+    "yawn-03.png",
+    "yawn-04.png",
+    "yawn-05.png"
+   ],
+   "fps": 6,
+   "loop": "once"
+  },
+  "thinking": {
+   "row": 5,
+   "frames": [
+    "thinking-00.png",
+    "thinking-01.png",
+    "thinking-02.png",
+    "thinking-03.png",
+    "thinking-04.png",
+    "thinking-05.png"
+   ],
+   "fps": 8,
+   "loop": "loop"
+  },
+  "reading": {
+   "row": 6,
+   "frames": [
+    "reading-00.png",
+    "reading-01.png",
+    "reading-02.png",
+    "reading-03.png",
+    "reading-04.png"
+   ],
+   "fps": 6,
+   "loop": "loop"
+  },
+  "writing-code": {
+   "row": 7,
+   "frames": [
+    "writing-code-00.png",
+    "writing-code-01.png",
+    "writing-code-02.png",
+    "writing-code-03.png",
+    "writing-code-04.png",
+    "writing-code-05.png",
+    "writing-code-06.png",
+    "writing-code-07.png"
+   ],
+   "fps": 10,
+   "loop": "loop"
+  },
+  "pop-idea": {
+   "row": 8,
+   "frames": [
+    "pop-idea-00.png",
+    "pop-idea-01.png",
+    "pop-idea-02.png",
+    "pop-idea-03.png"
+   ],
+   "fps": 8,
+   "loop": "once"
+  },
+  "pop-flip": {
+   "row": 9,
+   "frames": [
+    "pop-flip-00.png",
+    "pop-flip-01.png",
+    "pop-flip-02.png",
+    "pop-flip-03.png"
+   ],
+   "fps": 10,
+   "loop": "once"
+  },
+  "running-cmd": {
+   "row": 10,
+   "frames": [
+    "running-cmd-00.png",
+    "running-cmd-01.png",
+    "running-cmd-02.png",
+    "running-cmd-03.png",
+    "running-cmd-04.png",
+    "running-cmd-05.png"
+   ],
+   "fps": 6,
+   "loop": "loop"
+  },
+  "searching": {
+   "row": 11,
+   "frames": [
+    "searching-00.png",
+    "searching-01.png",
+    "searching-02.png",
+    "searching-03.png",
+    "searching-04.png",
+    "searching-05.png"
+   ],
+   "fps": 6,
+   "loop": "loop"
+  },
+  "success": {
+   "row": 12,
+   "frames": [
+    "success-00.png",
+    "success-01.png",
+    "success-02.png",
+    "success-03.png",
+    "success-04.png",
+    "success-05.png"
+   ],
+   "fps": 10,
+   "loop": "once"
+  },
+  "error": {
+   "row": 13,
+   "frames": [
+    "error-00.png",
+    "error-01.png",
+    "error-02.png",
+    "error-03.png",
+    "error-04.png",
+    "error-05.png"
+   ],
+   "fps": 10,
+   "loop": "once"
+  },
+  "sleeping": {
+   "row": 14,
+   "frames": [
+    "sleeping-00.png",
+    "sleeping-01.png",
+    "sleeping-02.png",
+    "sleeping-03.png",
+    "sleeping-04.png",
+    "sleeping-05.png",
+    "sleeping-06.png",
+    "sleeping-07.png"
+   ],
+   "fps": 4,
+   "loop": "loop"
+  },
+  "boba": {
+   "row": 15,
+   "frames": [
+    "boba-00.png",
+    "boba-01.png",
+    "boba-02.png",
+    "boba-03.png",
+    "boba-04.png",
+    "boba-05.png"
+   ],
+   "fps": 6,
+   "loop": "loop"
+  },
+  "eating-rice": {
+   "row": 16,
+   "frames": [
+    "eating-rice-00.png",
+    "eating-rice-01.png",
+    "eating-rice-02.png",
+    "eating-rice-03.png",
+    "eating-rice-04.png",
+    "eating-rice-05.png"
+   ],
+   "fps": 6,
+   "loop": "once"
+  },
+  "chonk-idle": {
+   "row": 17,
+   "frames": [
+    "chonk-idle-00.png",
+    "chonk-idle-01.png",
+    "chonk-idle-02.png",
+    "chonk-idle-03.png",
+    "chonk-idle-04.png",
+    "chonk-idle-05.png"
+   ],
+   "fps": 5,
+   "loop": "loop"
+  },
+  "headband-on": {
+   "row": 18,
+   "frames": [
+    "headband-on-00.png",
+    "headband-on-01.png",
+    "headband-on-02.png",
+    "headband-on-03.png"
+   ],
+   "fps": 6,
+   "loop": "once"
+  },
+  "chonk-writing-code": {
+   "row": 19,
+   "frames": [
+    "chonk-writing-code-00.png",
+    "chonk-writing-code-01.png",
+    "chonk-writing-code-02.png",
+    "chonk-writing-code-03.png"
+   ],
+   "fps": 12,
+   "loop": "loop"
+  },
+  "chonk-success": {
+   "row": 20,
+   "frames": [
+    "chonk-success-00.png",
+    "chonk-success-01.png",
+    "chonk-success-02.png",
+    "chonk-success-03.png"
+   ],
+   "fps": 8,
+   "loop": "once"
+  },
+  "slim-down": {
+   "row": 21,
+   "frames": [
+    "slim-down-00.png",
+    "slim-down-01.png",
+    "slim-down-02.png",
+    "slim-down-03.png",
+    "slim-down-04.png",
+    "slim-down-05.png"
+   ],
+   "fps": 8,
+   "loop": "once"
+  },
+  "long-think": {
+   "row": 22,
+   "frames": [
+    "long-think-00.png",
+    "long-think-01.png",
+    "long-think-02.png",
+    "long-think-03.png",
+    "long-think-04.png",
+    "long-think-05.png",
+    "long-think-06.png",
+    "long-think-07.png",
+    "long-think-08.png",
+    "long-think-09.png"
+   ],
+   "fps": 6,
+   "loop": "loop"
+  },
+  "streaming": {
+   "row": 23,
+   "frames": [
+    "streaming-00.png",
+    "streaming-01.png",
+    "streaming-02.png",
+    "streaming-03.png",
+    "streaming-04.png",
+    "streaming-05.png",
+    "streaming-06.png",
+    "streaming-07.png",
+    "streaming-08.png",
+    "streaming-09.png",
+    "streaming-10.png",
+    "streaming-11.png"
+   ],
+   "fps": 10,
+   "loop": "loop"
+  },
+  "tool-call": {
+   "row": 24,
+   "frames": [
+    "tool-call-00.png",
+    "tool-call-01.png",
+    "tool-call-02.png",
+    "tool-call-03.png",
+    "tool-call-04.png",
+    "tool-call-05.png"
+   ],
+   "fps": 8,
+   "loop": "loop"
+  },
+  "read-file": {
+   "row": 25,
+   "frames": [
+    "read-file-00.png",
+    "read-file-01.png",
+    "read-file-02.png",
+    "read-file-03.png",
+    "read-file-04.png",
+    "read-file-05.png"
+   ],
+   "fps": 5,
+   "loop": "loop"
+  },
+  "propose-diff": {
+   "row": 26,
+   "frames": [
+    "propose-diff-00.png",
+    "propose-diff-01.png",
+    "propose-diff-02.png",
+    "propose-diff-03.png",
+    "propose-diff-04.png",
+    "propose-diff-05.png"
+   ],
+   "fps": 5,
+   "loop": "loop"
+  },
+  "tests-pass": {
+   "row": 27,
+   "frames": [
+    "tests-pass-00.png",
+    "tests-pass-01.png",
+    "tests-pass-02.png",
+    "tests-pass-03.png",
+    "tests-pass-04.png",
+    "tests-pass-05.png",
+    "tests-pass-06.png",
+    "tests-pass-07.png"
+   ],
+   "fps": 7,
+   "loop": "once"
+  },
+  "tests-fail": {
+   "row": 28,
+   "frames": [
+    "tests-fail-00.png",
+    "tests-fail-01.png",
+    "tests-fail-02.png",
+    "tests-fail-03.png",
+    "tests-fail-04.png",
+    "tests-fail-05.png",
+    "tests-fail-06.png",
+    "tests-fail-07.png"
+   ],
+   "fps": 7,
+   "loop": "once"
+  },
+  "compacting": {
+   "row": 29,
+   "frames": [
+    "compacting-00.png",
+    "compacting-01.png",
+    "compacting-02.png",
+    "compacting-03.png",
+    "compacting-04.png",
+    "compacting-05.png",
+    "compacting-06.png",
+    "compacting-07.png"
+   ],
+   "fps": 6,
+   "loop": "once"
+  },
+  "waiting-prompt": {
+   "row": 30,
+   "frames": [
+    "waiting-prompt-00.png",
+    "waiting-prompt-01.png",
+    "waiting-prompt-02.png",
+    "waiting-prompt-03.png",
+    "waiting-prompt-04.png",
+    "waiting-prompt-05.png",
+    "waiting-prompt-06.png",
+    "waiting-prompt-07.png"
+   ],
+   "fps": 4,
+   "loop": "loop"
+  },
+  "done-flop": {
+   "row": 31,
+   "frames": [
+    "done-flop-00.png",
+    "done-flop-01.png",
+    "done-flop-02.png",
+    "done-flop-03.png",
+    "done-flop-04.png",
+    "done-flop-05.png"
+   ],
+   "fps": 5,
+   "loop": "loop"
+  },
+  "plan": {
+   "row": 32,
+   "frames": [
+    "plan-00.png",
+    "plan-01.png",
+    "plan-02.png",
+    "plan-03.png",
+    "plan-04.png",
+    "plan-05.png",
+    "plan-06.png",
+    "plan-07.png",
+    "plan-08.png",
+    "plan-09.png",
+    "plan-10.png",
+    "plan-11.png"
+   ],
+   "fps": 7,
+   "loop": "once"
+  },
+  "typing-along": {
+   "row": 33,
+   "frames": [
+    "typing-along-00.png",
+    "typing-along-01.png",
+    "typing-along-02.png",
+    "typing-along-03.png",
+    "typing-along-04.png",
+    "typing-along-05.png"
+   ],
+   "fps": 5,
+   "loop": "loop"
+  },
+  "typing-away": {
+   "row": 34,
+   "frames": [
+    "typing-away-00.png",
+    "typing-away-01.png",
+    "typing-away-02.png",
+    "typing-away-03.png"
+   ],
+   "fps": 6,
+   "loop": "once"
+  },
+  "doze-off": {
+   "row": 35,
+   "frames": [
+    "doze-off-00.png",
+    "doze-off-01.png",
+    "doze-off-02.png",
+    "doze-off-03.png",
+    "doze-off-04.png",
+    "doze-off-05.png"
+   ],
+   "fps": 3,
+   "loop": "once"
+  },
+  "walk-away": {
+   "row": 36,
+   "frames": [
+    "walk-away-00.png",
+    "walk-away-01.png",
+    "walk-away-02.png",
+    "walk-away-03.png",
+    "walk-away-04.png",
+    "walk-away-05.png",
+    "walk-away-06.png",
+    "walk-away-07.png"
+   ],
+   "fps": 5,
+   "loop": "once"
+  },
+  "wake-up": {
+   "row": 37,
+   "frames": [
+    "wake-up-00.png",
+    "wake-up-01.png",
+    "wake-up-02.png",
+    "wake-up-03.png",
+    "wake-up-04.png",
+    "wake-up-05.png",
+    "wake-up-06.png",
+    "wake-up-07.png"
+   ],
+   "fps": 7,
+   "loop": "once"
+  },
+  "fish-spot": {
+   "row": 38,
+   "frames": [
+    "fish-spot-00.png",
+    "fish-spot-01.png",
+    "fish-spot-02.png",
+    "fish-spot-03.png",
+    "fish-spot-04.png",
+    "fish-spot-05.png"
+   ],
+   "fps": 7,
+   "loop": "once"
+  },
+  "fish-chase": {
+   "row": 39,
+   "frames": [
+    "fish-chase-00.png",
+    "fish-chase-01.png",
+    "fish-chase-02.png",
+    "fish-chase-03.png",
+    "fish-chase-04.png",
+    "fish-chase-05.png"
+   ],
+   "fps": 10,
+   "loop": "once"
+  },
+  "fish-return": {
+   "row": 40,
+   "frames": [
+    "fish-return-00.png",
+    "fish-return-01.png",
+    "fish-return-02.png",
+    "fish-return-03.png",
+    "fish-return-04.png",
+    "fish-return-05.png",
+    "fish-return-06.png",
+    "fish-return-07.png"
+   ],
+   "fps": 7,
+   "loop": "once"
+  },
+  "boba-run": {
+   "row": 41,
+   "frames": [
+    "boba-run-00.png",
+    "boba-run-01.png",
+    "boba-run-02.png",
+    "boba-run-03.png",
+    "boba-run-04.png",
+    "boba-run-05.png"
+   ],
+   "fps": 6,
+   "loop": "once"
+  },
+  "boba-return": {
+   "row": 42,
+   "frames": [
+    "boba-return-00.png",
+    "boba-return-01.png",
+    "boba-return-02.png",
+    "boba-return-03.png",
+    "boba-return-04.png",
+    "boba-return-05.png",
+    "boba-return-06.png",
+    "boba-return-07.png"
+   ],
+   "fps": 6,
+   "loop": "once"
+  },
+  "sulk": {
+   "row": 43,
+   "frames": [
+    "sulk-00.png",
+    "sulk-01.png",
+    "sulk-02.png",
+    "sulk-03.png",
+    "sulk-04.png",
+    "sulk-05.png",
+    "sulk-06.png",
+    "sulk-07.png"
+   ],
+   "fps": 5,
+   "loop": "once"
+  },
+  "sulk-loop": {
+   "row": 44,
+   "frames": [
+    "sulk-loop-00.png",
+    "sulk-loop-01.png",
+    "sulk-loop-02.png",
+    "sulk-loop-03.png",
+    "sulk-loop-04.png",
+    "sulk-loop-05.png"
+   ],
+   "fps": 4,
+   "loop": "loop"
+  },
+  "sulk-end": {
+   "row": 45,
+   "frames": [
+    "sulk-end-00.png",
+    "sulk-end-01.png",
+    "sulk-end-02.png",
+    "sulk-end-03.png",
+    "sulk-end-04.png",
+    "sulk-end-05.png"
+   ],
+   "fps": 7,
+   "loop": "once"
+  },
+  "interrupted": {
+   "row": 46,
+   "frames": [
+    "interrupted-00.png",
+    "interrupted-01.png",
+    "interrupted-02.png",
+    "interrupted-03.png",
+    "interrupted-04.png",
+    "interrupted-05.png",
+    "interrupted-06.png",
+    "interrupted-07.png"
+   ],
+   "fps": 8,
+   "loop": "once"
+  },
+  "subagent": {
+   "row": 47,
+   "frames": [
+    "subagent-00.png",
+    "subagent-01.png",
+    "subagent-02.png",
+    "subagent-03.png",
+    "subagent-04.png",
+    "subagent-05.png",
+    "subagent-06.png",
+    "subagent-07.png",
+    "subagent-08.png",
+    "subagent-09.png"
+   ],
+   "fps": 7,
+   "loop": "once"
+  },
+  "subagent-return": {
+   "row": 48,
+   "frames": [
+    "subagent-return-00.png",
+    "subagent-return-01.png",
+    "subagent-return-02.png",
+    "subagent-return-03.png",
+    "subagent-return-04.png",
+    "subagent-return-05.png",
+    "subagent-return-06.png",
+    "subagent-return-07.png"
+   ],
+   "fps": 7,
+   "loop": "once"
+  },
+  "too-full-boba": {
+   "row": 49,
+   "frames": [
+    "too-full-boba-00.png",
+    "too-full-boba-01.png",
+    "too-full-boba-02.png",
+    "too-full-boba-03.png",
+    "too-full-boba-04.png",
+    "too-full-boba-05.png"
+   ],
+   "fps": 7,
+   "loop": "once"
+  },
+  "too-full-rice": {
+   "row": 50,
+   "frames": [
+    "too-full-rice-00.png",
+    "too-full-rice-01.png",
+    "too-full-rice-02.png",
+    "too-full-rice-03.png",
+    "too-full-rice-04.png",
+    "too-full-rice-05.png"
+   ],
+   "fps": 7,
+   "loop": "once"
+  },
+  "run-failed": {
+   "row": 51,
+   "frames": [
+    "run-failed-00.png",
+    "run-failed-01.png",
+    "run-failed-02.png",
+    "run-failed-03.png",
+    "run-failed-04.png",
+    "run-failed-05.png",
+    "run-failed-06.png",
+    "run-failed-07.png"
+   ],
+   "fps": 6,
+   "loop": "once"
+  },
+  "agent-spot": {
+   "row": 52,
+   "frames": [
+    "agent-spot-00.png",
+    "agent-spot-01.png",
+    "agent-spot-02.png",
+    "agent-spot-03.png",
+    "agent-spot-04.png",
+    "agent-spot-05.png"
+   ],
+   "fps": 5,
+   "loop": "once"
+  },
+  "agent-follow": {
+   "row": 53,
+   "frames": [
+    "agent-follow-00.png",
+    "agent-follow-01.png",
+    "agent-follow-02.png",
+    "agent-follow-03.png",
+    "agent-follow-04.png",
+    "agent-follow-05.png"
+   ],
+   "fps": 6,
+   "loop": "once"
+  },
+  "agent-return": {
+   "row": 54,
+   "frames": [
+    "agent-return-00.png",
+    "agent-return-01.png",
+    "agent-return-02.png",
+    "agent-return-03.png",
+    "agent-return-04.png",
+    "agent-return-05.png",
+    "agent-return-06.png",
+    "agent-return-07.png"
+   ],
+   "fps": 6,
+   "loop": "once"
+  },
+  "chonk-thinking": {
+   "row": 55,
+   "frames": [
+    "chonk-thinking-00.png",
+    "chonk-thinking-01.png",
+    "chonk-thinking-02.png",
+    "chonk-thinking-03.png",
+    "chonk-thinking-04.png",
+    "chonk-thinking-05.png"
+   ],
+   "fps": 8,
+   "loop": "loop"
+  },
+  "chonk-long-think": {
+   "row": 56,
+   "frames": [
+    "chonk-long-think-00.png",
+    "chonk-long-think-01.png",
+    "chonk-long-think-02.png",
+    "chonk-long-think-03.png",
+    "chonk-long-think-04.png",
+    "chonk-long-think-05.png",
+    "chonk-long-think-06.png",
+    "chonk-long-think-07.png",
+    "chonk-long-think-08.png",
+    "chonk-long-think-09.png"
+   ],
+   "fps": 6,
+   "loop": "loop"
+  },
+  "chonk-plan": {
+   "row": 57,
+   "frames": [
+    "chonk-plan-00.png",
+    "chonk-plan-01.png",
+    "chonk-plan-02.png",
+    "chonk-plan-03.png",
+    "chonk-plan-04.png",
+    "chonk-plan-05.png",
+    "chonk-plan-06.png",
+    "chonk-plan-07.png",
+    "chonk-plan-08.png",
+    "chonk-plan-09.png",
+    "chonk-plan-10.png",
+    "chonk-plan-11.png"
+   ],
+   "fps": 7,
+   "loop": "once"
+  },
+  "chonk-reading": {
+   "row": 58,
+   "frames": [
+    "chonk-reading-00.png",
+    "chonk-reading-01.png",
+    "chonk-reading-02.png",
+    "chonk-reading-03.png",
+    "chonk-reading-04.png"
+   ],
+   "fps": 6,
+   "loop": "loop"
+  },
+  "chonk-read-file": {
+   "row": 59,
+   "frames": [
+    "chonk-read-file-00.png",
+    "chonk-read-file-01.png",
+    "chonk-read-file-02.png",
+    "chonk-read-file-03.png",
+    "chonk-read-file-04.png",
+    "chonk-read-file-05.png"
+   ],
+   "fps": 5,
+   "loop": "loop"
+  },
+  "chonk-searching": {
+   "row": 60,
+   "frames": [
+    "chonk-searching-00.png",
+    "chonk-searching-01.png",
+    "chonk-searching-02.png",
+    "chonk-searching-03.png",
+    "chonk-searching-04.png",
+    "chonk-searching-05.png"
+   ],
+   "fps": 6,
+   "loop": "loop"
+  },
+  "chonk-streaming": {
+   "row": 61,
+   "frames": [
+    "chonk-streaming-00.png",
+    "chonk-streaming-01.png",
+    "chonk-streaming-02.png",
+    "chonk-streaming-03.png",
+    "chonk-streaming-04.png",
+    "chonk-streaming-05.png",
+    "chonk-streaming-06.png",
+    "chonk-streaming-07.png",
+    "chonk-streaming-08.png",
+    "chonk-streaming-09.png",
+    "chonk-streaming-10.png",
+    "chonk-streaming-11.png"
+   ],
+   "fps": 10,
+   "loop": "loop"
+  },
+  "chonk-tool-call": {
+   "row": 62,
+   "frames": [
+    "chonk-tool-call-00.png",
+    "chonk-tool-call-01.png",
+    "chonk-tool-call-02.png",
+    "chonk-tool-call-03.png",
+    "chonk-tool-call-04.png",
+    "chonk-tool-call-05.png"
+   ],
+   "fps": 8,
+   "loop": "loop"
+  },
+  "chonk-running-cmd": {
+   "row": 63,
+   "frames": [
+    "chonk-running-cmd-00.png",
+    "chonk-running-cmd-01.png",
+    "chonk-running-cmd-02.png",
+    "chonk-running-cmd-03.png",
+    "chonk-running-cmd-04.png",
+    "chonk-running-cmd-05.png"
+   ],
+   "fps": 6,
+   "loop": "loop"
+  },
+  "chonk-propose-diff": {
+   "row": 64,
+   "frames": [
+    "chonk-propose-diff-00.png",
+    "chonk-propose-diff-01.png",
+    "chonk-propose-diff-02.png",
+    "chonk-propose-diff-03.png",
+    "chonk-propose-diff-04.png",
+    "chonk-propose-diff-05.png"
+   ],
+   "fps": 5,
+   "loop": "loop"
+  },
+  "chonk-compacting": {
+   "row": 65,
+   "frames": [
+    "chonk-compacting-00.png",
+    "chonk-compacting-01.png",
+    "chonk-compacting-02.png",
+    "chonk-compacting-03.png",
+    "chonk-compacting-04.png",
+    "chonk-compacting-05.png",
+    "chonk-compacting-06.png",
+    "chonk-compacting-07.png"
+   ],
+   "fps": 6,
+   "loop": "once"
+  },
+  "chonk-tests-fail": {
+   "row": 66,
+   "frames": [
+    "chonk-tests-fail-00.png",
+    "chonk-tests-fail-01.png",
+    "chonk-tests-fail-02.png",
+    "chonk-tests-fail-03.png",
+    "chonk-tests-fail-04.png",
+    "chonk-tests-fail-05.png",
+    "chonk-tests-fail-06.png",
+    "chonk-tests-fail-07.png"
+   ],
+   "fps": 7,
+   "loop": "once"
+  },
+  "chonk-error": {
+   "row": 67,
+   "frames": [
+    "chonk-error-00.png",
+    "chonk-error-01.png",
+    "chonk-error-02.png",
+    "chonk-error-03.png",
+    "chonk-error-04.png",
+    "chonk-error-05.png"
+   ],
+   "fps": 10,
+   "loop": "once"
+  },
+  "chonk-waiting-prompt": {
+   "row": 68,
+   "frames": [
+    "chonk-waiting-prompt-00.png",
+    "chonk-waiting-prompt-01.png",
+    "chonk-waiting-prompt-02.png",
+    "chonk-waiting-prompt-03.png",
+    "chonk-waiting-prompt-04.png",
+    "chonk-waiting-prompt-05.png",
+    "chonk-waiting-prompt-06.png",
+    "chonk-waiting-prompt-07.png"
+   ],
+   "fps": 4,
+   "loop": "loop"
+  },
+  "chonk-typing-along": {
+   "row": 69,
+   "frames": [
+    "chonk-typing-along-00.png",
+    "chonk-typing-along-01.png",
+    "chonk-typing-along-02.png",
+    "chonk-typing-along-03.png",
+    "chonk-typing-along-04.png",
+    "chonk-typing-along-05.png"
+   ],
+   "fps": 5,
+   "loop": "loop"
+  },
+  "chonk-typing-away": {
+   "row": 70,
+   "frames": [
+    "chonk-typing-away-00.png",
+    "chonk-typing-away-01.png",
+    "chonk-typing-away-02.png",
+    "chonk-typing-away-03.png"
+   ],
+   "fps": 6,
+   "loop": "once"
+  },
+  "chonk-interrupted": {
+   "row": 71,
+   "frames": [
+    "chonk-interrupted-00.png",
+    "chonk-interrupted-01.png",
+    "chonk-interrupted-02.png",
+    "chonk-interrupted-03.png",
+    "chonk-interrupted-04.png",
+    "chonk-interrupted-05.png",
+    "chonk-interrupted-06.png",
+    "chonk-interrupted-07.png"
+   ],
+   "fps": 8,
+   "loop": "once"
+  },
+  "chonk-sulk": {
+   "row": 72,
+   "frames": [
+    "chonk-sulk-00.png",
+    "chonk-sulk-01.png",
+    "chonk-sulk-02.png",
+    "chonk-sulk-03.png",
+    "chonk-sulk-04.png",
+    "chonk-sulk-05.png",
+    "chonk-sulk-06.png",
+    "chonk-sulk-07.png"
+   ],
+   "fps": 5,
+   "loop": "once"
+  },
+  "chonk-sulk-loop": {
+   "row": 73,
+   "frames": [
+    "chonk-sulk-loop-00.png",
+    "chonk-sulk-loop-01.png",
+    "chonk-sulk-loop-02.png",
+    "chonk-sulk-loop-03.png",
+    "chonk-sulk-loop-04.png",
+    "chonk-sulk-loop-05.png"
+   ],
+   "fps": 4,
+   "loop": "loop"
+  },
+  "chonk-sulk-end": {
+   "row": 74,
+   "frames": [
+    "chonk-sulk-end-00.png",
+    "chonk-sulk-end-01.png",
+    "chonk-sulk-end-02.png",
+    "chonk-sulk-end-03.png",
+    "chonk-sulk-end-04.png",
+    "chonk-sulk-end-05.png"
+   ],
+   "fps": 7,
+   "loop": "once"
+  },
+  "chonk-tests-pass": {
+   "row": 75,
+   "frames": [
+    "chonk-tests-pass-00.png",
+    "chonk-tests-pass-01.png",
+    "chonk-tests-pass-02.png",
+    "chonk-tests-pass-03.png",
+    "chonk-tests-pass-04.png",
+    "chonk-tests-pass-05.png",
+    "chonk-tests-pass-06.png",
+    "chonk-tests-pass-07.png"
+   ],
+   "fps": 7,
+   "loop": "once"
+  },
+  "chonk-run-failed": {
+   "row": 76,
+   "frames": [
+    "chonk-run-failed-00.png",
+    "chonk-run-failed-01.png",
+    "chonk-run-failed-02.png",
+    "chonk-run-failed-03.png",
+    "chonk-run-failed-04.png",
+    "chonk-run-failed-05.png",
+    "chonk-run-failed-06.png",
+    "chonk-run-failed-07.png"
+   ],
+   "fps": 6,
+   "loop": "once"
+  },
+  "chonk-look-around": {
+   "row": 77,
+   "frames": [
+    "chonk-look-around-00.png",
+    "chonk-look-around-01.png",
+    "chonk-look-around-02.png",
+    "chonk-look-around-03.png",
+    "chonk-look-around-04.png",
+    "chonk-look-around-05.png",
+    "chonk-look-around-06.png",
+    "chonk-look-around-07.png"
+   ],
+   "fps": 5,
+   "loop": "once"
+  },
+  "chonk-doze-off": {
+   "row": 78,
+   "frames": [
+    "chonk-doze-off-00.png",
+    "chonk-doze-off-01.png",
+    "chonk-doze-off-02.png",
+    "chonk-doze-off-03.png",
+    "chonk-doze-off-04.png",
+    "chonk-doze-off-05.png"
+   ],
+   "fps": 3,
+   "loop": "once"
+  },
+  "chonk-sleeping": {
+   "row": 79,
+   "frames": [
+    "chonk-sleeping-00.png",
+    "chonk-sleeping-01.png",
+    "chonk-sleeping-02.png",
+    "chonk-sleeping-03.png",
+    "chonk-sleeping-04.png",
+    "chonk-sleeping-05.png",
+    "chonk-sleeping-06.png",
+    "chonk-sleeping-07.png"
+   ],
+   "fps": 4,
+   "loop": "loop"
+  },
+  "chonk-walk-away": {
+   "row": 80,
+   "frames": [
+    "chonk-walk-away-00.png",
+    "chonk-walk-away-01.png",
+    "chonk-walk-away-02.png",
+    "chonk-walk-away-03.png",
+    "chonk-walk-away-04.png",
+    "chonk-walk-away-05.png",
+    "chonk-walk-away-06.png",
+    "chonk-walk-away-07.png"
+   ],
+   "fps": 5,
+   "loop": "once"
+  },
+  "chonk-wake-up": {
+   "row": 81,
+   "frames": [
+    "chonk-wake-up-00.png",
+    "chonk-wake-up-01.png",
+    "chonk-wake-up-02.png",
+    "chonk-wake-up-03.png",
+    "chonk-wake-up-04.png",
+    "chonk-wake-up-05.png",
+    "chonk-wake-up-06.png",
+    "chonk-wake-up-07.png"
+   ],
+   "fps": 7,
+   "loop": "once"
+  },
+  "chonk-yawn": {
+   "row": 82,
+   "frames": [
+    "chonk-yawn-00.png",
+    "chonk-yawn-01.png",
+    "chonk-yawn-02.png",
+    "chonk-yawn-03.png",
+    "chonk-yawn-04.png",
+    "chonk-yawn-05.png"
+   ],
+   "fps": 6,
+   "loop": "once"
+  },
+  "chonk-fish-spot": {
+   "row": 83,
+   "frames": [
+    "chonk-fish-spot-00.png",
+    "chonk-fish-spot-01.png",
+    "chonk-fish-spot-02.png",
+    "chonk-fish-spot-03.png",
+    "chonk-fish-spot-04.png",
+    "chonk-fish-spot-05.png"
+   ],
+   "fps": 7,
+   "loop": "once"
+  },
+  "chonk-fish-chase": {
+   "row": 84,
+   "frames": [
+    "chonk-fish-chase-00.png",
+    "chonk-fish-chase-01.png",
+    "chonk-fish-chase-02.png",
+    "chonk-fish-chase-03.png",
+    "chonk-fish-chase-04.png",
+    "chonk-fish-chase-05.png"
+   ],
+   "fps": 10,
+   "loop": "once"
+  },
+  "chonk-fish-return": {
+   "row": 85,
+   "frames": [
+    "chonk-fish-return-00.png",
+    "chonk-fish-return-01.png",
+    "chonk-fish-return-02.png",
+    "chonk-fish-return-03.png",
+    "chonk-fish-return-04.png",
+    "chonk-fish-return-05.png",
+    "chonk-fish-return-06.png",
+    "chonk-fish-return-07.png"
+   ],
+   "fps": 7,
+   "loop": "once"
+  },
+  "chonk-agent-spot": {
+   "row": 86,
+   "frames": [
+    "chonk-agent-spot-00.png",
+    "chonk-agent-spot-01.png",
+    "chonk-agent-spot-02.png",
+    "chonk-agent-spot-03.png",
+    "chonk-agent-spot-04.png",
+    "chonk-agent-spot-05.png"
+   ],
+   "fps": 5,
+   "loop": "once"
+  },
+  "chonk-agent-follow": {
+   "row": 87,
+   "frames": [
+    "chonk-agent-follow-00.png",
+    "chonk-agent-follow-01.png",
+    "chonk-agent-follow-02.png",
+    "chonk-agent-follow-03.png",
+    "chonk-agent-follow-04.png",
+    "chonk-agent-follow-05.png"
+   ],
+   "fps": 6,
+   "loop": "once"
+  },
+  "chonk-agent-return": {
+   "row": 88,
+   "frames": [
+    "chonk-agent-return-00.png",
+    "chonk-agent-return-01.png",
+    "chonk-agent-return-02.png",
+    "chonk-agent-return-03.png",
+    "chonk-agent-return-04.png",
+    "chonk-agent-return-05.png",
+    "chonk-agent-return-06.png",
+    "chonk-agent-return-07.png"
+   ],
+   "fps": 6,
+   "loop": "once"
   }
+ }
 }

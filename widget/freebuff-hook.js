@@ -106,7 +106,8 @@ state:"idle",ts:Date.now()}));return}if(req.url==="/events"){res.writeHead(200,{
 "Content-Type":"text/event-stream",Connection:"keep-alive"});res.write("retry: 1000\n\n")
 ;if(latest)res.write(`event: state\ndata: ${JSON.stringify(latest)}\n\n`);clients.add(res)
 ;req.on("close",()=>clients.delete(res));return}res.writeHead(404,cors);res.end("dafeiyu hook: try /state or /events\n")
-});server.on("error",err=>console.error(`[hook] HTTP ${PORT}: ${err.message}`));server.listen(PORT,"127.0.0.1",()=>{
+});server.on("error",err=>{console.error(`[hook] HTTP ${PORT}: ${err.message}`)
+;if(err.code==="EADDRINUSE")process.exit(1)});server.listen(PORT,"127.0.0.1",()=>{
 console.log(`[hook] http://127.0.0.1:${PORT}/state`)});const tick=()=>{try{publish(sample(smoother))}catch(err){
 console.error("[hook] tick failed:",err.message)}};tick();setInterval(tick,POLL_MS)
 ;console.log(`[hook] watching ${ROOT}`)}else{console.log(JSON.stringify(sample(new Smoother),null,2))}

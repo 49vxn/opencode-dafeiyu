@@ -639,7 +639,10 @@ if (process.argv.includes('--watch')) {
     res.end('dafeiyu claude hook: try /state or /events (POST /event for hooks)\n');
   });
 
-  server.on('error', (err) => console.error(`[cl-hook] HTTP ${PORT}: ${err.message}`));
+  server.on('error', (err) => {
+    console.error(`[cl-hook] HTTP ${PORT}: ${err.message}`);
+    if (err.code === 'EADDRINUSE') process.exit(1);
+  });
   server.listen(PORT, '127.0.0.1', () => {
     console.log(`[cl-hook] http://127.0.0.1:${PORT}/state`);
   });
