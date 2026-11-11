@@ -1,5 +1,6 @@
 node_modules/
 widget/runtime/
+widget/dist/
 *.zip
 *.log
 .DS_Store

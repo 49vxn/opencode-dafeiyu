@@ -7,7 +7,14 @@ compacting, waiting on you.
 Not a timer that guesses. It reads your agent's local session database,
 read-only, and maps real events to real frames.
 
-![dafeiyu cycling through states](widget/assets/demo-a.gif)
+[![Platform](https://img.shields.io/badge/platform-Windows%2010%2F11-4d6bfe)](https://github.com/49vxn/opencode-dafeiyu/releases/latest)
+[![Release](https://img.shields.io/github/v/release/49vxn/opencode-dafeiyu?color=4d6bfe)](https://github.com/49vxn/opencode-dafeiyu/releases/latest)
+[![Code licence](https://img.shields.io/badge/code-MIT-4d6bfe)](LICENSE.md)
+[![Art licence](https://img.shields.io/badge/sprites-CC%20BY--NC--SA%204.0-4d6bfe)](LICENSE.md)
+
+<p align="center">
+  <img src="widget/assets/demo-a.gif" width="340" alt="The whale switching between idle, long-think, running-cmd and eating-rice">
+</p>
 
 ---
 
@@ -22,9 +29,13 @@ read-only, and maps real events to real frames.
 | ![propose-diff](widget/assets/gifs/propose-diff.gif) | `propose-diff` | an edit is being staged |
 | ![compacting](widget/assets/gifs/compacting.gif) | `compacting` | context is being compacted |
 | ![sleeping](widget/assets/gifs/sleeping.gif) | `sleeping` | idle for a while |
-| ![boba](widget/assets/gifs/boba.gif) | `boba` | click it |
+| ![boba](widget/assets/gifs/boba.gif) | `boba` | it drifts off between turns |
+| ![chonk-idle](widget/assets/gifs/chonk-idle.gif) | `chonk-idle` | it has eaten a lot of rice |
+| ![eating-rice](widget/assets/gifs/eating-rice.gif) | `eating-rice` | you clicked it |
 
-![four states at once](widget/assets/demo-b.gif)
+<p align="center">
+  <img src="widget/assets/demo-b.gif" width="340" alt="Four states running side by side: idle, long-think, running-cmd and boba">
+</p>
 
 ---
 
@@ -103,6 +114,22 @@ tailing catches the state up on its own the next time the whale starts.
 
 ## Install
 
+### One-click installer
+
+[**Download dafeiyu-Setup-0.3.0.exe**](https://github.com/49vxn/opencode-dafeiyu/releases/latest)
+— Windows 10/11, 64-bit, about 110 MB.
+
+It installs per user (no admin prompt), starts the whale in the corner, and puts a
+tray icon next to the clock. No Node.js needed.
+
+> The build is unsigned, so SmartScreen warns the first time:
+> **More info → Run anyway**. Signing needs a code-signing certificate.
+
+Uninstall is the normal Windows route (Settings → Apps → dafeiyu). It removes the
+app, its data, and its startup entry.
+
+### From source
+
 **Windows only for now.** You need [Node.js 22 or newer](https://nodejs.org) —
 there are no native modules, so nothing compiles.
 
@@ -120,6 +147,8 @@ cd opencode-dafeiyu/widget
 npm install
 npm start
 ```
+
+Build your own installer with `npm run dist`.
 
 The whale appears in the bottom-right corner. It is click-through until you hover
 the whale itself.
@@ -148,6 +177,9 @@ and whether the hooks are listening:
 If a source is missing it says so instead of failing quietly. The two databases
 are the only things it touches, and it opens them read-only.
 
+In the installed app, **tray icon → Setup check** runs the same thing and shows
+it in a window.
+
 **Common causes of "it just sits there":**
 
 | symptom | cause |
@@ -164,7 +196,13 @@ are the only things it touches, and it opens them read-only.
 | hover a whale | window becomes interactive |
 | click a whale | it eats a bowl of rice |
 | drag | move the widget |
-| tray icon | click-through toggle, reset position, quit |
+| tray → Show / Hide | hide it without quitting |
+| tray → Click-through | let clicks pass through |
+| tray → Reset position | back to the bottom-right corner |
+| tray → Start with Windows | run at login |
+| tray → Setup check | diagnostics, in a window |
+| tray → Open logs folder | what each adapter saw |
+| tray → Quit | stop the whale and its adapters |
 
 ## How it works
 
@@ -194,6 +232,11 @@ so a flapping tool/reasoning boundary can't strobe the sprite.
 
 ---
 
+## Easter eggs
+
+There are a couple. The first one: **click the whale** and watch it eat a bowl of
+rice. Keep clicking and see what happens.
+
 ## Known gaps
 
 - **`blocked` is a heuristic.** A tool stuck in `running` for 45s is assumed to be
@@ -205,6 +248,12 @@ so a flapping tool/reasoning boundary can't strobe the sprite.
 - **Windows only.** The transparency and click-through handling is Win32-specific.
 - **Schema drift.** Both adapters read private databases the host apps can change
   without notice. If a source stops reporting, that's the first suspect.
+
+## Contributing
+
+Issues and pull requests are welcome. If a state stops firing after an agent
+updates, the adapter's SQL is usually the first thing to check — `node doctor.js`
+will tell you whether the database was found at all.
 
 ## Licence
 

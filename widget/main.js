@@ -1,4 +1,4 @@
-const{app:app,BrowserWindow:BrowserWindow,ipcMain:ipcMain,Tray:Tray,Menu:Menu,globalShortcut:globalShortcut,screen:screen,powerSaveBlocker:powerSaveBlocker,nativeImage:nativeImage}=require("electron")
+const{app:app,BrowserWindow:BrowserWindow,ipcMain:ipcMain,Tray:Tray,Menu:Menu,globalShortcut:globalShortcut,screen:screen,powerSaveBlocker:powerSaveBlocker,nativeImage:nativeImage,dialog:dialog,shell:shell}=require("electron")
 ;const path=require("path");const fs=require("fs");const os=require("os");const{spawn:spawn}=require("child_process")
 ;if(!app.requestSingleInstanceLock()){app.quit();process.exit(0)}const SCALE=2;const CELL=64;const SIZE=CELL*SCALE
 ;const DRAG_THRESHOLD=4;if(process.env.DFY_GPU!=="1")app.disableHardwareAcceleration()
@@ -7,6 +7,7 @@ const{app:app,BrowserWindow:BrowserWindow,ipcMain:ipcMain,Tray:Tray,Menu:Menu,gl
 ;app.commandLine.appendSwitch("disable-backgrounding-occluded-windows")
 ;app.commandLine.appendSwitch("disable-features","CalculateNativeWinOcclusion")
 ;const MANIFEST=JSON.parse(fs.readFileSync(path.join(__dirname,"assets","sprites.json"),"utf8"))
+;const RUNTIME=(()=>{const d=app.isPackaged?path.join(app.getPath("userData"),"runtime"):path.join(__dirname,"runtime");try{fs.mkdirSync(d,{recursive:true})}catch{}process.env.DAFEIYU_RUNTIME=d;return d})()
 ;ipcMain.handle("get-manifest",()=>MANIFEST);let win=null;let tray=null;let psb=null;let ignoreMouse=true
 ;let dragOrigin=null;const stateFile=()=>path.join(app.getPath("userData"),"position.json");function loadPosition(){try{
 const p=JSON.parse(fs.readFileSync(stateFile(),"utf8"));if(typeof p.x==="number"&&typeof p.y==="number")return p}catch{}
@@ -17,10 +18,37 @@ const d=screen.getDisplayNearestPoint({x:x+SIZE/2,y:y+SIZE/2});const b=d.workAre
 x:Math.round(Math.min(Math.max(x,b.x),b.x+b.width-SIZE)),y:Math.round(Math.min(Math.max(y,b.y),b.y+b.height-SIZE))}}
 function savePosition(){if(!win)return;const[x,y]=win.getPosition();fs.writeFileSync(stateFile(),JSON.stringify({x:x,y:y
 }))}function setClickThrough(next){ignoreMouse=next;if(win&&!win.isDestroyed()){win.setIgnoreMouseEvents(ignoreMouse,{
-forward:true})}refreshTray()}function refreshTray(){if(!tray)return;tray.setContextMenu(Menu.buildFromTemplate([{
-label:"dafeiyu",enabled:false},{type:"separator"},{label:"Click-through",type:"checkbox",checked:ignoreMouse,
-click:()=>setClickThrough(!ignoreMouse)},{label:"Reset position",click:resetPosition},{type:"separator"},{label:"Quit",
-click:()=>{app.isQuitting=true;app.quit()}}]))}function resetPosition(){const wa=screen.getPrimaryDisplay().workArea
+forward:true})}refreshTray()}function refreshTray(){if(!tray)return;tray.setContextMenu(Menu.buildFromTemplate([
+{label:"dafeiyu",enabled:false},{type:"separator"},
+{label:win&&!win.isDestroyed()&&win.isVisible()?"Hide":"Show",click:toggleVisible},
+{label:"Click-through",type:"checkbox",checked:ignoreMouse,click:()=>setClickThrough(!ignoreMouse)},
+{label:"Reset position",click:resetPosition},{type:"separator"},
+{label:"Start with Windows",type:"checkbox",checked:autoStartEnabled(),click:()=>setAutoStart(!autoStartEnabled())},
+{type:"separator"},
+{label:"Setup check…",click:runDoctor},
+{label:"Open logs folder",click:()=>{shell.openPath(RUNTIME)}},
+{type:"separator"},
+{label:"Quit",click:()=>{app.isQuitting=true;app.quit()}}]))}
+function toggleVisible(){if(!win||win.isDestroyed())return;if(win.isVisible())win.hide()
+;else{win.showInactive();win.setAlwaysOnTop(true,"screen-saver")}refreshTray()}
+function settingsFile(){return path.join(app.getPath("userData"),"settings.json")}
+function readSettings(){try{return JSON.parse(fs.readFileSync(settingsFile(),"utf8"))||{}}catch{return {}}}
+function autoStartEnabled(){const s=readSettings();if(typeof s.autoStart==="boolean")return s.autoStart
+;try{return app.getLoginItemSettings().openAtLogin}catch{return false}}
+function setAutoStart(next){const on=!!next;try{const s=readSettings();s.autoStart=on
+;fs.mkdirSync(path.dirname(settingsFile()),{recursive:true});fs.writeFileSync(settingsFile(),JSON.stringify(s))
+;app.setLoginItemSettings({openAtLogin:on,path:process.execPath,
+args:app.isPackaged?["--autostart"]:[app.getAppPath(),"--autostart"]})}catch(err){console.error("[autostart]",err.message)}refreshTray()}
+function syncAutoStart(){if(!app.isPackaged||!autoStartEnabled())return
+;try{app.setLoginItemSettings({openAtLogin:true,path:process.execPath,args:["--autostart"]})}catch(err){console.error("[autostart]",err.message)}}
+function firstRun(){const f=path.join(app.getPath("userData"),"installed.json");if(fs.existsSync(f))return false
+;try{fs.writeFileSync(f,JSON.stringify({at:Date.now()}))}catch{}return true}
+function noAgentBalloon(){if(lastPushed)return
+;try{tray.displayBalloon({title:"dafeiyu is awake",content:"No coding agent detected yet. Open Freebuff, opencode or Claude Code and the whale will start reacting.",iconType:"info"})}catch{}}
+function runDoctor(){const{execFile}=require("child_process")
+;execFile(process.execPath,[path.join(__dirname,"doctor.js")],{env:{...process.env,ELECTRON_RUN_AS_NODE:"1",DAFEIYU_RUNTIME:RUNTIME,DAFEIYU_PACKAGED:app.isPackaged?"1":"0"},windowsHide:true,timeout:20000},(err,stdout,stderr)=>{
+const body=[stdout,stderr,err?err.message:""].filter(Boolean).join("\n").trim()||"no output"
+;dialog.showMessageBox({type:"info",title:"dafeiyu",message:"Setup check",detail:body.slice(0,6000),buttons:["Close"]})})}function resetPosition(){const wa=screen.getPrimaryDisplay().workArea
 ;if(!win)return;win.setPosition(wa.x+wa.width-SIZE-24,wa.y+wa.height-SIZE-24);savePosition()}function createWindow(){
 let pos=loadPosition();if(!insideAnyDisplay(pos.x,pos.y))pos=loadPosition();const p=clampToWorkArea(pos.x,pos.y)
 ;const opaque=process.env.DFY_OPAQUE==="1";win=new BrowserWindow({width:SIZE,height:SIZE,x:p.x,y:p.y,frame:false,
@@ -38,8 +66,8 @@ if(win&&!win.isDestroyed())win.setIgnoreMouseEvents(ignoreMouse,{forward:true});
 ;app.on("child-process-gone",(_e,details)=>{if(details.type==="GPU"&&win&&!win.isDestroyed()){
 console.warn("[dafeiyu] GPU process gone — recreating window");const[x,y]=win.getPosition();win.destroy();win=null
 ;createWindow();if(win)win.setPosition(x,y)}});win.on("moved",savePosition)}
-const STATE_FILE=path.join(__dirname,"runtime","state.json")
-;const OC_STATE_FILE=path.join(__dirname,"runtime","state-opencode.json");const CL_STATE_FILE=path.join(__dirname,"runtime","state-claude.json");let lastPushed=null;let lastSource=null
+const STATE_FILE=path.join(RUNTIME,"state.json")
+;const OC_STATE_FILE=path.join(RUNTIME,"state-opencode.json");const CL_STATE_FILE=path.join(RUNTIME,"state-claude.json");let lastPushed=null;let lastSource=null
 ;const ACTIVE_STATES=new Set(["thinking","long-think","streaming","running-cmd","read-file","writing-code","searching","propose-diff","compacting","tool-call","tests-fail","blocked","error"])
 ;function readPayload(file){try{const s=JSON.parse(fs.readFileSync(file,"utf8"));if(!s||!s.state)return null
 ;if(typeof s.ts!=="number"){try{s.ts=fs.statSync(file).mtimeMs}catch{}}return s}catch{return null}}
@@ -52,7 +80,7 @@ function pickPayload(){const fb=readPayload(STATE_FILE);const oc=readPayload(OC_
 function createTray(){const iconPath=path.join(__dirname,"assets","frames","idle","idle-00.png")
 ;const img=nativeImage.createFromPath(iconPath).resize({width:16,height:16});tray=new Tray(img)
 ;tray.setToolTip("dafeiyu");refreshTray()}let hookProcs=[];const hookRestarts={};function spawnHook(hookPath){
-const name=path.basename(hookPath);try{const lp=path.join(__dirname,"runtime",name+".log");try{fs.mkdirSync(path.dirname(lp),{recursive:true})}catch{}const out=fs.openSync(lp,"a");const proc=spawn(process.execPath,[hookPath,"--watch"],{env:{...process.env,
+const name=path.basename(hookPath);try{const lp=path.join(RUNTIME,name+".log");try{fs.mkdirSync(path.dirname(lp),{recursive:true})}catch{}const out=fs.openSync(lp,"a");const proc=spawn(process.execPath,[hookPath,"--watch"],{env:{...process.env,
 ELECTRON_RUN_AS_NODE:"1"},stdio:["ignore",out,out],windowsHide:true});proc.on("exit",code=>{
 console.log(`[hook] ${name} exited (${code}) — restarting in 3s`);hookProcs=hookProcs.filter(p=>p!==proc);hookRestarts[name]=(hookRestarts[name]||0)+1
 ;setTimeout(()=>spawnHook(hookPath),Math.min(30000,3000*Math.pow(2,Math.min(hookRestarts[name]-1,4))))});hookProcs.push(proc);proc.on("spawn",()=>{hookRestarts[name]=0});console.log(`[hook] started ${name}`)}catch(err){
@@ -66,8 +94,8 @@ const freebuffHook=path.join(__dirname,"freebuff-hook.js");if(fs.existsSync(free
 ;const claudeHook=path.join(__dirname,"claude-hook.js");if(fs.existsSync(claudeHook)&&claudeDirExists())spawnHook(claudeHook)}app.on("second-instance",()=>{
 if(win&&!win.isDestroyed()){win.showInactive();win.setAlwaysOnTop(true,"screen-saver");resetPosition()}})
 ;app.whenReady().then(()=>{startHook();createWindow();createTray();watchStateFile()
-;
-;;app.on("activate",()=>{
+;if(firstRun()){setAutoStart(true);setTimeout(noAgentBalloon,6000)};syncAutoStart()
+;app.on("activate",()=>{
 if(BrowserWindow.getAllWindows().length===0)createWindow()})});app.on("window-all-closed",()=>{if(!app.isQuitting)return
 ;app.quit()});app.on("will-quit",()=>{globalShortcut.unregisterAll();
 ;for(const p of hookProcs){p.removeAllListeners("exit");p.kill()}hookProcs=[]});ipcMain.on("resize",(_e,w,h)=>{

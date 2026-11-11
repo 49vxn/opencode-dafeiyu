@@ -40,9 +40,14 @@ async function main() {
   if (DatabaseSync) ok(`node ${process.versions.node}`);
   else bad(`node ${process.versions.node} — need 22+ (node:sqlite is missing)`);
 
-  const electron = path.join(__dirname, 'node_modules', 'electron');
-  if (fs.existsSync(electron)) ok('electron installed');
-  else bad('electron missing — run: npm install');
+  const packaged = process.env.DAFEIYU_PACKAGED === '1';
+  if (packaged) {
+    ok('installed app');
+  } else {
+    const electron = path.join(__dirname, 'node_modules', 'electron');
+    if (fs.existsSync(electron)) ok('electron installed');
+    else bad('electron missing — run: npm install');
+  }
 
   // ---- opencode
   if (fs.existsSync(OC_DB)) {
@@ -95,8 +100,36 @@ async function main() {
     info(FB_ROOT);
   }
 
+  // ---- claude code
+  const CLAUDE_ROOT = path.join(HOME, '.claude');
+  const CLAUDE_PROJECTS = path.join(CLAUDE_ROOT, 'projects');
+  if (fs.existsSync(CLAUDE_PROJECTS)) {
+    let newest = 0;
+    let count = 0;
+    for (const dir of fs.readdirSync(CLAUDE_PROJECTS, { withFileTypes: true })) {
+      if (!dir.isDirectory()) continue;
+      const full = path.join(CLAUDE_PROJECTS, dir.name);
+      let files = [];
+      try { files = fs.readdirSync(full); } catch { continue; }
+      for (const f of files) {
+        if (!f.endsWith('.jsonl')) continue;
+        count++;
+        try { newest = Math.max(newest, fs.statSync(path.join(full, f)).mtimeMs); } catch { /* gone */ }
+      }
+    }
+    if (count) {
+      const mins = Math.round((Date.now() - newest) / 60000);
+      ok(`claude code: ${count} transcript(s)`);
+      info(`newest written ${mins}m ago`);
+    } else {
+      skip('claude code present but no transcripts yet');
+    }
+  } else {
+    skip('claude code not installed (fine — it is one of three sources)');
+  }
+
   // ---- ports
-  for (const [port, label] of [[8791, 'freebuff hook'], [8792, 'opencode hook']]) {
+  for (const [port, label] of [[8791, 'freebuff hook'], [8792, 'opencode hook'], [8793, 'claude hook']]) {
     const busy = await portBusy(port);
     if (busy) ok(`${label} listening on ${port}`);
     else skip(`${label} not running on ${port} (only while the widget is up)`);
@@ -104,9 +137,14 @@ async function main() {
 
   // ---- verdict
   console.log('');
-  if (!fs.existsSync(OC_DB) && !fs.existsSync(FB_ROOT)) {
-    console.log('  Neither agent was found. The whale will sit at idle.');
-    console.log('  Install opencode or Freebuff, run a turn, then run this again.');
+  const anyAgent = fs.existsSync(OC_DB) || fs.existsSync(FB_ROOT) || fs.existsSync(CLAUDE_PROJECTS);
+  if (!anyAgent) {
+    console.log('  No coding agent was found. The whale will sit at idle.');
+    console.log('  Install Freebuff, opencode or Claude Code, run a turn,');
+    console.log('  then run this check again.');
+  } else if (packaged) {
+    console.log('  Everything the whale needs is here.');
+    console.log('  If it still does not react, use the tray menu → Open logs folder.');
   } else {
     console.log('  Looks workable. Start the widget with start.cmd (or npm start).');
     console.log('  If it still does not react, run a turn in your agent and');

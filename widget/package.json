@@ -1,13 +1,66 @@
 {
-  "name": "dafeiyu-widget",
-  "version": "0.2.0",
+  "name": "dafeiyu",
+  "productName": "dafeiyu",
+  "version": "0.3.0",
   "private": true,
   "description": "dafeiyu — desktop mascot widget",
+  "author": "dafeiyu",
   "main": "main.js",
   "scripts": {
-    "start": "electron ."
+    "start": "electron .",
+    "doctor": "node doctor.js",
+    "dist": "electron-builder --win nsis"
   },
   "devDependencies": {
-    "electron": "^45.2.3"
+    "electron": "^45.2.3",
+    "electron-builder": "^26.18.0"
+  },
+  "build": {
+    "appId": "com.dafeiyu.widget",
+    "productName": "dafeiyu",
+    "directories": {
+      "output": "dist",
+      "buildResources": "build"
+    },
+    "files": [
+      "main.js",
+      "preload.js",
+      "renderer.js",
+      "index.html",
+      "freebuff-hook.js",
+      "opencode-hook.js",
+      "claude-hook.js",
+      "doctor.js",
+      "assets/**/*",
+      "!runtime/**",
+      "!dist/**"
+    ],
+    "asar": false,
+    "electronLanguages": [
+      "en-US",
+      "zh-CN"
+    ],
+    "win": {
+      "icon": "build/icon.ico",
+      "target": [
+        {
+          "target": "nsis",
+          "arch": [
+            "x64"
+          ]
+        }
+      ]
+    },
+    "nsis": {
+      "oneClick": true,
+      "perMachine": false,
+      "runAfterFinish": true,
+      "deleteAppDataOnUninstall": true,
+      "createDesktopShortcut": true,
+      "createStartMenuShortcut": true,
+      "shortcutName": "dafeiyu",
+      "include": "build/installer.nsh",
+      "artifactName": "dafeiyu-Setup-${version}.${ext}"
+    }
   }
 }
