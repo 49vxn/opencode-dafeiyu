@@ -3,7 +3,7 @@ const fs=require("fs");const os=require("os");const path=require("path");const h
 ;const{DatabaseSync:DatabaseSync}=require("node:sqlite");const POLL_MS=200;const PARTS_EVERY_MS=400;const CONFIRM_MS=350
 ;const MIN_HOLD_MS=550;const STALE_MS=120000;const BLOCK_AFTER_MS=45000;const START_GRACE_MS=90000
 ;const PORT=Number(process.env.DAFEIYU_OPENCODE_PORT||8792)
-;const OUT=path.join(__dirname,"runtime","state-opencode.json")
+;const OUT=path.join(process.env.DAFEIYU_RUNTIME||path.join(__dirname,"runtime"),"state-opencode.json")
 ;const dataDir=()=>process.env.XDG_DATA_HOME||(process.platform==="win32"?path.join(os.homedir(),".local","share"):path.join(os.homedir(),".local","share"))
 ;const DB=()=>path.join(dataDir(),"opencode","opencode.db");const WEIGHT={error:9,blocked:8,"running-cmd":6,
 "tests-fail":6,"tests-pass":6,"writing-code":5,"propose-diff":5,"read-file":4,searching:4,"tool-call":4,compacting:4,
@@ -68,13 +68,16 @@ running:(s.time_busy||0)>(s.time_idle||0)&&now-s.time_updated<STALE_MS})),source
 const cur=smoother.current;return{state:cur?cur.state:"idle",detail:cur?cur.detail:"db error",confident:false,
 thread:null,directory:null,mode:null,turn:null,agents:[],source:"opencode",stale:true,error:err.message,ts:Date.now()}
 }finally{try{db&&db.close()}catch{}}}function writeAtomic(file,data){fs.mkdirSync(path.dirname(file),{recursive:true})
-;const tmp=file+".tmp";fs.writeFileSync(tmp,JSON.stringify(data));fs.renameSync(tmp,file)}
+;const tmp=file+".tmp";fs.writeFileSync(tmp,JSON.stringify(data))
+;try{fs.renameSync(tmp,file)}catch(err){Atomics.wait(new Int32Array(new SharedArrayBuffer(4)),0,0,25);fs.renameSync(tmp,file)}}
 if(process.argv.includes("--watch")){const smoother=new Smoother;const clients=new Set;let latest=null
 ;let lastLogged=null;const broadcast=payload=>{const frame=`event: state\ndata: ${JSON.stringify(payload)}\n\n`
-;for(const res of clients){try{res.write(frame)}catch{clients.delete(res)}}};let lastSig=null,lastWrite=0;const publish=payload=>{latest=payload
-;const sig=payload.state+"|"+(payload.detail||"")+"|"+(payload.agents||[]).map(a=>a.id+":"+a.state).join(",");const n=Date.now();if(sig!==lastSig||n-lastWrite>3000){lastSig=sig;lastWrite=n;writeAtomic(OUT,payload)}broadcast(payload);if(payload.state!==lastLogged){lastLogged=payload.state
+;for(const res of clients){try{res.write(frame)}catch{clients.delete(res)}}};let lastSig=null,lastWrite=0;let lastWriteWarn=0;const publish=payload=>{latest=payload
+;const sig=payload.state+"|"+(payload.detail||"")+"|"+(payload.agents||[]).map(a=>a.id+":"+a.state).join(",");const n=Date.now();if(sig!==lastSig||n-lastWrite>3000){lastSig=sig;lastWrite=n
+;try{writeAtomic(OUT,payload)}catch(err){if(n-lastWriteWarn>30000){lastWriteWarn=n
+;console.error(`[oc-hook] state file busy (${err.message})`)}}}broadcast(payload);if(payload.state!==lastLogged){lastLogged=payload.state
 ;console.log(`[oc-hook] ${String(payload.state).padEnd(14)} ${payload.detail??""}`)}}
-;function corsFor(req){const o=req.headers.origin;const ok=typeof o==="string"&&/^http:\/\/(localhost|127\.0\.0\.1)(:\d+)?$/.test(o);const h={"Cache-Control":"no-store"};if(ok){h["Access-Control-Allow-Origin"]=o;h.Vary="Origin"}return h};;const server=http.createServer((req,res)=>{const cors=corsFor(req)
+;function corsFor(req){const o=req.headers.origin;const ok=typeof o==="string"&&/^https?:\/\/(localhost|127\.0\.0\.1)(:\d+)?$/.test(o);const h={"Cache-Control":"no-store"};if(ok){h["Access-Control-Allow-Origin"]=o;h.Vary="Origin"}return h};;const server=http.createServer((req,res)=>{const cors=corsFor(req)
 ;if(req.url==="/state"){res.writeHead(200,{...cors,"Content-Type":"application/json"});res.end(JSON.stringify(latest??{
 state:"idle",ts:Date.now()}));return}if(req.url==="/events"){res.writeHead(200,{...cors,
 "Content-Type":"text/event-stream",Connection:"keep-alive"});res.write("retry: 1000\n\n")

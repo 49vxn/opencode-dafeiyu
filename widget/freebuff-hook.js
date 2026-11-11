@@ -2,7 +2,7 @@
 const fs=require("fs");const os=require("os");const path=require("path");const http=require("http")
 ;const{DatabaseSync:DatabaseSync}=require("node:sqlite");const POLL_MS=200;const PARTS_EVERY_MS=300;const CONFIRM_MS=250
 ;const MIN_HOLD_MS=380;const STALE_MS=120000;const PORT=Number(process.env.DAFEIYU_PORT||8791)
-;const OUT=path.join(__dirname,"runtime","state.json")
+;const OUT=path.join(process.env.DAFEIYU_RUNTIME||path.join(__dirname,"runtime"),"state.json")
 ;const ROOT=path.join(os.homedir(),".config","freebuff-desktop","projects");const WEIGHT={error:9,blocked:8,
 "running-cmd":6,"tests-fail":6,"tests-pass":6,"writing-code":5,"propose-diff":5,"read-file":4,searching:4,"tool-call":4,
 compacting:4,streaming:3,"long-think":3,thinking:2,"waiting-prompt":1,idle:1,sleeping:0,"chonk-idle":0}
@@ -36,19 +36,19 @@ function readStoredPart(db,threadId){try{
 const msg=db.prepare(`\n      select parts_json from messages where thread_id = ? order by seq desc limit 1\n    `).get(threadId)
 ;if(!msg)return null;const parts=JSON.parse(msg.parts_json).filter(p=>p&&typeof p==="object"&&p.kind!=="ad")
 ;return parts.length?shape(parts[parts.length-1]):null}catch{return null}}function classify(snap,now){
-const{thread:thread,part:part,outType:outType,queueRunning:queueRunning}=snap;if(!thread)return{state:"idle",
-detail:"no session",confident:false};const alive=thread.turn_alive_at?now-thread.turn_alive_at:Infinity
-;if(thread.turn_state==="running"){if(alive>STALE_MS)return{state:"idle",detail:"abandoned turn",confident:false}
-;if(outType==="error")return{state:"error",detail:"turn failed",confident:true};if(!part){return{state:"thinking",
-detail:"starting",confident:false}}switch(part.kind){case"reasoning":return{state:"long-think",detail:"reasoning",
-confident:true};case"text":return{state:"streaming",detail:"answering",confident:true};case"changes":return{
-state:"propose-diff",detail:"editing files",confident:true};case"compaction":return{state:"compacting",
+const{thread:thread,part:part,outType:outType,queueRunning:queueRunning,toolLive:toolLive}=snap;if(!thread)return{
+state:"idle",detail:"no session",confident:false};const alive=thread.turn_alive_at?now-thread.turn_alive_at:Infinity
+;if(thread.turn_state==="running"){if(alive>STALE_MS&&!toolLive){return{state:"idle",detail:"abandoned turn",
+confident:false}}if(outType==="error")return{state:"error",detail:"turn failed",confident:true};if(!part){return{
+state:"thinking",detail:"starting",confident:false}}switch(part.kind){case"reasoning":return{state:"long-think",
+detail:"reasoning",confident:true};case"text":return{state:"streaming",detail:"answering",confident:true};case"changes":
+return{state:"propose-diff",detail:"editing files",confident:true};case"compaction":return{state:"compacting",
 detail:"compacting context",confident:true};case"agent":return{state:"tool-call",detail:"subagent",confident:true}
 ;case"tool":{if(part.status==="failure"||typeof part.exitCode==="number"&&part.exitCode!==0){return{state:"tests-fail",
 detail:`${part.toolName||"tool"} failed`,confident:true}}const mapped=TOOL_STATE[part.toolName];return{
 state:mapped||"tool-call",detail:part.toolName||"tool",confident:true}}default:return{state:"tool-call",
 detail:part.kind||"tool",confident:true}}}if(thread.last_turn_outcome==="failed"){return{state:"error",
-detail:"turn failed",confident:true}}
+detail:"turn failed",confident:true}}if(queueRunning){return{state:"running-cmd",detail:"queue running",confident:true}}
 const sinceEnd=thread.last_turn_finished_at?now-thread.last_turn_finished_at:Infinity;if(sinceEnd<60000)return{
 state:"waiting-prompt",detail:"finished",confident:true};if(sinceEnd<10*60000)return{state:"idle",detail:"resting",
 confident:true};if(sinceEnd<30*60000)return{state:"sleeping",detail:"asleep",confident:true};return{state:"chonk-idle",
@@ -64,19 +64,25 @@ this.current={state:cand.state,detail:cand.detail,confident:cand.confident};this
 function sample(smoother){const candidates=activeDbs(3);if(!candidates.length){return smoother.push({state:"idle",
 detail:"freebuff not found",confident:false},Date.now())}let db=null;let thread=null;let bestScore=-1;const pool=[]
 ;const now0=Date.now();for(const c of candidates){let handle=null;try{handle=new DatabaseSync(c.db,{readOnly:true})
-;handle.exec("PRAGMA busy_timeout = 400");const t=readThread(handle);if(!t){handle.close();continue}
-const fresh=t.turn_state==="running"&&t.turn_alive_at&&now0-t.turn_alive_at<STALE_MS
-;const score=(fresh?1e15:0)+(t.updated_at||0);pool.push({t:t,fresh:fresh,score:score});if(score>bestScore){if(db){try{
-db.close()}catch{}}db=handle;thread=t;bestScore=score}else{handle.close()}}catch{try{handle&&handle.close()}catch{}}}
-if(!db||!thread){return smoother.push({state:"idle",detail:"no threads",confident:false},Date.now())}try{let part=null
-;let outType=null;if(thread.turn_state==="running"){const live=readLiveParts(db,thread.id)
-;outType=partsCache.outType??null;const usable=live.filter(p=>p&&typeof p==="object"&&p.kind!=="ad")
-;if(usable.length)part=shape(usable[usable.length-1])}else{partsCache.at=0;partsCache.threadId=null;partsCache.parts=[]
-;part=readStoredPart(db,thread.id)}let queueRunning=false;try{
+;handle.exec("PRAGMA busy_timeout = 400");const t=readThread(handle);if(!t){handle.close();continue}let toolLive=false
+;if(t.turn_state==="running"){const live=readLiveParts(handle,t.id).filter(p=>p&&typeof p==="object"&&p.kind!=="ad")
+;const last=live.length?shape(live[live.length-1]):null
+;toolLive=!!(last&&last.kind==="tool"&&(last.status==="running"||last.status==="pending"||last.status==null))}
+const aliveAge=t.turn_alive_at?now0-t.turn_alive_at:Infinity
+;const fresh=t.turn_state==="running"&&(aliveAge<STALE_MS||toolLive);const score=(fresh?1e15:0)+(t.updated_at||0)
+;pool.push({t:t,fresh:fresh,score:score});if(score>bestScore){if(db){try{db.close()}catch{}}db=handle;thread=t
+;bestScore=score}else{handle.close()}}catch{try{handle&&handle.close()}catch{}}}if(!db||!thread){return smoother.push({
+state:"idle",detail:"no threads",confident:false},Date.now())}try{let part=null;let outType=null;let toolLive=false
+;if(thread.turn_state==="running"){const live=readLiveParts(db,thread.id);outType=partsCache.outType??null
+;const usable=live.filter(p=>p&&typeof p==="object"&&p.kind!=="ad");if(usable.length){
+part=shape(usable[usable.length-1])
+;toolLive=part.kind==="tool"&&(part.status==="running"||part.status==="pending"||part.status==null)}}else{
+partsCache.at=0;partsCache.threadId=null;partsCache.parts=[];part=readStoredPart(db,thread.id)}let queueRunning=false
+;try{
 const q=db.prepare(`\n        select count(*) c from queue_items where thread_id = ? and state = 'running'\n      `).get(thread.id)
 ;queueRunning=!!(q&&q.c)}catch{}const now=Date.now();const cand=classify({thread:thread,part:part,outType:outType,
-queueRunning:queueRunning},now);const chosen=smoother.push(cand,now);return{...chosen,thread:thread.id.slice(0,8),
-mode:thread.agent_mode,turn:thread.turn_state,ts:now,
+queueRunning:queueRunning,toolLive:toolLive},now);const chosen=smoother.push(cand,now);return{...chosen,
+thread:thread.id.slice(0,8),mode:thread.agent_mode,turn:thread.turn_state,ts:now,
 agents:(pool.length?pool.sort((a,b)=>b.score-a.score).slice(0,MAX_AGENTS):[{t:thread,
 fresh:thread.turn_state==="running",score:0}]).map(({t:t,fresh:fresh})=>({id:t.id.slice(0,8),
 title:t.title&&t.title.trim()||t.id.slice(0,6),state:t.id===thread.id?chosen.state:coarseState(t,now),running:!!fresh
@@ -84,13 +90,17 @@ title:t.title&&t.title.trim()||t.id.slice(0,6),state:t.id===thread.id?chosen.sta
 detail:cur?cur.detail:"db error",confident:false,thread:null,mode:null,turn:null,agents:[],source:"sqlite",stale:true,
 ts:Date.now(),error:err.message}}finally{try{db&&db.close()}catch{}}}function writeAtomic(file,data){
 fs.mkdirSync(path.dirname(file),{recursive:true});const tmp=file+".tmp";fs.writeFileSync(tmp,JSON.stringify(data))
-;fs.renameSync(tmp,file)}if(process.argv.includes("--watch")){const smoother=new Smoother;const clients=new Set
+;try{fs.renameSync(tmp,file)}catch(err){Atomics.wait(new Int32Array(new SharedArrayBuffer(4)),0,0,25);fs.renameSync(tmp,file)}}if(process.argv.includes("--watch")){const smoother=new Smoother;const clients=new Set
 ;let latest=null;let lastLogged=null;const broadcast=payload=>{
 const frame=`event: state\ndata: ${JSON.stringify(payload)}\n\n`;for(const res of clients){try{res.write(frame)}catch{
-clients.delete(res)}}};let lastSig=null,lastWrite=0;const publish=payload=>{latest=payload;const sig=payload.state+"|"+(payload.detail||"")+"|"+(payload.agents||[]).map(a=>a.id+":"+a.state).join(",");const n=Date.now();if(sig!==lastSig||n-lastWrite>3000){lastSig=sig;lastWrite=n;writeAtomic(OUT,payload)}broadcast(payload)
+clients.delete(res)}}};let lastWriteWarn=0;let lastSig=null,lastWrite=0;const publish=payload=>{latest=payload;broadcast(payload)
+;const sig=payload.state+"|"+(payload.detail||"")+"|"+(payload.turn||"")+"|"+(payload.mode||"")+"|"+(payload.agents||[]).map(a=>a.id+":"+a.state+":"+(a.running?1:0)).join(",");const n=Date.now()
+;if(sig!==lastSig||n-lastWrite>3000){lastSig=sig;lastWrite=n
+;try{writeAtomic(OUT,payload)}catch(err){if(n-lastWriteWarn>30000){lastWriteWarn=n
+;console.error(`[hook] state file busy (${err.message})`)}}}
 ;if(payload.state!==lastLogged){lastLogged=payload.state
 ;console.log(`[hook] ${String(payload.state).padEnd(14)} ${payload.detail??""}`)}}
-;function corsFor(req){const o=req.headers.origin;const ok=typeof o==="string"&&/^http:\/\/(localhost|127\.0\.0\.1)(:\d+)?$/.test(o);const h={"Cache-Control":"no-store"};if(ok){h["Access-Control-Allow-Origin"]=o;h.Vary="Origin"}return h};;const server=http.createServer((req,res)=>{const cors=corsFor(req)
+;function corsFor(req){const o=req.headers.origin;const ok=typeof o==="string"&&/^https?:\/\/(localhost|127\.0\.0\.1)(:\d+)?$/.test(o);const h={"Cache-Control":"no-store"};if(ok){h["Access-Control-Allow-Origin"]=o;h.Vary="Origin"}return h};const server=http.createServer((req,res)=>{const cors=corsFor(req)
 ;if(req.url==="/state"){res.writeHead(200,{...cors,"Content-Type":"application/json"});res.end(JSON.stringify(latest??{
 state:"idle",ts:Date.now()}));return}if(req.url==="/events"){res.writeHead(200,{...cors,
 "Content-Type":"text/event-stream",Connection:"keep-alive"});res.write("retry: 1000\n\n")

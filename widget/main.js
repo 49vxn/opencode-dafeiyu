@@ -39,16 +39,16 @@ if(win&&!win.isDestroyed())win.setIgnoreMouseEvents(ignoreMouse,{forward:true});
 console.warn("[dafeiyu] GPU process gone — recreating window");const[x,y]=win.getPosition();win.destroy();win=null
 ;createWindow();if(win)win.setPosition(x,y)}});win.on("moved",savePosition)}
 const STATE_FILE=path.join(__dirname,"runtime","state.json")
-;const OC_STATE_FILE=path.join(__dirname,"runtime","state-opencode.json");let lastPushed=null;let lastSource=null
+;const OC_STATE_FILE=path.join(__dirname,"runtime","state-opencode.json");const CL_STATE_FILE=path.join(__dirname,"runtime","state-claude.json");let lastPushed=null;let lastSource=null
 ;const ACTIVE_STATES=new Set(["thinking","long-think","streaming","running-cmd","read-file","writing-code","searching","propose-diff","compacting","tool-call","tests-fail","blocked","error"])
 ;function readPayload(file){try{const s=JSON.parse(fs.readFileSync(file,"utf8"));if(!s||!s.state)return null
 ;if(typeof s.ts!=="number"){try{s.ts=fs.statSync(file).mtimeMs}catch{}}return s}catch{return null}}
-function pickPayload(){const fb=readPayload(STATE_FILE);const oc=readPayload(OC_STATE_FILE);const fresh=p=>p&&typeof p.ts==="number"&&Date.now()-p.ts<15000;const available=p=>p&&!/not found/i.test(p.detail||"");const busy=p=>fresh(p)&&(p.turn==="running"||ACTIVE_STATES.has(p.state));if(busy(fb))return fb;if(busy(oc))return oc;if(available(fb))return fb;if(available(oc))return oc;return fb||oc}function watchStateFile(){const push=()=>{if(!win||win.isDestroyed())return;const s=pickPayload()
+function pickPayload(){const fb=readPayload(STATE_FILE);const oc=readPayload(OC_STATE_FILE);const cl=readPayload(CL_STATE_FILE);const fresh=p=>p&&typeof p.ts==="number"&&Date.now()-p.ts<15000;const available=p=>p&&!/not found/i.test(p.detail||"");const busy=p=>fresh(p)&&(p.turn==="running"||ACTIVE_STATES.has(p.state));if(busy(fb))return fb;const side=[oc,cl].filter(busy).sort((a,b)=>b.ts-a.ts)[0];if(side)return side;if(available(fb))return fb;const idleSide=[oc,cl].filter(available).sort((a,b)=>b.ts-a.ts)[0];if(idleSide)return idleSide;return fb||oc||cl}function watchStateFile(){const push=()=>{if(!win||win.isDestroyed())return;const s=pickPayload()
 ;if(!s)return
 ;const sig=[s.source,s.state,(s.agents||[]).map(a=>a.id+":"+a.state+":"+(a.running?1:0)).join(",")].join("|")
 ;if(sig===lastPushed)return;lastPushed=sig;if(s.source!==lastSource){lastSource=s.source
 ;console.log(`[feed] source -> ${s.source}`)}win.webContents.send("pet-state",s)}
-;for(const f of[STATE_FILE,OC_STATE_FILE]){try{fs.watch(f,{persistent:false},push)}catch{}}setInterval(push,500)}
+;for(const f of[STATE_FILE,OC_STATE_FILE,CL_STATE_FILE]){try{fs.watch(f,{persistent:false},push)}catch{}}setInterval(push,500)}
 function createTray(){const iconPath=path.join(__dirname,"assets","frames","idle","idle-00.png")
 ;const img=nativeImage.createFromPath(iconPath).resize({width:16,height:16});tray=new Tray(img)
 ;tray.setToolTip("dafeiyu");refreshTray()}let hookProcs=[];const hookRestarts={};function spawnHook(hookPath){
@@ -59,10 +59,11 @@ console.log(`[hook] ${name} exited (${code}) — restarting in 3s`);hookProcs=ho
 console.error(`[hook] ${name} failed to start:`,err.message)}}function opencodeDbExists(){
 if(process.env.DAFEIYU_OPENCODE_HOOK==="1")return true
 ;const dataDir=process.env.XDG_DATA_HOME||path.join(os.homedir(),".local","share")
-;return fs.existsSync(path.join(dataDir,"opencode","opencode.db"))}function startHook(){
+;return fs.existsSync(path.join(dataDir,"opencode","opencode.db"))}function claudeDirExists(){if(process.env.DAFEIYU_CLAUDE_HOOK==="1")return true;return fs.existsSync(path.join(os.homedir(),".claude"))}function startHook(){
 const freebuffHook=path.join(__dirname,"freebuff-hook.js");if(fs.existsSync(freebuffHook))spawnHook(freebuffHook)
 ;const opencodeHook=path.join(__dirname,"opencode-hook.js")
-;if(fs.existsSync(opencodeHook)&&opencodeDbExists())spawnHook(opencodeHook)}app.on("second-instance",()=>{
+;if(fs.existsSync(opencodeHook)&&opencodeDbExists())spawnHook(opencodeHook)
+;const claudeHook=path.join(__dirname,"claude-hook.js");if(fs.existsSync(claudeHook)&&claudeDirExists())spawnHook(claudeHook)}app.on("second-instance",()=>{
 if(win&&!win.isDestroyed()){win.showInactive();win.setAlwaysOnTop(true,"screen-saver");resetPosition()}})
 ;app.whenReady().then(()=>{startHook();createWindow();createTray();watchStateFile()
 ;
