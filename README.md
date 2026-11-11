@@ -42,19 +42,62 @@ one, and a state you can read from three metres away.
 
 ## Sources
 
-It ships two adapters and picks automatically:
+It ships three adapters and picks automatically:
 
 | adapter | reads | notes |
 |---|---|---|
 | **opencode** | `~/.local/share/opencode/opencode.db` | preferred when a turn is running |
 | **freebuff** | `~/.config/freebuff-desktop/projects/*/desktop-v2.db` | fallback source |
+| **claude** | `~/.claude/projects/*/*.jsonl` | zero config; hooks make it instant |
 
-Both open the database **read-only** and never write to it. A source only counts
+All three read their source **read-only** and never write to it. A source only counts
 as live if its state file updated in the last 15 seconds, so a file left behind by
 a crash can't keep the whale pretending to work.
 
-Whichever source has a turn in flight wins; the other takes over only when it is
+Whichever source has a turn in flight wins; another takes over only when it is
 busy and the first is not.
+
+### Claude Code
+
+The claude adapter spawns only when `~/.claude` exists, so it costs nothing if
+you don't use Claude Code. It works with **zero config**: it tails the session
+transcripts under `~/.claude/projects/` — a tool call with no result yet is
+running, ~45s of silence on one is a permission prompt, then the usual idle
+ladder.
+
+For instant and more precise states, let Claude Code push its own events. Add
+this to `~/.claude/settings.json` (merge it with any hooks you already have;
+all eleven use the same one-liner):
+
+```json
+{
+  "hooks": {
+    "UserPromptSubmit":   [{ "hooks": [{ "type": "command", "command": "curl -s -o NUL -X POST --data-binary @- http://127.0.0.1:8793/event" }] }],
+    "PreToolUse":         [{ "hooks": [{ "type": "command", "command": "curl -s -o NUL -X POST --data-binary @- http://127.0.0.1:8793/event" }] }],
+    "PostToolUse":        [{ "hooks": [{ "type": "command", "command": "curl -s -o NUL -X POST --data-binary @- http://127.0.0.1:8793/event" }] }],
+    "PostToolUseFailure": [{ "hooks": [{ "type": "command", "command": "curl -s -o NUL -X POST --data-binary @- http://127.0.0.1:8793/event" }] }],
+    "Notification":       [{ "hooks": [{ "type": "command", "command": "curl -s -o NUL -X POST --data-binary @- http://127.0.0.1:8793/event" }] }],
+    "Stop":               [{ "hooks": [{ "type": "command", "command": "curl -s -o NUL -X POST --data-binary @- http://127.0.0.1:8793/event" }] }],
+    "StopFailure":        [{ "hooks": [{ "type": "command", "command": "curl -s -o NUL -X POST --data-binary @- http://127.0.0.1:8793/event" }] }],
+    "SubagentStart":      [{ "hooks": [{ "type": "command", "command": "curl -s -o NUL -X POST --data-binary @- http://127.0.0.1:8793/event" }] }],
+    "SubagentStop":       [{ "hooks": [{ "type": "command", "command": "curl -s -o NUL -X POST --data-binary @- http://127.0.0.1:8793/event" }] }],
+    "PreCompact":         [{ "hooks": [{ "type": "command", "command": "curl -s -o NUL -X POST --data-binary @- http://127.0.0.1:8793/event" }] }],
+    "PostCompact":        [{ "hooks": [{ "type": "command", "command": "curl -s -o NUL -X POST --data-binary @- http://127.0.0.1:8793/event" }] }]
+  }
+}
+```
+
+The payload arrives on stdin (`@-`), so there is nothing to quote; `-o NUL`
+keeps stdout empty so Claude Code never mistakes a response for hook output
+(`/dev/null` on macOS/Linux). Restart Claude Code after saving. Newer builds
+can skip curl entirely by using
+`{ "type": "http", "url": "http://127.0.0.1:8793/event" }` as the handler.
+
+What the events add over tailing: `blocked` the moment a permission prompt
+appears (tailing needs ~45s of silence), `error` with the failure reason when
+a turn dies on an API error, `compacting` during context compaction, and
+subagent activity. If the whale isn't running the POST fails quietly, and
+tailing catches the state up on its own the next time the whale starts.
 
 ---
 
@@ -126,7 +169,7 @@ are the only things it touches, and it opens them read-only.
 ## How it works
 
 ```
-agent's SQLite  ──read-only, 200ms──▶  hook (child process)
+agent's session data ──read-only, 200ms──▶  hook (child process)
                                           │
                                     runtime/state-*.json
                                           │
@@ -134,9 +177,10 @@ agent's SQLite  ──read-only, 200ms──▶  hook (child process)
                                           │
                               http://127.0.0.1:8791/state   (freebuff)
                               http://127.0.0.1:8792/state   (opencode)
+                              http://127.0.0.1:8793/state   (claude)
 ```
 
-Both hooks also serve their state over loopback HTTP and SSE, so anything local
+All three hooks also serve their state over loopback HTTP and SSE, so anything local
 can drive off the same feed. CORS is restricted to loopback origins.
 
 ### State vocabulary
