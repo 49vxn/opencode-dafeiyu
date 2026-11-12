@@ -16,6 +16,11 @@ read-only, and maps real events to real frames.
   <img src="widget/assets/demo-a.gif" width="340" alt="The whale switching between idle, long-think, running-cmd and eating-rice">
 </p>
 
+**Just want to run it?** [Download the installer](https://github.com/49vxn/opencode-dafeiyu/releases/latest/download/dafeiyu-Setup-0.4.2.exe) —
+Windows 10/11, one click, no Node, no terminal. The whale lands in the corner and
+starts reacting the moment you open your agent.
+
+
 ---
 
 ## What it actually looks like
@@ -116,7 +121,7 @@ tailing catches the state up on its own the next time the whale starts.
 
 ### One-click installer
 
-[**Download dafeiyu-Setup-0.4.2.exe**](https://github.com/49vxn/opencode-dafeiyu/releases/latest)
+[**Download dafeiyu-Setup-0.4.2.exe**](https://github.com/49vxn/opencode-dafeiyu/releases/latest/download/dafeiyu-Setup-0.4.2.exe)
 — Windows 10/11, 64-bit, about 110 MB.
 
 It installs per user (no admin prompt), starts the whale in the corner, and puts a
@@ -279,6 +284,14 @@ rice. Keep clicking and see what happens.
 Issues and pull requests are welcome. If a state stops firing after an agent
 updates, the adapter's SQL is usually the first thing to check — `node doctor.js`
 will tell you whether the database was found at all.
+
+## If it made you smile
+
+Star the repo — with no analytics and no account, it is the only signal that tells
+anyone else this is worth a look.
+
+Using a harness we don't support yet? `widget/say.js` is a ten-minute integration:
+post a state, get a whale. See **[Drive it from your own agent](#drive-it-from-your-own-agent)**.
 
 ## Licence
 
