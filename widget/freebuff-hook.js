@@ -88,26 +88,12 @@ fresh:thread.turn_state==="running",score:0}]).map(({t:t,fresh:fresh})=>({id:t.i
 title:t.title&&t.title.trim()||t.id.slice(0,6),state:t.id===thread.id?chosen.state:coarseState(t,now),running:!!fresh
 })),source:"sqlite",stale:false}}catch(err){const cur=smoother.current;return{state:cur?cur.state:"idle",
 detail:cur?cur.detail:"db error",confident:false,thread:null,mode:null,turn:null,agents:[],source:"sqlite",stale:true,
-ts:Date.now(),error:err.message}}finally{try{db&&db.close()}catch{}}}function writeAtomic(file,data){
-fs.mkdirSync(path.dirname(file),{recursive:true});const tmp=file+".tmp";fs.writeFileSync(tmp,JSON.stringify(data))
-;try{fs.renameSync(tmp,file)}catch(err){Atomics.wait(new Int32Array(new SharedArrayBuffer(4)),0,0,25);fs.renameSync(tmp,file)}}if(process.argv.includes("--watch")){const smoother=new Smoother;const clients=new Set
-;let latest=null;let lastLogged=null;const broadcast=payload=>{
-const frame=`event: state\ndata: ${JSON.stringify(payload)}\n\n`;for(const res of clients){try{res.write(frame)}catch{
-clients.delete(res)}}};let lastWriteWarn=0;let lastSig=null,lastWrite=0;const publish=payload=>{latest=payload;broadcast(payload)
-;const sig=payload.state+"|"+(payload.detail||"")+"|"+(payload.turn||"")+"|"+(payload.mode||"")+"|"+(payload.agents||[]).map(a=>a.id+":"+a.state+":"+(a.running?1:0)).join(",");const n=Date.now()
-;if(sig!==lastSig||n-lastWrite>3000){lastSig=sig;lastWrite=n
-;try{writeAtomic(OUT,payload)}catch(err){if(n-lastWriteWarn>30000){lastWriteWarn=n
-;console.error(`[hook] state file busy (${err.message})`)}}}
-;if(payload.state!==lastLogged){lastLogged=payload.state
-;console.log(`[hook] ${String(payload.state).padEnd(14)} ${payload.detail??""}`)}}
-;function corsFor(req){const o=req.headers.origin;const ok=typeof o==="string"&&/^https?:\/\/(localhost|127\.0\.0\.1)(:\d+)?$/.test(o);const h={"Cache-Control":"no-store"};if(ok){h["Access-Control-Allow-Origin"]=o;h.Vary="Origin"}return h};const server=http.createServer((req,res)=>{const cors=corsFor(req)
-;if(req.url==="/state"){res.writeHead(200,{...cors,"Content-Type":"application/json"});res.end(JSON.stringify(latest??{
-state:"idle",ts:Date.now()}));return}if(req.url==="/events"){res.writeHead(200,{...cors,
-"Content-Type":"text/event-stream",Connection:"keep-alive"});res.write("retry: 1000\n\n")
-;if(latest)res.write(`event: state\ndata: ${JSON.stringify(latest)}\n\n`);clients.add(res)
-;req.on("close",()=>clients.delete(res));return}res.writeHead(404,cors);res.end("dafeiyu hook: try /state or /events\n")
-});server.on("error",err=>{console.error(`[hook] HTTP ${PORT}: ${err.message}`)
-;if(err.code==="EADDRINUSE")process.exit(1)});server.listen(PORT,"127.0.0.1",()=>{
-console.log(`[hook] http://127.0.0.1:${PORT}/state`)});const tick=()=>{try{publish(sample(smoother))}catch(err){
-console.error("[hook] tick failed:",err.message)}};tick();setInterval(tick,POLL_MS)
-;console.log(`[hook] watching ${ROOT}`)}else{console.log(JSON.stringify(sample(new Smoother),null,2))}
+ts:Date.now(),error:err.message}}finally{try{db&&db.close()}catch{}}}
+
+const { runWatch } = require("./core/transport");
+
+if (process.argv.includes("--watch")) runWatch({
+  tag: "[hook]", port: PORT, file: OUT, pollMs: POLL_MS, sample, Smoother,
+  sig: (p) => p.state + "|" + (p.detail || "") + "|" + (p.turn || "") + "|" + (p.mode || "")
+    + "|" + (p.agents || []).map((a) => a.id + ":" + a.state + ":" + (a.running ? 1 : 0)).join(","),
+});

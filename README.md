@@ -116,7 +116,7 @@ tailing catches the state up on its own the next time the whale starts.
 
 ### One-click installer
 
-[**Download dafeiyu-Setup-0.4.0.exe**](https://github.com/49vxn/opencode-dafeiyu/releases/latest)
+[**Download dafeiyu-Setup-0.4.1.exe**](https://github.com/49vxn/opencode-dafeiyu/releases/latest)
 — Windows 10/11, 64-bit, about 110 MB.
 
 It installs per user (no admin prompt), starts the whale in the corner, and puts a

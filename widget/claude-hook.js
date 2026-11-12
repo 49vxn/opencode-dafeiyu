@@ -77,14 +77,6 @@ const claudeHome = () => process.env.DAFEIYU_CLAUDE_HOME
 const projectsRoot = () => path.join(claudeHome(), 'projects');
 
 /** CORS allowlist shared by all three adapters. Echo a local origin only. */
-function corsFor(req) {
-  const o = req.headers.origin;
-  const ok = typeof o === 'string'
-    && /^https?:\/\/(localhost|127\.0\.0\.1)(:\d+)?$/.test(o);
-  const h = { 'Cache-Control': 'no-store' };
-  if (ok) { h['Access-Control-Allow-Origin'] = o; h.Vary = 'Origin'; }
-  return h;
-}
 
 // How eagerly a state should win a tie. Higher beats lower once confirmed.
 // Same weights as the other two adapters — all three must agree.
@@ -550,114 +542,15 @@ function sample(smoother) {
   };
 }
 
-// ---------------------------------------------------------------- publish
-function writeAtomic(file, data) {
-  fs.mkdirSync(path.dirname(file), { recursive: true });
-  const tmp = file + '.tmp';
-  fs.writeFileSync(tmp, JSON.stringify(data));
-  try {
-    fs.renameSync(tmp, file);
-  } catch (err) {
-    // A scanner or indexer briefly holding the target is the usual cause;
-    // pause 25ms and try once more before giving up this tick.
-    Atomics.wait(new Int32Array(new SharedArrayBuffer(4)), 0, 0, 25);
-    fs.renameSync(tmp, file);
-  }
-}
+const { runWatch } = require("./core/transport");
 
-// ---------------------------------------------------------------- main
 if (process.argv.includes('--watch')) {
-  const smoother = new Smoother();
-  const clients = new Set();
-  let latest = null;
-  let lastLogged = null;
-
-  const broadcast = (payload) => {
-    const frame = `event: state\ndata: ${JSON.stringify(payload)}\n\n`;
-    for (const res of clients) {
-      try { res.write(frame); } catch { clients.delete(res); }
-    }
-  };
-
-  let lastWriteWarn = 0;
-  let lastSig = null, lastWrite = 0;
-  const publish = (payload) => {
-    latest = payload;
-    broadcast(payload);              // live consumers first; the file is a mirror
-    // Same write dedupe as the opencode hook: 4 Hz state churn must not
-    // become 4 Hz disk churn. The heartbeat still lands every ~3s so the
-    // freshness gate in main.js never sees a stale file.
-    const sig = payload.state + '|' + (payload.detail || '') + '|' + payload.turn
-      + '|' + (payload.agents || []).map(a => a.id + ':' + a.state + ':' + (a.running ? 1 : 0)).join(',');
-    const n = Date.now();
-    if (sig !== lastSig || n - lastWrite > 3000) {
-      lastSig = sig; lastWrite = n;
-      try {
-        writeAtomic(OUT, payload);
-      } catch (err) {
-        // The next tick rewrites it, so a dropped mirror write costs nothing.
-        if (n - lastWriteWarn > 30000) {
-          lastWriteWarn = n;
-          console.error(`[cl-hook] state file busy (${err.message})`);
-        }
-      }
-    }
-    if (payload.state !== lastLogged) {
-      lastLogged = payload.state;
-      console.log(`[cl-hook] ${String(payload.state).padEnd(14)} ${payload.detail ?? ''}`);
-    }
-  };
-
-  const server = http.createServer((req, res) => {
-    const cors = corsFor(req);
-    if (req.method === 'POST' && req.url === '/event') {
-      let body = '';
-      req.on('data', (c) => { body += c; if (body.length > 1e6) req.destroy(); });
-      req.on('end', () => {
-        try { noteEvent(JSON.parse(body)); } catch (err) {
-          console.error('[cl-hook] event dropped:', err.message);   // stderr -> runtime log
-        }
-        res.writeHead(204, cors);
-        res.end();
-      });
-      return;
-    }
-    if (req.url === '/state') {
-      res.writeHead(200, { ...cors, 'Content-Type': 'application/json' });
-      res.end(JSON.stringify(latest ?? { state: 'idle', ts: Date.now() }));
-      return;
-    }
-    if (req.url === '/events') {
-      res.writeHead(200, { ...cors, 'Content-Type': 'text/event-stream', Connection: 'keep-alive' });
-      res.write('retry: 1000\n\n');
-      if (latest) res.write(`event: state\ndata: ${JSON.stringify(latest)}\n\n`);
-      clients.add(res);
-      req.on('close', () => clients.delete(res));
-      return;
-    }
-    res.writeHead(404, cors);
-    res.end('dafeiyu claude hook: try /state or /events (POST /event for hooks)\n');
+  runWatch({
+    tag: '[cl-hook]', port: PORT, file: OUT, pollMs: POLL_MS, sample, Smoother,
+    onEvent: noteEvent,
+    sig: (p) => p.state + '|' + (p.detail || '') + '|' + p.turn + '|'
+      + (p.agents || []).map(a => a.id + ':' + a.state + ':' + (a.running ? 1 : 0)).join(','),
   });
-
-  server.on('error', (err) => {
-    console.error(`[cl-hook] HTTP ${PORT}: ${err.message}`);
-    if (err.code === 'EADDRINUSE') process.exit(1);
-  });
-  server.listen(PORT, '127.0.0.1', () => {
-    console.log(`[cl-hook] http://127.0.0.1:${PORT}/state`);
-  });
-
-  const tick = () => {
-    try {
-      publish(sample(smoother));
-    } catch (err) {
-      console.error('[cl-hook] tick failed:', err.message);
-    }
-  };
-
-  tick();
-  setInterval(tick, POLL_MS);
-  console.log(`[cl-hook] watching ${projectsRoot()}`);
 } else {
   console.log(JSON.stringify(sample(new Smoother()), null, 2));
 }
