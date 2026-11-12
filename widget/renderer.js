@@ -3,6 +3,11 @@ const CELL=64;const SLOW=2.4;const HOVER_SLOW=1.7;const GAP=22;const TAG_H=20;co
 dragMove(){},dragEnd(){},stateChanged(){},onState(){},resize(){}};let manifest={states:{}};const images=new Map
 ;const agents=new Map;let incoming=null;;const lastActive=new Map;const departed=new Set;const leaving=new Map;let DEPART_MS=600000
 ;const IDLE_STATES=new Set(["idle","idle-left","idle-right","waiting-prompt","sleeping","doze-off","boba","chonk-idle","look-around","yawn","sulk","sulk-loop","fish-spot","fish-chase","fish-return","boba-run","boba-return","walk-away","chonk-walk-away"])
+;function holdOnce(a){const s=manifest.states[a.state];return !!s&&s.loop!=="loop"&&!a.finished}
+;function resolve(a,name){if(!a.fed||name.indexOf("chonk-")===0)return name;const twin="chonk-"+name;return manifest.states[twin]?twin:name}
+;function onClipDone(a){if(a.state==="eating-rice"){a.fed=true;a.fedAt=Date.now();setState(a,"chonk-idle")}
+else if(a.state==="too-full-rice"||a.state==="too-full-boba"){setState(a,"chonk-idle")}
+else if(a.state==="slim-down"){a.fed=false;setState(a,"idle")}}
 ;function clipMs(name){const s=manifest.states[name];return s?Math.round(s.frames.length/s.fps*1000*SLOW):1200}let overrideUntil=0;let hovered=null;let lastW=0;let lastH=0
 ;function imageFor(state,file){const key=state+"/"+file;let im=images.get(key);if(!im){im=new Image
 ;im.src=`assets/frames/${state}/${file}`;images.set(key,im)}return im}function warm(state){
@@ -12,7 +17,7 @@ const cell=document.createElement("div");cell.className="cell";const tag=documen
 ;tag.className="tag";tag.textContent=title||id;const doing=document.createElement("div");doing.className="doing";tag.title=tag.textContent;const canvas=document.createElement("canvas")
 ;canvas.width=CELL;canvas.height=CELL;const ctx=canvas.getContext("2d",{alpha:true,willReadFrequently:true})
 ;ctx.imageSmoothingEnabled=false;cell.append(tag,doing,canvas);document.getElementById("row").appendChild(cell);a={id:id,
-title:title,cell:cell,tag:tag,doing:doing,canvas:canvas,ctx:ctx,state:null,startedAt:0,lastDrawn:-1};agents.set(id,a);return a}
+title:title,cell:cell,tag:tag,doing:doing,canvas:canvas,ctx:ctx,state:null,startedAt:0,lastDrawn:-1,fed:false,fedAt:0,finished:false};agents.set(id,a);return a}
 function dropAgents(keep){for(const[id,a]of agents){if(!keep.has(id)){a.cell.remove();agents.delete(id)}}}
 const PHRASE={idle:"waiting",thinking:"thinking","long-think":"thinking hard",plan:"planning",
 "running-cmd":"running a command","read-file":"reading a file",reading:"reading",searching:"searching",
@@ -27,8 +32,8 @@ subagent:"delegating","subagent-return":"helper is back",boba:"on boba","eating-
 "agent-return":"alone again","walk-away":"wandering","wake-up":"back","doze-off":"dozing",yawn:"yawning",
 "look-around":"looking around","typing-along":"you're typing","typing-away":"you left"};
 function label(n){const k=n.indexOf("chonk-")===0?n.slice(6):n;return PHRASE[n]||PHRASE[k]||k.replace(/-/g," ")}
-const ALIAS={blocked:"waiting-prompt"};function setState(a,name){name=ALIAS[name]||name;if(!manifest.states[name]||a.state===name)return;a.state=name;a.startedAt=performance.now();if(a.doing)a.doing.textContent=label(name)
-;a.lastDrawn=-1;warm(name);api.stateChanged(name)}let layoutQueued=false;function queueLayout(){if(layoutQueued)return
+const ALIAS={blocked:"waiting-prompt"};function setState(a,name){name=ALIAS[name]||name;name=resolve(a,name);a.finished=false;if(!manifest.states[name]||a.state===name)return;a.state=name;a.startedAt=performance.now();if(a.doing)a.doing.textContent=label(name)
+;a.lastDrawn=-1;if(a.cell)a.cell.dataset.state=name;warm(name);api.stateChanged(name)}let layoutQueued=false;function queueLayout(){if(layoutQueued)return
 ;layoutQueued=true;requestAnimationFrame(()=>{layoutQueued=false
 ;const r=document.getElementById("row").getBoundingClientRect();const w=Math.ceil(r.width);const h=Math.ceil(r.height)
 ;if(w===lastW&&h===lastH)return;lastW=w;lastH=h;api.resize(w,h)})}async function boot(){manifest=await api.getManifest()
@@ -44,7 +49,9 @@ const last=lastActive.get(id)||0
 for(const a of agents.values()){const s=manifest.states[a.state]
 ;if(!s)continue;const boost=hovered===a.id?HOVER_SLOW:1;const frameMs=1000/s.fps*SLOW*boost
 ;const raw=Math.floor((t-a.startedAt)/frameMs)
-;const idx=s.loop==="loop"?raw%s.frames.length:Math.min(raw,s.frames.length-1);if(idx===a.lastDrawn)continue
+;const idx=s.loop==="loop"?raw%s.frames.length:Math.min(raw,s.frames.length-1)
+;if(s.loop!=="loop"&&raw>=s.frames.length&&!a.finished){a.finished=true;onClipDone(a);continue}
+;if(a.fed&&a.fedAt&&wall-a.fedAt>300000){a.fed=false;a.fedAt=0;setState(a,"slim-down");continue}if(idx===a.lastDrawn)continue
 ;const im=imageFor(a.state,s.frames[idx]);if(!im.complete||!im.naturalWidth)continue;a.ctx.clearRect(0,0,CELL,CELL)
 ;a.ctx.drawImage(im,0,0);a.lastDrawn=idx}requestAnimationFrame(tick)}function applyIncoming(snap){
 const list=snap.agents&&snap.agents.length?snap.agents:[{id:snap.thread||"default",title:"dafeiyu",state:snap.state,
@@ -56,7 +63,7 @@ const id=entry.id||"agent"+i;const st=entry.state||FALLBACK
 ;const seen=entry.updatedAt&&entry.updatedAt>0?Math.min(entry.updatedAt,wall):wall
 ;if(!lastActive.has(id))lastActive.set(id,seen)
 ;a.cell.classList.toggle("working",!!entry.running)
-;if(now>=overrideUntil)setState(a,wake?"wake-up":(entry.state||FALLBACK))})
+;if(now>=overrideUntil&&!holdOnce(a))setState(a,wake?"wake-up":(entry.state||FALLBACK))})
 ;if(agents.size!==before||agents.size!==keep.size){dropAgents(keep);queueLayout()}}function cellAt(x,y){
 for(const a of agents.values()){const r=a.canvas.getBoundingClientRect()
 ;if(x>=r.left&&x<r.right&&y>=r.top&&y<r.bottom)return a}return null}function alphaAt(a,x,y){
@@ -73,6 +80,6 @@ return a.ctx.getImageData(cx,cy,1,1).data[3]>0}catch{return true}}let interactiv
 ;if(!dragging&&Math.hypot(dx,dy)>DRAG_THRESHOLD){dragging=true;document.body.classList.add("dragging");api.dragStart()}
 if(dragging){moved=true;api.dragMove(dx,dy)}});window.addEventListener("mouseup",e=>{if(dragging){dragging=false
 ;document.body.classList.remove("dragging");api.dragEnd()}else if(downAt&&!moved){const a=cellAt(e.clientX,e.clientY)
-;if(a){const name=manifest.states["eating-rice"]?"eating-rice":"boba";const s=manifest.states[name];if(s){
+;if(a){const name=a.fed?(manifest.states["too-full-rice"]?"too-full-rice":"boba"):(manifest.states["eating-rice"]?"eating-rice":"boba");const s=manifest.states[name];if(s){
 overrideUntil=performance.now()+s.frames.length/s.fps*1000*SLOW+250;warm(name);setState(a,name)}}}downAt=null})
 ;boot().catch(err=>console.error("boot failed",err));
