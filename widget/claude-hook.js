@@ -126,7 +126,7 @@ function waitState(sinceEnd) {
   if (sinceEnd < 60000) return { state: 'waiting-prompt', detail: 'finished', confident: true };
   if (sinceEnd < 10 * 60000) return { state: 'idle', detail: 'resting', confident: true };
   if (sinceEnd < 30 * 60000) return { state: 'sleeping', detail: 'asleep', confident: true };
-  return { state: 'chonk-idle', detail: 'long idle', confident: true };
+  return { state: 'sleeping', detail: 'long idle', confident: true };
 }
 
 // ---------------------------------------------------------------- events

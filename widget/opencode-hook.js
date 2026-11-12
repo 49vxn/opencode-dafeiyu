@@ -21,7 +21,7 @@ return db.prepare(`\n      select id, title, time_updated, time_busy, time_idle\
 ;const idle=session.time_idle||0;const anchor=Math.max(busy,session.time_updated||0)
 ;const since=anchor?now-anchor:Infinity;if(busy>idle&&since<STALE_MS)return"thinking"
 ;if(since<60000)return"waiting-prompt";if(since<10*60000)return"idle";if(since<30*60000)return"sleeping"
-;return"chonk-idle"}function readLiveTurn(db,sessionId){const now=Date.now();let row=null;try{
+;return"sleeping"}function readLiveTurn(db,sessionId){const now=Date.now();let row=null;try{
 row=db.prepare(`\n      select id, time_updated, json_extract(data, '$.finish') as finish, data\n      from session_message\n      where session_id = ? and type = 'assistant'\n      order by seq desc\n      limit 1\n    `).get(sessionId)
 }catch{return null}if(!row)return null;const changed=partsCache.id!==row.id||now-partsCache.at>PARTS_EVERY_MS
 ;if(!changed)return{row:row,content:partsCache.content};let content=[];if(row.data){try{
@@ -42,7 +42,7 @@ confident:part.status==="running"||part.status==="pending"}}default:return{state
 confident:true}}}const sinceAnchor=anchorAt?now-anchorAt:Infinity;const busy=session.time_busy||0,idleAt=session.time_idle||0;const beginning=lastType==="user"||busy>idleAt&&now-(session.time_updated||0)<STALE_MS;if(beginning&&sinceAnchor<START_GRACE_MS&&sinceAnchor<45*60000){
 return{state:"thinking",detail:"starting",confident:true}}const sinceEnd=sinceAnchor;if(sinceEnd<60000)return{
 state:"waiting-prompt",detail:"finished",confident:true};if(sinceEnd<10*60000)return{state:"idle",detail:"resting",
-confident:true};if(sinceEnd<30*60000)return{state:"sleeping",detail:"asleep",confident:true};return{state:"chonk-idle",
+confident:true};if(sinceEnd<30*60000)return{state:"sleeping",detail:"asleep",confident:true};return{state:"sleeping",
 detail:"long idle",confident:true}}class Smoother{constructor(){this.current=null;this.adoptedAt=0;this.pending=null
 ;this.pendingSince=0;this.pendingConfident=false}push(cand,now){if(!this.current){this.adopt(cand,now)
 ;return this.current}if(cand.state===this.current.state){this.pending=null;return this.current}

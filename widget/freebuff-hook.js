@@ -26,7 +26,7 @@ const t=db.prepare(`\n        select id, title, updated_at, turn_state, agent_mo
 ;if(thread.turn_state==="running")return"thinking";if(thread.last_turn_outcome==="failed")return"error"
 ;const since=thread.last_turn_finished_at?now-thread.last_turn_finished_at:Infinity
 ;if(since<60000)return"waiting-prompt";if(since<10*60000)return"idle";if(since<30*60000)return"sleeping"
-;return"chonk-idle"}function readLiveParts(db,threadId){const now=Date.now();const same=partsCache.threadId===threadId
+;return"sleeping"}function readLiveParts(db,threadId){const now=Date.now();const same=partsCache.threadId===threadId
 ;if(same&&now-partsCache.at<PARTS_EVERY_MS)return partsCache.parts;let raw=null;try{
 const row=db.prepare(`\n      select json_extract(harness_state, '$.runtimeMove.parts') as parts,\n             json_extract(harness_state, '$.runtimeMove.output.type') as outType\n      from threads where id = ?\n    `).get(threadId)
 ;raw=row?{parts:row.parts,outType:row.outType}:null}catch{}let parts=partsCache.parts;let outType=null;if(raw){try{
@@ -51,7 +51,7 @@ detail:part.kind||"tool",confident:true}}}if(thread.last_turn_outcome==="failed"
 detail:"turn failed",confident:true}}if(queueRunning){return{state:"running-cmd",detail:"queue running",confident:true}}
 const sinceEnd=thread.last_turn_finished_at?now-thread.last_turn_finished_at:Infinity;if(sinceEnd<60000)return{
 state:"waiting-prompt",detail:"finished",confident:true};if(sinceEnd<10*60000)return{state:"idle",detail:"resting",
-confident:true};if(sinceEnd<30*60000)return{state:"sleeping",detail:"asleep",confident:true};return{state:"chonk-idle",
+confident:true};if(sinceEnd<30*60000)return{state:"sleeping",detail:"asleep",confident:true};return{state:"sleeping",
 detail:"long idle",confident:true}}class Smoother{constructor(){this.current=null;this.adoptedAt=0;this.pending=null
 ;this.pendingSince=0;this.pendingConfident=false}push(cand,now){if(!this.current){this.adopt(cand,now)
 ;return this.current}if(cand.state===this.current.state){this.pending=null;return this.current}
