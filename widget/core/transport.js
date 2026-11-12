@@ -47,6 +47,7 @@ function runWatch({ tag, port, file, pollMs, sample, Smoother, sig, onEvent }) {
   let lastSig = null;
   let lastWrite = 0;
   let lastWriteWarn = 0;
+  let pushed = null; // { state, detail, ts } from POST /event
 
   const broadcast = (payload) => {
     const frame = `event: state\ndata: ${JSON.stringify(payload)}\n\n`;
@@ -86,7 +87,7 @@ function runWatch({ tag, port, file, pollMs, sample, Smoother, sig, onEvent }) {
     const cors = corsFor(req);
     // Harnesses that can run a shell hook push their own events here. The
     // adapter decides what an event means; the transport only carries it.
-    if (onEvent && req.method === "POST" && req.url === "/event") {
+    if (req.method === "POST" && req.url === "/event") {
       let body = "";
       req.on("data", (c) => {
         body += c;
@@ -94,7 +95,9 @@ function runWatch({ tag, port, file, pollMs, sample, Smoother, sig, onEvent }) {
       });
       req.on("end", () => {
         try {
-          onEvent(JSON.parse(body));
+          const ev = JSON.parse(body);
+          if (onEvent) onEvent(ev);
+          else if (ev && typeof ev.state === "string") pushed = { state: ev.state, detail: ev.detail, id: ev.id, ts: Date.now() };
         } catch (err) {
           console.error(`${tag} event dropped:`, err.message);
         }
@@ -135,7 +138,24 @@ function runWatch({ tag, port, file, pollMs, sample, Smoother, sig, onEvent }) {
 
   const tick = () => {
     try {
-      publish(sample(smoother));
+      // A pushed state wins for one minute, then the adapter's own sampling
+      // takes over again. Push is an accelerator, never a dependency.
+      if (pushed && Date.now() - pushed.ts < 60000) {
+        const base = sample(smoother);
+        // Cells read their own agent state, so the override has to reach the
+        // agent too — the pushed one by id, otherwise the first live one.
+        const agents = Array.isArray(base.agents)
+          ? base.agents.map((a) => ({ ...a }))
+          : base.agents;
+        if (Array.isArray(agents) && agents.length) {
+          let i = pushed.id ? agents.findIndex((a) => a.id === pushed.id) : 0;
+          if (i < 0) i = 0;
+          agents[i] = { ...agents[i], state: pushed.state, running: true };
+        }
+        publish({ ...base, state: pushed.state, detail: pushed.detail ?? base.detail, agents, pushed: true });
+      } else {
+        publish(sample(smoother));
+      }
     } catch (err) {
       console.error(`${tag} tick failed:`, err.message);
     }

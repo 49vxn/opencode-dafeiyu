@@ -116,7 +116,7 @@ tailing catches the state up on its own the next time the whale starts.
 
 ### One-click installer
 
-[**Download dafeiyu-Setup-0.4.1.exe**](https://github.com/49vxn/opencode-dafeiyu/releases/latest)
+[**Download dafeiyu-Setup-0.4.2.exe**](https://github.com/49vxn/opencode-dafeiyu/releases/latest)
 — Windows 10/11, 64-bit, about 110 MB.
 
 It installs per user (no admin prompt), starts the whale in the corner, and puts a
@@ -188,6 +188,27 @@ it in a window.
 | doctor finds a database but the whale is still | the agent finished — it'll move on the next turn |
 | nothing appears on screen | transparency failed; check `runtime/*.log` |
 | hooks not listening on 8791/8792 | the widget isn't running |
+
+## Drive it from your own agent
+
+Any agent that can run a shell command can set the state directly — no database,
+no adapter, no polling. This is how it keeps working when a harness changes its
+schema out from under us.
+
+```bash
+node widget/say.js running-cmd --detail "running the tests"
+```
+
+Or post straight to the loopback port:
+
+```bash
+curl -X POST --data-binary '{"state":"long-think","detail":"reading the repo"}' http://127.0.0.1:8791/event
+```
+
+The pushed state holds for one minute, then the adapter's own sampling takes over.
+**Push is an accelerator, never a dependency.**
+
+Each whale shows two lines: the project on top, what it is doing underneath.
 
 ## Controls
 

@@ -7,12 +7,25 @@ dragMove(){},dragEnd(){},stateChanged(){},onState(){},resize(){}};let manifest={
 const s=manifest.states[state];if(!s)return;for(const f of s.frames)imageFor(state,f)}function ensureAgent(id,title){
 let a=agents.get(id);if(a){if(title&&a.title!==title){a.title=title;a.tag.textContent=title;a.tag.title=title}return a}
 const cell=document.createElement("div");cell.className="cell";const tag=document.createElement("div")
-;tag.className="tag";tag.textContent=title||id;tag.title=tag.textContent;const canvas=document.createElement("canvas")
+;tag.className="tag";tag.textContent=title||id;const doing=document.createElement("div");doing.className="doing";tag.title=tag.textContent;const canvas=document.createElement("canvas")
 ;canvas.width=CELL;canvas.height=CELL;const ctx=canvas.getContext("2d",{alpha:true,willReadFrequently:true})
-;ctx.imageSmoothingEnabled=false;cell.append(tag,canvas);document.getElementById("row").appendChild(cell);a={id:id,
-title:title,cell:cell,tag:tag,canvas:canvas,ctx:ctx,state:null,startedAt:0,lastDrawn:-1};agents.set(id,a);return a}
+;ctx.imageSmoothingEnabled=false;cell.append(tag,doing,canvas);document.getElementById("row").appendChild(cell);a={id:id,
+title:title,cell:cell,tag:tag,doing:doing,canvas:canvas,ctx:ctx,state:null,startedAt:0,lastDrawn:-1};agents.set(id,a);return a}
 function dropAgents(keep){for(const[id,a]of agents){if(!keep.has(id)){a.cell.remove();agents.delete(id)}}}
-const ALIAS={blocked:"waiting-prompt"};function setState(a,name){name=ALIAS[name]||name;if(!manifest.states[name]||a.state===name)return;a.state=name;a.startedAt=performance.now()
+const PHRASE={idle:"waiting",thinking:"thinking","long-think":"thinking hard",plan:"planning",
+"running-cmd":"running a command","read-file":"reading a file",reading:"reading",searching:"searching",
+"writing-code":"writing code","propose-diff":"proposing an edit",streaming:"answering","tool-call":"using a tool",
+compacting:"compacting context","waiting-prompt":"waiting on you",sleeping:"asleep","done-flop":"done",
+"pop-idea":"got it","pop-flip":"hmm",success:"success",error:"hit an error",blocked:"needs permission",
+interrupted:"stopped","run-failed":"command failed","tests-pass":"tests pass","tests-fail":"tests fail",
+subagent:"delegating","subagent-return":"helper is back",boba:"on boba","eating-rice":"eating rice",
+"too-full-rice":"too full","too-full-boba":"too full","chonk-idle":"full of rice",sulk:"sulking","sulk-loop":"still sulking",
+"sulk-end":"forgiven","boba-run":"off for boba","boba-return":"back with boba","fish-spot":"spotted something",
+"fish-chase":"chasing","fish-return":"lost it","agent-spot":"spotted another","agent-follow":"following",
+"agent-return":"alone again","walk-away":"wandering","wake-up":"back","doze-off":"dozing",yawn:"yawning",
+"look-around":"looking around","typing-along":"you're typing","typing-away":"you left"};
+function label(n){const k=n.indexOf("chonk-")===0?n.slice(6):n;return PHRASE[n]||PHRASE[k]||k.replace(/-/g," ")}
+const ALIAS={blocked:"waiting-prompt"};function setState(a,name){name=ALIAS[name]||name;if(!manifest.states[name]||a.state===name)return;a.state=name;a.startedAt=performance.now();if(a.doing)a.doing.textContent=label(name)
 ;a.lastDrawn=-1;warm(name);api.stateChanged(name)}let layoutQueued=false;function queueLayout(){if(layoutQueued)return
 ;layoutQueued=true;requestAnimationFrame(()=>{layoutQueued=false
 ;const r=document.getElementById("row").getBoundingClientRect();const w=Math.ceil(r.width);const h=Math.ceil(r.height)

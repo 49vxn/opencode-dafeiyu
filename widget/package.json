@@ -1,7 +1,7 @@
 {
   "name": "dafeiyu",
   "productName": "dafeiyu",
-  "version": "0.4.1",
+  "version": "0.4.2",
   "private": true,
   "description": "dafeiyu \u00e2\u20ac\u201d desktop mascot widget",
   "author": "dafeiyu",
@@ -32,6 +32,7 @@
       "opencode-hook.js",
       "claude-hook.js",
       "doctor.js",
+      "say.js",
       "assets/**/*",
       "!runtime/**",
       "!dist/**"
