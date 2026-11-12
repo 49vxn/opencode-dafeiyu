@@ -8,7 +8,7 @@ const{app:app,BrowserWindow:BrowserWindow,ipcMain:ipcMain,Tray:Tray,Menu:Menu,gl
 ;app.commandLine.appendSwitch("disable-features","CalculateNativeWinOcclusion")
 ;const MANIFEST=JSON.parse(fs.readFileSync(path.join(__dirname,"assets","sprites.json"),"utf8"))
 ;const RUNTIME=(()=>{const d=app.isPackaged?path.join(app.getPath("userData"),"runtime"):path.join(__dirname,"runtime");try{fs.mkdirSync(d,{recursive:true})}catch{}process.env.DAFEIYU_RUNTIME=d;return d})()
-;ipcMain.handle("get-manifest",()=>MANIFEST);let win=null;let tray=null;let ignoreMouse=true
+;ipcMain.handle("get-manifest",()=>({...MANIFEST,departMs:Number(process.env.DFY_DEPART_MS)||600000}));let win=null;let tray=null;let ignoreMouse=true
 ;let dragOrigin=null;const stateFile=()=>path.join(app.getPath("userData"),"position.json");function loadPosition(){try{
 const p=JSON.parse(fs.readFileSync(stateFile(),"utf8"));if(typeof p.x==="number"&&typeof p.y==="number")return p}catch{}
 const wa=screen.getPrimaryDisplay().workArea;return{x:wa.x+wa.width-SIZE-24,y:wa.y+wa.height-SIZE-24}}

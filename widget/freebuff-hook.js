@@ -17,11 +17,11 @@ preview_evaluate:"tool-call",preview_scroll:"tool-call",preview_logs:"tool-call"
 stamp=Math.max(stamp,fs.statSync(f).mtimeMs)}catch{}}out.push({db:db,project:e.name,stamp:stamp})}
 out.sort((a,b)=>b.stamp-a.stamp);return out.slice(0,n)}const partsCache={at:0,threadId:null,parts:[]};function shape(p){
 return{kind:p.kind,toolName:p.toolName??null,status:p.status??null,exitCode:p.exitCode??null}}function readThread(db){
-return db.prepare(`\n    select id, title, turn_state, agent_mode, attention_reason, last_turn_outcome,\n           turn_alive_at, last_turn_finished_at\n    from threads\n    order by updated_at desc\n    limit 1\n  `).get()
+return db.prepare(`\n    select id, title, updated_at, turn_state, agent_mode, attention_reason, last_turn_outcome,\n           turn_alive_at, last_turn_finished_at\n    from threads\n    order by updated_at desc\n    limit 1\n  `).get()
 }const MAX_AGENTS=3;const AGENT_WINDOW_MS=45*60000;function readAgents(db,now){let rows=[];try{
-rows=db.prepare(`\n      select id, title, turn_state, agent_mode, last_turn_outcome,\n             turn_alive_at, last_turn_finished_at\n      from threads\n      where updated_at > ?\n      order by turn_state = 'running' desc, updated_at desc\n      limit ?\n    `).all(now-AGENT_WINDOW_MS,MAX_AGENTS)
+rows=db.prepare(`\n      select id, title, updated_at, turn_state, agent_mode, last_turn_outcome,\n             turn_alive_at, last_turn_finished_at\n      from threads\n      where updated_at > ?\n      order by turn_state = 'running' desc, updated_at desc\n      limit ?\n    `).all(now-AGENT_WINDOW_MS,MAX_AGENTS)
 }catch{}if(!rows.length){try{
-const t=db.prepare(`\n        select id, title, turn_state, agent_mode, last_turn_outcome,\n               turn_alive_at, last_turn_finished_at\n        from threads order by updated_at desc limit 1\n      `).get()
+const t=db.prepare(`\n        select id, title, updated_at, turn_state, agent_mode, last_turn_outcome,\n               turn_alive_at, last_turn_finished_at\n        from threads order by updated_at desc limit 1\n      `).get()
 ;if(t)rows=[t]}catch{}}return rows}function coarseState(thread,now){if(!thread)return"idle"
 ;if(thread.turn_state==="running")return"thinking";if(thread.last_turn_outcome==="failed")return"error"
 ;const since=thread.last_turn_finished_at?now-thread.last_turn_finished_at:Infinity
@@ -85,7 +85,7 @@ queueRunning:queueRunning,toolLive:toolLive},now);const chosen=smoother.push(can
 thread:thread.id.slice(0,8),mode:thread.agent_mode,turn:thread.turn_state,ts:now,
 agents:(pool.length?pool.sort((a,b)=>b.score-a.score).slice(0,MAX_AGENTS):[{t:thread,
 fresh:thread.turn_state==="running",score:0}]).map(({t:t,fresh:fresh})=>({id:t.id.slice(0,8),
-title:t.title&&t.title.trim()||t.id.slice(0,6),state:t.id===thread.id?chosen.state:coarseState(t,now),running:!!fresh
+title:t.title&&t.title.trim()||t.id.slice(0,6),state:t.id===thread.id?chosen.state:coarseState(t,now),running:!!fresh,updatedAt:t.updated_at
 })),source:"sqlite",stale:false}}catch(err){const cur=smoother.current;return{state:cur?cur.state:"idle",
 detail:cur?cur.detail:"db error",confident:false,thread:null,mode:null,turn:null,agents:[],source:"sqlite",stale:true,
 ts:Date.now(),error:err.message}}finally{try{db&&db.close()}catch{}}}

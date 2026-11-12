@@ -16,7 +16,7 @@ read-only, and maps real events to real frames.
   <img src="widget/assets/demo-a.gif" width="340" alt="The whale switching between idle, long-think, running-cmd and eating-rice">
 </p>
 
-**Just want to run it?** [Download the installer](https://github.com/49vxn/opencode-dafeiyu/releases/latest/download/dafeiyu-Setup-0.4.2.exe) —
+**Just want to run it?** [Download the installer](https://github.com/49vxn/opencode-dafeiyu/releases/latest/download/dafeiyu-Setup-0.4.3.exe) —
 Windows 10/11, one click, no Node, no terminal. The whale lands in the corner and
 starts reacting the moment you open your agent.
 
@@ -121,7 +121,7 @@ tailing catches the state up on its own the next time the whale starts.
 
 ### One-click installer
 
-[**Download dafeiyu-Setup-0.4.2.exe**](https://github.com/49vxn/opencode-dafeiyu/releases/latest/download/dafeiyu-Setup-0.4.2.exe)
+[**Download dafeiyu-Setup-0.4.3.exe**](https://github.com/49vxn/opencode-dafeiyu/releases/latest/download/dafeiyu-Setup-0.4.3.exe)
 — Windows 10/11, 64-bit, about 110 MB.
 
 It installs per user (no admin prompt), starts the whale in the corner, and puts a

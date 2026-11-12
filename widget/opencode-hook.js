@@ -64,7 +64,7 @@ session:session,live:live,anchorAt:anchorAt,lastType},now);const chosen=smoother
 thread:session.id.slice(0,8),directory:session.directory||null,mode:session.agent,turn:running?"running":"idle",
 agents:readAgents(db,now).map(s=>({id:s.id.slice(0,8),title:s.title&&s.title.trim()||s.id.slice(0,6),
 state:s.id===session.id?chosen.state:coarseState(s,now),
-running:(s.time_busy||0)>(s.time_idle||0)&&now-s.time_updated<STALE_MS})),source:"opencode",stale:false}}catch(err){
+running:(s.time_busy||0)>(s.time_idle||0)&&now-s.time_updated<STALE_MS,updatedAt:s.time_updated})),source:"opencode",stale:false}}catch(err){
 const cur=smoother.current;return{state:cur?cur.state:"idle",detail:cur?cur.detail:"db error",confident:false,
 thread:null,directory:null,mode:null,turn:null,agents:[],source:"opencode",stale:true,error:err.message,ts:Date.now()}
 }finally{try{db&&db.close()}catch{}}}

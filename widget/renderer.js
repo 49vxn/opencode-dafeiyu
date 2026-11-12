@@ -1,7 +1,9 @@
 const CELL=64;const SLOW=2.4;const HOVER_SLOW=1.7;const GAP=22;const TAG_H=20;const DRAG_THRESHOLD=4
 ;const FALLBACK="idle";const api=window.pet||{getManifest:async()=>({states:{}}),setIgnoreMouse(){},dragStart(){},
 dragMove(){},dragEnd(){},stateChanged(){},onState(){},resize(){}};let manifest={states:{}};const images=new Map
-;const agents=new Map;let incoming=null;let overrideUntil=0;let hovered=null;let lastW=0;let lastH=0
+;const agents=new Map;let incoming=null;;const lastActive=new Map;const departed=new Set;const leaving=new Map;let DEPART_MS=600000
+;const IDLE_STATES=new Set(["idle","idle-left","idle-right","waiting-prompt","sleeping","doze-off","boba","chonk-idle","look-around","yawn","sulk","sulk-loop","fish-spot","fish-chase","fish-return","boba-run","boba-return","walk-away","chonk-walk-away"])
+;function clipMs(name){const s=manifest.states[name];return s?Math.round(s.frames.length/s.fps*1000*SLOW):1200}let overrideUntil=0;let hovered=null;let lastW=0;let lastH=0
 ;function imageFor(state,file){const key=state+"/"+file;let im=images.get(key);if(!im){im=new Image
 ;im.src=`assets/frames/${state}/${file}`;images.set(key,im)}return im}function warm(state){
 const s=manifest.states[state];if(!s)return;for(const f of s.frames)imageFor(state,f)}function ensureAgent(id,title){
@@ -31,9 +33,15 @@ const ALIAS={blocked:"waiting-prompt"};function setState(a,name){name=ALIAS[name
 ;const r=document.getElementById("row").getBoundingClientRect();const w=Math.ceil(r.width);const h=Math.ceil(r.height)
 ;if(w===lastW&&h===lastH)return;lastW=w;lastH=h;api.resize(w,h)})}async function boot(){manifest=await api.getManifest()
 ;if(!manifest||!Object.keys(manifest.states).length){console.error("no manifest loaded");return}
-console.log(`manifest: ${Object.keys(manifest.states).length} states`);api.onState(s=>{if(s)incoming=s})
+console.log(`manifest: ${Object.keys(manifest.states).length} states`);DEPART_MS=manifest.departMs||600000;api.onState(s=>{if(s)incoming=s})
 ;const a=ensureAgent("default","dafeiyu");setState(a,FALLBACK);queueLayout();requestAnimationFrame(tick)}
-function tick(t){if(incoming)applyIncoming(incoming);for(const a of agents.values()){const s=manifest.states[a.state]
+function tick(t){if(incoming)applyIncoming(incoming);
+const now=performance.now();const wall=Date.now()
+;for(const[id,a]of agents){
+if(leaving.has(id)){if(now>=leaving.get(id)){a.cell.remove();agents.delete(id);departed.add(id);leaving.delete(id);queueLayout()}continue}
+const last=lastActive.get(id)||0
+;if(wall-last>DEPART_MS){setState(a,"walk-away");leaving.set(id,now+clipMs("walk-away"));continue}}
+for(const a of agents.values()){const s=manifest.states[a.state]
 ;if(!s)continue;const boost=hovered===a.id?HOVER_SLOW:1;const frameMs=1000/s.fps*SLOW*boost
 ;const raw=Math.floor((t-a.startedAt)/frameMs)
 ;const idx=s.loop==="loop"?raw%s.frames.length:Math.min(raw,s.frames.length-1);if(idx===a.lastDrawn)continue
@@ -41,9 +49,14 @@ function tick(t){if(incoming)applyIncoming(incoming);for(const a of agents.value
 ;a.ctx.drawImage(im,0,0);a.lastDrawn=idx}requestAnimationFrame(tick)}function applyIncoming(snap){
 const list=snap.agents&&snap.agents.length?snap.agents:[{id:snap.thread||"default",title:"dafeiyu",state:snap.state,
 running:snap.turn==="running"}];const keep=new Set;const before=agents.size;list.forEach((entry,i)=>{
-const id=entry.id||"agent"+i;keep.add(id);const a=ensureAgent(id,entry.title)
+const id=entry.id||"agent"+i;const st=entry.state||FALLBACK
+;const active=!!entry.running||!IDLE_STATES.has(st);const now=performance.now();const wall=Date.now();let wake=false
+;if(active){lastActive.set(id,wall);if(departed.has(id)){departed.delete(id);wake=true}}else if(departed.has(id))return
+;keep.add(id);const a=ensureAgent(id,entry.title)
+;const seen=entry.updatedAt&&entry.updatedAt>0?Math.min(entry.updatedAt,wall):wall
+;if(!lastActive.has(id))lastActive.set(id,seen)
 ;a.cell.classList.toggle("working",!!entry.running)
-;if(performance.now()>=overrideUntil)setState(a,entry.state||FALLBACK)})
+;if(now>=overrideUntil)setState(a,wake?"wake-up":(entry.state||FALLBACK))})
 ;if(agents.size!==before||agents.size!==keep.size){dropAgents(keep);queueLayout()}}function cellAt(x,y){
 for(const a of agents.values()){const r=a.canvas.getBoundingClientRect()
 ;if(x>=r.left&&x<r.right&&y>=r.top&&y<r.bottom)return a}return null}function alphaAt(a,x,y){

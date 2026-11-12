@@ -535,6 +535,7 @@ function sample(smoother) {
         state: cand ? cand.state : 'idle',
         running: !!(cand && cand.confident
                     && WEIGHT[cand.state] >= WEIGHT.streaming),
+        updatedAt: r.mtime,
       };
     }),
     source: 'claude',
