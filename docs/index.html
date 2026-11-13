@@ -1,0 +1,173 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>dafeiyu — a desk whale for your coding agent</title>
+<meta name="description" content="A small pixel whale that sits in the corner of your screen and shows what your coding agent is doing. 89 animations, read-only, no account.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300;9..144,500;9..144,700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+<link rel="icon" href="atlas.png">
+</head>
+<body>
+
+<header class="masthead">
+  <a class="mark" href="#top">
+    <span class="mark-cn">大肥鱼</span>
+    <span class="mark-en">dafeiyu</span>
+  </a>
+  <nav class="nav">
+    <a href="#states">01 &nbsp;States</a>
+    <a href="#feed">02 &nbsp;Feed</a>
+    <a href="#install">03 &nbsp;Install</a>
+    <a class="nav-out" href="https://github.com/49vxn/opencode-dafeiyu" target="_blank" rel="noreferrer">GitHub&nbsp;↗</a>
+  </nav>
+</header>
+
+<main id="top">
+
+  <!-- ───────────────────────────── hero ───────────────────────────── -->
+  <section class="hero">
+    <div class="hero-copy">
+      <p class="eyebrow">Windows · v0.4.6 · 108 MB · no account</p>
+      <h1>A small whale<br>for a long build.</h1>
+      <p class="lede">
+        It sits in the corner of your screen and shows what your coding agent is
+        doing — not what a timer guesses. It reads Freebuff, opencode and Claude
+        Code read-only, then picks one of eighty-nine animations to match the
+        actual work.
+      </p>
+      <div class="cta">
+        <a class="btn" href="https://github.com/49vxn/opencode-dafeiyu/releases/latest/download/dafeiyu-Setup-0.4.6.exe">Download the installer</a>
+        <a class="btn-quiet" href="#states">See all 89 states</a>
+      </div>
+    </div>
+
+    <figure class="specimen" aria-label="The widget, live">
+      <div class="specimen-desktop">
+        <div class="widget">
+          <div class="widget-tag" id="hero-tag">maths + mascot</div>
+          <div class="widget-doing" id="hero-doing">running a command</div>
+          <canvas id="hero" width="64" height="64"></canvas>
+        </div>
+      </div>
+      <figcaption>
+        <span class="live"><i></i> live<span class="live-state" id="hero-state">running-cmd</span></span>
+        <span class="hint">hover a state below to try it</span>
+      </figcaption>
+    </figure>
+  </section>
+
+  <!-- ───────────────────────────── numbers ───────────────────────────── -->
+  <section class="figures" aria-label="Specification">
+    <dl>
+      <div><dt>States</dt><dd>89</dd></div>
+      <div><dt>Frames</dt><dd>618</dd></div>
+      <div><dt>Adapters</dt><dd>03</dd></div>
+      <div><dt>Network calls</dt><dd>0</dd></div>
+      <div><dt>Accounts</dt><dd>0</dd></div>
+    </dl>
+  </section>
+
+  <!-- ───────────────────────────── states ───────────────────────────── -->
+  <section class="section" id="states">
+    <div class="section-head">
+      <span class="num">01</span>
+      <h2>The vocabulary</h2>
+      <p class="section-note">
+        Every animation answers a real event. Nothing here is a loop waiting for
+        a reason — if the agent does it, the whale has a face for it.
+      </p>
+    </div>
+    <div class="catalog" id="catalog"></div>
+    <p class="catalog-foot">
+      Hover any row to see it on the whale above. Chonk variants resolve
+      automatically once it has been fed rice.
+    </p>
+  </section>
+
+  <!-- ───────────────────────────── feed ───────────────────────────── -->
+  <section class="section" id="feed">
+    <div class="section-head">
+      <span class="num">02</span>
+      <h2>How it knows</h2>
+      <p class="section-note">
+        Three local adapters, opened read-only. Nothing is uploaded, and no
+        adapter can write to the agent's database.
+      </p>
+    </div>
+
+    <div class="feed-grid">
+      <div class="feed-row">
+        <span class="feed-name">Freebuff</span>
+        <code class="path">~/.config/freebuff-desktop/projects/*/desktop-v2.db</code>
+      </div>
+      <div class="feed-row">
+        <span class="feed-name">opencode</span>
+        <code class="path">~/.local/share/opencode/opencode.db</code>
+      </div>
+      <div class="feed-row">
+        <span class="feed-name">Claude Code</span>
+        <code class="path">~/.claude/projects/*/*.jsonl</code>
+      </div>
+    </div>
+
+    <div class="push">
+      <p>
+        A harness that can run a shell command doesn't need an adapter at all.
+        Push the state directly — it holds for a minute, then sampling takes
+        over again.
+      </p>
+      <pre><code>curl -X POST --data-binary '{"state":"running-cmd","detail":"the tests"}' \
+  http://127.0.0.1:8791/event</code></pre>
+    </div>
+  </section>
+
+  <!-- ───────────────────────────── install ───────────────────────────── -->
+  <section class="section" id="install">
+    <div class="section-head">
+      <span class="num">03</span>
+      <h2>Install</h2>
+      <p class="section-note">
+        One click, per user, no admin prompt. It starts with Windows and lives
+        in the tray.
+      </p>
+    </div>
+
+    <div class="install-grid">
+      <div class="install-main">
+        <a class="btn btn-large" href="https://github.com/49vxn/opencode-dafeiyu/releases/latest/download/dafeiyu-Setup-0.4.6.exe">dafeiyu-Setup-0.4.6.exe</a>
+        <p class="fine">
+          Windows 10 / 11, 64-bit · 108 MB · installs to
+          <code>%LOCALAPPDATA%\Programs\dafeiyu</code>
+        </p>
+      </div>
+      <div class="install-notes">
+        <p><strong>Unsigned.</strong> SmartScreen will warn the first time —
+          <em>More info</em> → <em>Run anyway</em>. Signing needs a certificate.</p>
+        <p><strong>Uninstall</strong> is the normal Windows route; it removes the
+          app, its data and its startup entry.</p>
+        <p><strong>macOS</strong> is in progress. The adapters are already
+          portable; the window and packaging are not.</p>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<footer class="footer">
+  <div class="footer-left">
+    <span class="mark-cn">大肥鱼</span>
+    <span class="footer-note">A fan project. Not affiliated with DeepSeek, Freebuff, opencode or Anthropic.</span>
+  </div>
+  <div class="footer-right">
+    <span>Code MIT · Sprites CC BY-NC-SA 4.0</span>
+    <a href="https://github.com/49vxn/opencode-dafeiyu" target="_blank" rel="noreferrer">GitHub ↗</a>
+  </div>
+</footer>
+
+<script src="main.js"></script>
+</body>
+</html>
