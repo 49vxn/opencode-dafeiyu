@@ -672,3 +672,51 @@ figcaption {
 
 /* the night head no longer carries an index */
 .night-head { grid-template-columns: minmax(0, 1.05fr) minmax(0, .95fr); }
+
+/* ── bigger state previews ───────────────────────────────── */
+
+.row {
+  grid-template-columns: 64px minmax(130px, 176px) 1fr auto;
+  gap: 16px;
+  padding: 10px 8px 10px 0;
+}
+.row canvas { width: 64px; height: 64px; }
+.row-name { font-size: 13px; }
+.row-why { font-size: 12px; }
+.row-num { font-size: 9px; color: var(--muted); opacity: .7; }
+
+@media (max-width: 900px) {
+  .row { grid-template-columns: 64px 1fr; }
+}
+
+/* ── the bar, as macOS actually draws it ─────────────────── */
+
+.term-bar { justify-content: flex-start; gap: 14px; }
+
+.lights { display: flex; gap: 8px; }
+.lights i {
+  width: 12px; height: 12px; border-radius: 50%;
+  box-shadow: inset 0 0 0 .5px rgba(0, 0, 0, .25);
+}
+.lights i:nth-child(1) { background: #ff5f57; }
+.lights i:nth-child(2) { background: #febc2e; }
+.lights i:nth-child(3) { background: #28c840; }
+
+.term-title { color: #9aa3b8; }
+
+.term-cmd {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+#term-sprite {
+  width: 56px;
+  height: 56px;
+  image-rendering: pixelated;
+  margin: -10px 0 -10px 4px;
+  opacity: .95;
+}
+
+/* ── the headline can breathe ────────────────────────────── */
+
+h1 { line-height: 1.1; }

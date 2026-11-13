@@ -107,6 +107,7 @@ const stageMeta = $("stage-meta");
 const list = $("session-lines");
 const catalog = $("catalog");
 const nightGrid = $("night-grid");
+const termSprite = $("term-sprite");
 const progress = $("progress");
 
 let meta = null, atlas = null;
@@ -314,6 +315,7 @@ function buildNight() {
 function frame(t) {
   advance(t);
   draw(heroCanvas, hero.state, t, hero.since);
+  if (termSprite) draw(termSprite, hero.state, t, hero.since);
   draw(stageCanvas, stage.state, t, stage.since);
   for (const r of rows) if (r.visible) draw(r.canvas, r.state, t, 0);
   for (const n of nights) draw(n.canvas, n.state, t, n.since, n.cap);

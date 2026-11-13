@@ -65,7 +65,7 @@
             <span class="hint" id="hero-clock">00:00</span>
           </figcaption>
         </figure>
-        <p class="feed-cue">click it to feed</p>
+        <p class="feed-cue">click to feed it</p>
       </div>
     </div>
 
@@ -76,11 +76,14 @@
   <section class="session" aria-label="A session, replayed">
     <div class="term">
       <div class="term-bar">
+        <span class="lights"><i></i><i></i><i></i></span>
         <span class="term-title">dafeiyu</span>
-        <span class="term-meta">replay</span>
       </div>
       <div class="term-body">
-        <p class="term-cmd"><span class="prompt">$</span> dafeiyu watch</p>
+        <p class="term-cmd">
+          <span class="prompt">$</span> dafeiyu watch
+          <canvas id="term-sprite" width="64" height="64"></canvas>
+        </p>
         <ol class="session-lines" id="session-lines"></ol>
       </div>
     </div>
@@ -203,7 +206,7 @@
         <a class="btn btn-large" href="https://github.com/49vxn/opencode-dafeiyu/releases/latest/download/dafeiyu-Setup-0.4.6.exe">dafeiyu-Setup-0.4.6.exe</a>
         <p class="fine">
           Windows 10 / 11, 64-bit · 108 MB<br>
-          installs to <code>%LOCALAPPDATA%\Programs\dafeiyu</code>
+          per user, in <code>AppData\Local\Programs\dafeiyu</code>
         </p>
       </div>
       <div class="install-notes">
