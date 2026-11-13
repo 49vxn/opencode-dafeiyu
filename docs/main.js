@@ -15,27 +15,66 @@ const GROUPS = [
 const NIGHT = [["doze-off"], ["sleeping"], ["walk-away", 4], ["wake-up"], ["fish-spot"], ["fish-chase", 3]];
 
 const WHY = {
-  idle: "nothing is running", "idle-left": "you're off to its left", "idle-right": "you're off to its right",
-  "look-around": "it's been quiet a while", yawn: "just woke up", sleeping: "no activity for minutes",
-  "waiting-prompt": "the turn ended — your move", "done-flop": "the done card lands",
-  thinking: "the request went out", "long-think": "the reasoning trace streams", plan: "it plans before it edits",
-  reading: "skimming, no document", "read-file": "a file is open", searching: "grep, glob, or the web",
-  "writing-code": "edits are being applied", streaming: "the answer is written out",
-  "tool-call": "a tool boundary, under a second", "running-cmd": "a shell command is executing",
-  "propose-diff": "a diff is staged", compacting: "context is being squeezed", subagent: "it delegated",
-  "subagent-return": "the helper came back", "pop-idea": "the read resolved into an idea",
-  "pop-flip": "a mid-read hmm", success: "the turn landed clean", "tests-pass": "the suite is green",
-  "tests-fail": "the suite is red", error: "the turn died on an error", interrupted: "you stopped it",
-  "run-failed": "a command exited non-zero", sulk: "it finished while you weren't looking",
-  "sulk-loop": "still sulking", "sulk-end": "forgiven", "typing-along": "you're at the keyboard",
-  "typing-away": "you walked off mid-turn", boba: "sipping between turns", "eating-rice": "you clicked it",
-  "chonk-idle": "fed, and idle", "headband-on": "first work after a meal",
-  "chonk-writing-code": "mashing keys, fat", "chonk-success": "a fat win", "slim-down": "the rice wears off",
-  "too-full-boba": "it can't — it's full", "too-full-rice": "it can't — it's full",
-  "doze-off": "you've been gone a while", "walk-away": "it gives up on you", "wake-up": "you're back",
-  "fish-spot": "something moved", "fish-chase": "it's hunting", "fish-return": "caught nothing",
-  "boba-run": "double-click, it runs", "boba-return": "back with a cup",
-  "agent-spot": "another session appeared", "agent-follow": "you switched threads",
+  idle: "nothing is running",
+  "idle-left": "cursor is to its left",
+  "idle-right": "cursor is to its right",
+  "look-around": "quiet for a while",
+  yawn: "waking up",
+  sleeping: "no activity for minutes",
+  "waiting-prompt": "the turn ended",
+  "done-flop": "the done card lands",
+
+  thinking: "the request went out",
+  "long-think": "reasoning is streaming",
+  plan: "it plans before editing",
+  reading: "skimming, no document",
+  "read-file": "a file is open",
+  searching: "grep, glob, or the web",
+  "writing-code": "edits are being applied",
+  streaming: "the answer is being written",
+  "tool-call": "a tool ran quickly",
+  "running-cmd": "a shell command is executing",
+  "propose-diff": "a diff is staged",
+  compacting: "context is being compacted",
+  subagent: "it delegated",
+  "subagent-return": "the helper came back",
+
+  "pop-idea": "an idea from the read",
+  "pop-flip": "a mid-read pause",
+  success: "the turn landed clean",
+  "tests-pass": "the suite is green",
+  "tests-fail": "the suite is red",
+  error: "the turn died on an error",
+  interrupted: "you stopped it",
+  "run-failed": "a command exited non-zero",
+
+  sulk: "you missed it finishing",
+  "sulk-loop": "still sulking",
+  "sulk-end": "forgiven",
+  "typing-along": "you're at the keyboard",
+  "typing-away": "you walked off",
+
+  boba: "sipping between turns",
+  "eating-rice": "you clicked it",
+  "chonk-idle": "fed, idle",
+  "headband-on": "first work after a meal",
+  "chonk-writing-code": "mashing keys, fed",
+  "chonk-success": "a fed win",
+  "slim-down": "the rice wears off",
+  "too-full-boba": "already full",
+  "too-full-rice": "already full",
+
+  "doze-off": "gone a long while",
+  "walk-away": "it gives up on you",
+  "wake-up": "you're back",
+  "fish-spot": "something moved",
+  "fish-chase": "it's hunting",
+  "fish-return": "caught nothing",
+  "boba-run": "double-click",
+  "boba-return": "back with a cup",
+
+  "agent-spot": "another session appeared",
+  "agent-follow": "you switched threads",
   "agent-return": "it's alone again",
 };
 
@@ -76,6 +115,7 @@ let stage = { state: "idle", since: 0 };
 let hovered = null;
 let resumeTimer = null;      // state under the cursor
 let feeding = null;      // { state, until }
+let chonk = false;       // preview every state on the fed body
 let step = -1, stepAt = 0, clock = 9 * 3600 + 41 * 60 + 2;
 
 const rows = [];
@@ -83,7 +123,7 @@ const nights = [];
 
 const pad = (n) => String(n).padStart(2, "0");
 const hhmmss = (s) => `${pad(Math.floor(s / 3600))}:${pad(Math.floor((s % 3600) / 60))}:${pad(s % 60)}`;
-const why = (s) => WHY[s] || (s.startsWith("chonk-") ? "the fed version of " + s.slice(6) : "");
+const why = (s) => WHY[s] || (s.startsWith("chonk-") ? WHY[s.slice(6)] || "" : "");
 const num = (i) => String(i + 1).padStart(3, "0");
 
 const frameCache = new Map();
@@ -99,8 +139,11 @@ function framesOf(state) {
   return rec;
 }
 
+const view = (s) => (chonk && !s.startsWith("chonk-") && meta && meta.states["chonk-" + s] ? "chonk-" + s : s);
+
 function draw(canvas, state, t, since, cap) {
   if (!meta || !atlas) return;
+  state = view(state);
   const f = framesOf(state);
   if (!f) return;
   const { s } = f;
@@ -117,14 +160,14 @@ function draw(canvas, state, t, since, cap) {
 
 function setHero(state, detail, since = performance.now()) {
   hero = { state, detail: detail || why(state), since };
-  heroState.textContent = state;
+  heroState.textContent = view(state);
   heroDoing.textContent = hero.detail;
 }
 
 function setStage(state) {
   stage = { state, since: performance.now() };
   const s = meta.states[state];
-  stageState.textContent = state;
+  stageState.textContent = view(state);
   stageWhy.textContent = why(state);
   stageMeta.textContent = s ? `${s.frames} frames · ${s.fps} fps · ${s.loop}` : "";
 }
@@ -243,10 +286,8 @@ function buildRow(state, index) {
 
 function buildCatalog() {
   const order = meta.order;
-  const listed = new Set(GROUPS.flatMap(([, s]) => s));
-  const groups = [...GROUPS];
-
-  for (const [title, states] of groups) {
+  let n = 0;
+  for (const [title, states] of GROUPS) {
     const present = states.filter((s) => order.includes(s));
     if (!present.length) continue;
     const g = document.createElement("div");
@@ -256,40 +297,16 @@ function buildCatalog() {
     h.innerHTML = `<span>${title}</span><em>${present.length}</em>`;
     const box = document.createElement("div");
     box.className = "rows";
-    present.forEach((s) => box.append(buildRow(s, order.indexOf(s))));
-    g.append(h, box);
-    catalog.append(g);
-  }
-
-  const twins = order.filter((s) => s.startsWith("chonk-") && !listed.has(s));
-  if (twins.length) {
-    const g = document.createElement("div");
-    g.className = "group reveal";
-    const h = document.createElement("div");
-    h.className = "group-title";
-    h.innerHTML = `<span>Chonk variants — resolved automatically</span><em>${twins.length}</em>`;
-    const box = document.createElement("div");
-    box.className = "rows";
-    twins.forEach((s) => box.append(buildRow(s, order.indexOf(s))));
+    present.forEach((s) => box.append(buildRow(s, n++)));
     g.append(h, box);
     catalog.append(g);
   }
 }
 
-/* ── night ────────────────────────────────────────────────── */
-
 function buildNight() {
-  for (const [state, cap] of NIGHT) {
-    const cell = document.createElement("div");
-    cell.className = "night-cell";
-    const c = document.createElement("canvas");
-    c.width = 64; c.height = 64;
-    const box = document.createElement("div");
-    box.innerHTML = `<b>${state}</b><span>${why(state)}</span>`;
-    cell.append(c, box);
-    nightGrid.append(cell);
-    nights.push({ canvas: c, state, cap, since: performance.now() });
-  }
+  const c = $("night-canvas");
+  if (!c) return;
+  nights.push({ canvas: c, state: "sleeping", since: performance.now() });
 }
 
 /* ── loop ─────────────────────────────────────────────────── */
@@ -353,6 +370,17 @@ async function boot() {
   stepAt = performance.now();
   heroClock.textContent = hhmmss(clock);
   heroCanvas.addEventListener("click", feed);
+
+  const chonkBtn = $("chonk-toggle");
+  if (chonkBtn) {
+    chonkBtn.addEventListener("click", () => {
+      chonk = !chonk;
+      chonkBtn.setAttribute("aria-pressed", String(chonk));
+      chonkBtn.textContent = chonk ? "chonk on" : "chonk off";
+      setHero(hero.state.replace(/^chonk-/, ""), hero.detail);
+      setStage(stage.state.replace(/^chonk-/, ""));
+    });
+  }
 
   document.documentElement.classList.add("ready");
 

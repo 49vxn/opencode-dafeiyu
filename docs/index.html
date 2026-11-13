@@ -24,10 +24,9 @@
     <span class="mark-en">dafeiyu</span>
   </a>
   <nav class="nav">
-    <a href="#plates"><span>01</span> Plates</a>
-    <a href="#night"><span>02</span> Night</a>
-    <a href="#feed"><span>03</span> Feed</a>
-    <a href="#install"><span>04</span> Install</a>
+    <a href="#plates"><span>01</span> States</a>
+    <a href="#feed"><span>02</span> Adapters</a>
+    <a href="#install"><span>03</span> Install</a>
     <a class="nav-out" href="https://github.com/49vxn/opencode-dafeiyu" target="_blank" rel="noreferrer">GitHub&nbsp;↗</a>
   </nav>
 </header>
@@ -38,7 +37,7 @@
   <section class="cover" id="cover">
     <div class="cover-grid">
       <div class="cover-title">
-        <p class="kicker">A field study of the desk whale</p>
+        <p class="kicker">Windows 10/11 · macOS in progress</p>
         <h1><span class="l">A small whale</span><span class="l">for a long build.</span></h1>
         <p class="lede">
           It sits in the corner of your screen and shows what your coding agent is
@@ -70,9 +69,7 @@
       </div>
     </div>
 
-    <div class="cover-foot">
-      <p class="cover-line">If the app needs a login, then you probably don't need it.</p>
-    </div>
+
   </section>
 
   <!-- ═══════════════ session ═══════════════ -->
@@ -118,7 +115,7 @@
         <span class="stage-state" id="stage-state">idle</span>
         <span class="stage-why" id="stage-why">nothing is running</span>
       </div>
-      <div class="stage-meta"><span class="stage-hint">hover a row</span> <span id="stage-meta">8 frames · 6 fps · loop</span></div>
+      <div class="stage-meta"><span class="stage-hint">hover a row</span> <span id="stage-meta">8 frames · 6 fps · loop</span><button class="chonk-toggle" id="chonk-toggle" type="button" aria-pressed="false">chonk off</button></div>
     </div>
 
     <div class="catalog" id="catalog"></div>
@@ -132,23 +129,24 @@
   <section class="night" id="night">
     <div class="night-inner">
       <div class="night-head">
-        <span class="num">02</span>
         <h2>It sleeps<br>when you do.</h2>
         <p>
-          Six of the eighty-nine only happen when you are gone. It dozes, it
-          wanders, it comes back when you do — and nothing here is a screensaver.
-          Each of these is triggered by the clock on your machine, not the agent's.
+          Six of the eighty-nine only fire when the machine goes quiet. It dozes,
+          it wanders off, it comes back when you do. The clock is your OS idle
+          time, never the agent's.
         </p>
       </div>
-      <div class="night-grid" id="night-grid"></div>
-      <p class="night-foot">Drift states · triggered by system idle time</p>
+      <div class="night-callout">
+        <canvas id="night-canvas" width="64" height="64"></canvas>
+        <p>No agent running. No timer pretending. Just your keyboard, or the lack of it.</p>
+      </div>
     </div>
   </section>
 
   <!-- ═══════════════ feed ═══════════════ -->
   <section class="section" id="feed">
     <div class="section-head">
-      <span class="num">03</span>
+      <span class="num">02</span>
       <h2>How it knows</h2>
       <p class="section-note">
         Three local adapters, opened read-only. Nothing is uploaded, and no
@@ -192,7 +190,7 @@
   <!-- ═══════════════ install ═══════════════ -->
   <section class="section" id="install">
     <div class="section-head">
-      <span class="num">04</span>
+      <span class="num">03</span>
       <h2>Install</h2>
       <p class="section-note">
         One click, per user, no admin prompt. It starts with Windows and lives
@@ -219,6 +217,11 @@
     </div>
   </section>
 
+  <section class="closing">
+    <p class="closing-kicker">No account. No network. Nothing leaves the machine.</p>
+    <p class="closing-line">If the app needs a login, then you probably don't need it.</p>
+  </section>
+
 </main>
 
 <footer class="footer">
@@ -230,8 +233,7 @@
   <div class="footer-bottom">
     <span>Code MIT</span>
     <span>Sprites CC BY-NC-SA 4.0</span>
-    <span>Set in Fraunces &amp; IBM Plex Mono</span>
-    <span>One 236 KB atlas · no trackers</span>
+    <span>No trackers</span>
     <span>Build v0.4.6</span>
   </div>
 </footer>
