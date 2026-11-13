@@ -16,6 +16,8 @@ read-only, and maps real events to real frames.
   <img src="widget/assets/demo-a.gif" width="340" alt="The whale switching between idle, long-think, running-cmd and eating-rice">
 </p>
 
+**The site:** [49vxn.github.io/opencode-dafeiyu](https://49vxn.github.io/opencode-dafeiyu/) — every state, the feed, and the download.
+
 **Just want to run it?** [Download the installer](https://github.com/49vxn/opencode-dafeiyu/releases/latest/download/dafeiyu-Setup-0.4.6.exe) —
 Windows 10/11, one click, no Node, no terminal. The whale lands in the corner and
 starts reacting the moment you open your agent.
