@@ -81,7 +81,7 @@ const WHY = {
 const SESSION = [
   ["idle", "waiting for an order", 1600],
   ["thinking", "the request went out", 1400],
-  ["long-think", "reasoning — 41 s and counting", 2600],
+  ["long-think", "reasoning, 41 s and counting", 2600],
   ["plan", "it plans before it edits", 1700],
   ["read-file", "src/renderer.js", 1500],
   ["running-cmd", "$ npm test", 2000],
@@ -213,7 +213,7 @@ function advance(t) {
 function feed() {
   const now = performance.now();
   if (feeding && feeding.state === "chonk-idle") {
-    setHero("too-full-rice", "it can't — it's full", now);
+    setHero("too-full-rice", "it's full", now);
     feeding = { state: "too-full-rice", until: now + 2200 };
     setTimeout(() => {
       if (!feeding) return;
