@@ -1,5 +1,5 @@
-// dafeiyu — the page runs off one atlas and one manifest.
-// No framework, no build step: draw a 64×64 cell, tick at the state's own fps.
+// dafeiyu — one atlas, one manifest, one loop.
+// The hero is driven by a recorded session; the catalogue drives the stage.
 
 const GROUPS = [
   ["At rest", ["idle", "idle-left", "idle-right", "look-around", "yawn", "sleeping", "waiting-prompt", "done-flop"]],
@@ -12,139 +12,136 @@ const GROUPS = [
 ];
 
 const WHY = {
-  idle: "nothing is running",
-  "idle-left": "you're off to its left",
-  "idle-right": "you're off to its right",
-  "look-around": "it's been quiet a while",
-  yawn: "just woke up",
-  sleeping: "no activity for minutes",
-  "waiting-prompt": "the turn ended — your move",
-  "done-flop": "the done card lands",
-
-  thinking: "the request went out",
-  "long-think": "the reasoning trace streams",
-  plan: "it plans before it edits",
-  reading: "skimming, no document",
-  "read-file": "a file is open",
-  searching: "grep, glob, or the web",
-  "writing-code": "edits are being applied",
-  streaming: "the answer is written out",
-  "tool-call": "a tool boundary, under a second",
-  "running-cmd": "a shell command is executing",
-  "propose-diff": "a diff is staged",
-  compacting: "context is being squeezed",
-  subagent: "it delegated",
-  "subagent-return": "the helper came back",
-
-  "pop-idea": "the read resolved into an idea",
-  "pop-flip": "a mid-read hmm",
-  success: "the turn landed clean",
-  "tests-pass": "the suite is green",
-  "tests-fail": "the suite is red",
-  error: "the turn died on an error",
-  interrupted: "you stopped it",
-  "run-failed": "a command exited non-zero",
-
-  sulk: "it finished while you weren't looking",
-  "sulk-loop": "still sulking",
-  "sulk-end": "forgiven",
-  "typing-along": "you're at the keyboard",
-  "typing-away": "you walked off mid-turn",
-
-  boba: "sipping between turns",
-  "eating-rice": "you clicked it",
-  "chonk-idle": "fed, and idle",
-  "headband-on": "first work after a meal",
-  "chonk-writing-code": "mashing keys, fat",
-  "chonk-success": "a fat win",
-  "slim-down": "the rice wears off",
-  "too-full-boba": "it can't — it's full",
-  "too-full-rice": "it can't — it's full",
-
-  "doze-off": "you've been gone a while",
-  "walk-away": "it gives up on you",
-  "wake-up": "you're back",
-  "fish-spot": "something moved",
-  "fish-chase": "it's hunting",
-  "fish-return": "caught nothing",
-  "boba-run": "double-click, it runs",
-  "boba-return": "back with a cup",
-
-  "agent-spot": "another session appeared",
-  "agent-follow": "you switched threads",
+  idle: "nothing is running", "idle-left": "you're off to its left", "idle-right": "you're off to its right",
+  "look-around": "it's been quiet a while", yawn: "just woke up", sleeping: "no activity for minutes",
+  "waiting-prompt": "the turn ended — your move", "done-flop": "the done card lands",
+  thinking: "the request went out", "long-think": "the reasoning trace streams", plan: "it plans before it edits",
+  reading: "skimming, no document", "read-file": "a file is open", searching: "grep, glob, or the web",
+  "writing-code": "edits are being applied", streaming: "the answer is written out",
+  "tool-call": "a tool boundary, under a second", "running-cmd": "a shell command is executing",
+  "propose-diff": "a diff is staged", compacting: "context is being squeezed", subagent: "it delegated",
+  "subagent-return": "the helper came back", "pop-idea": "the read resolved into an idea",
+  "pop-flip": "a mid-read hmm", success: "the turn landed clean", "tests-pass": "the suite is green",
+  "tests-fail": "the suite is red", error: "the turn died on an error", interrupted: "you stopped it",
+  "run-failed": "a command exited non-zero", sulk: "it finished while you weren't looking",
+  "sulk-loop": "still sulking", "sulk-end": "forgiven", "typing-along": "you're at the keyboard",
+  "typing-away": "you walked off mid-turn", boba: "sipping between turns", "eating-rice": "you clicked it",
+  "chonk-idle": "fed, and idle", "headband-on": "first work after a meal",
+  "chonk-writing-code": "mashing keys, fat", "chonk-success": "a fat win", "slim-down": "the rice wears off",
+  "too-full-boba": "it can't — it's full", "too-full-rice": "it can't — it's full",
+  "doze-off": "you've been gone a while", "walk-away": "it gives up on you", "wake-up": "you're back",
+  "fish-spot": "something moved", "fish-chase": "it's hunting", "fish-return": "caught nothing",
+  "boba-run": "double-click, it runs", "boba-return": "back with a cup",
+  "agent-spot": "another session appeared", "agent-follow": "you switched threads",
   "agent-return": "it's alone again",
 };
 
-const PHRASE = {
-  idle: "waiting", thinking: "thinking", "long-think": "thinking hard", plan: "planning",
-  "running-cmd": "running a command", "read-file": "reading a file", reading: "reading",
-  searching: "searching", "writing-code": "writing code", "propose-diff": "proposing an edit",
-  streaming: "answering", "tool-call": "using a tool", compacting: "compacting context",
-  "waiting-prompt": "waiting on you", sleeping: "asleep", "done-flop": "done",
-  "pop-idea": "got it", "pop-flip": "hmm", success: "success", error: "hit an error",
-  interrupted: "stopped", "run-failed": "command failed", "tests-pass": "tests pass",
-  "tests-fail": "tests fail", subagent: "delegating", "subagent-return": "helper is back",
-  boba: "on boba", "eating-rice": "eating rice", "too-full-rice": "too full",
-  "too-full-boba": "too full", "chonk-idle": "full of rice", sulk: "sulking",
-  "sulk-loop": "still sulking", "sulk-end": "forgiven", "boba-run": "off for boba",
-  "boba-return": "back with boba", "fish-spot": "spotted something", "fish-chase": "chasing",
-  "fish-return": "lost it", "agent-spot": "spotted another", "agent-follow": "following",
-  "agent-return": "alone again", "walk-away": "wandering", "wake-up": "back",
-  "doze-off": "dozing", yawn: "yawning", "look-around": "looking around",
-  "typing-along": "you're typing", "typing-away": "you left", "idle-left": "watching you",
-  "idle-right": "watching you", "chonk-writing-code": "mashing keys", "chonk-success": "fat win",
-  "slim-down": "slimming down", "headband-on": "headband on",
-};
-
-const CYCLE = ["idle", "long-think", "running-cmd", "streaming", "tests-pass", "eating-rice", "chonk-idle", "sleeping"];
+/* A recorded session. The whale follows it line for line. */
+const SESSION = [
+  ["idle", "waiting for an order", 1600],
+  ["thinking", "the request went out", 1400],
+  ["long-think", "reasoning — 41 s and counting", 2600],
+  ["plan", "it plans before it edits", 1700],
+  ["read-file", "src/renderer.js", 1500],
+  ["running-cmd", "$ npm test", 2000],
+  ["tests-fail", "3 failing", 1600],
+  ["writing-code", "applying a fix", 1900],
+  ["running-cmd", "$ npm test", 1500],
+  ["tests-pass", "the suite is green", 1900],
+  ["waiting-prompt", "your move", 1800],
+  ["eating-rice", "you fed it", 1300],
+  ["chonk-idle", "full of rice", 1700],
+  ["slim-down", "the rice wears off", 1500],
+];
 
 const heroCanvas = document.getElementById("hero");
 const heroState = document.getElementById("hero-state");
 const heroDoing = document.getElementById("hero-doing");
-const heroTag = document.getElementById("hero-tag");
+const heroClock = document.getElementById("hero-clock");
+const stageCanvas = document.getElementById("stage-canvas");
+const stageState = document.getElementById("stage-state");
+const stageWhy = document.getElementById("stage-why");
+const stageMeta = document.getElementById("stage-meta");
+const list = document.getElementById("session-lines");
 const catalog = document.getElementById("catalog");
+const progress = document.getElementById("progress");
 
 let meta = null, atlas = null;
-let playing = null;          // { state, startedAt }
-let manual = null;           // state forced by hover
-let cycleIndex = 0;
-let lastCycle = 0;
+let hero = { state: "idle", startedAt: performance.now() };
+let stage = { state: "idle", startedAt: performance.now() };
+let manual = null;
+let step = -1, stepAt = 0, clock = 9 * 3600 + 41 * 60 + 2;
 
-const phrase = (s) => PHRASE[s] || s.replace(/^chonk-/, "").replace(/-/g, " ");
+const rows = [];
+
+const pad = (n) => String(n).padStart(2, "0");
+const hhmmss = (s) => `${pad(Math.floor(s / 3600))}:${pad(Math.floor((s % 3600) / 60))}:${pad(s % 60)}`;
+const why = (s) => WHY[s] || (s.startsWith("chonk-") ? "the fed version of " + s.slice(6) : "");
 
 function draw(canvas, state, t) {
   if (!meta || !atlas) return;
   const s = meta.states[state];
   if (!s) return;
-  const ctx = canvas.getContext("2d");
   const fps = s.fps || 8;
-  const raw = Math.floor((t - (playing && playing.state === state ? playing.startedAt : 0)) / (1000 / fps));
-  const idx = s.loop === "loop" ? raw % s.frames : Math.min(raw, s.frames - 1);
+  const origin = state === hero.state ? hero.startedAt : state === stage.state ? stage.startedAt : 0;
+  const raw = Math.floor((t - origin) / (1000 / fps));
+  const idx = s.loop === "loop" ? raw % s.frames : Math.min(Math.max(raw, 0), s.frames - 1);
+  const ctx = canvas.getContext("2d");
   ctx.imageSmoothingEnabled = false;
   ctx.clearRect(0, 0, 64, 64);
   ctx.drawImage(atlas, idx * 64, s.row * 64, 64, 64, 0, 0, 64, 64);
 }
 
-function play(state, { manual: isManual = false } = {}) {
-  if (!meta || !meta.states[state]) return;
-  playing = { state, startedAt: performance.now() };
+function setHero(state, detail) {
+  hero = { state, startedAt: performance.now() };
   heroState.textContent = state;
-  heroDoing.textContent = phrase(state);
-  if (isManual) { manual = state; }
+  heroDoing.textContent = detail || why(state);
   draw(heroCanvas, state, performance.now());
 }
 
-function tick(t) {
-  if (!manual) {
-    if (t - lastCycle > 2600) {
-      lastCycle = t;
-      cycleIndex = (cycleIndex + 1) % CYCLE.length;
-      play(CYCLE[cycleIndex]);
-    }
-  }
-  draw(heroCanvas, playing ? playing.state : "idle", t);
-  requestAnimationFrame(tick);
+function setStage(state) {
+  stage = { state, startedAt: performance.now() };
+  const s = meta.states[state];
+  stageState.textContent = state;
+  stageWhy.textContent = why(state);
+  stageMeta.textContent = s ? `${s.frames} frames · ${s.fps} fps · ${s.loop}` : "";
+  draw(stageCanvas, state, performance.now());
 }
+
+/* ── session player ─────────────────────────────────────── */
+
+function pushLine(state, detail) {
+  const li = document.createElement("li");
+  li.innerHTML =
+    `<span class="t">${hhmmss(clock)}</span>` +
+    `<span class="t-state">${state}</span>` +
+    `<span class="t-detail">${detail}</span>`;
+  list.append(li);
+  [...list.children].forEach((el) => el.classList.remove("now", "caret"));
+  li.classList.add("now", "caret");
+  while (list.children.length > 5) list.firstElementChild.remove();
+}
+
+function advance(t) {
+  if (manual) { stepAt = t; return; }
+  if (!stepAt) stepAt = t;
+  if (t - stepAt < SESSION[step < 0 ? 0 : step][2]) return;
+  step += 1;
+  stepAt = t;
+  if (step >= SESSION.length) {
+    step = -1;
+    list.innerHTML = "";
+    clock = 9 * 3600 + 41 * 60 + 2;
+    return;
+  }
+  const [state, detail] = SESSION[step];
+  clock += 3 + (step % 4);
+  heroClock.textContent = hhmmss(clock);
+  setHero(state, detail);
+  pushLine(state, detail);
+}
+
+/* ── catalogue ──────────────────────────────────────────── */
 
 function buildRow(state) {
   const row = document.createElement("div");
@@ -154,72 +151,104 @@ function buildRow(state) {
 
   const c = document.createElement("canvas");
   c.width = 64; c.height = 64;
-
   const name = document.createElement("span");
   name.className = "row-name";
   name.textContent = state;
+  const whyEl = document.createElement("span");
+  whyEl.className = "row-why";
+  whyEl.textContent = why(state);
+  const m = document.createElement("span");
+  m.className = "row-meta";
+  const ms = meta.states[state];
+  m.textContent = ms ? `${ms.frames}fr · ${ms.fps}fps` : "";
 
-  const why = document.createElement("span");
-  why.className = "row-why";
-  why.textContent = WHY[state] || (state.startsWith("chonk-") ? "the fed version of " + state.slice(6) : "");
+  row.append(c, name, whyEl, m);
 
-  row.append(c, name, why);
+  const rec = { el: row, canvas: c, state, visible: false };
+  rows.push(rec);
 
-  const loop = (t) => {
-    if (!row.isConnected) return;
-    draw(c, state, t);
-    requestAnimationFrame(loop);
+  const enter = () => {
+    manual = state;
+    setHero(state);
+    setStage(state);
   };
-  requestAnimationFrame(loop);
-
-  const enter = () => play(state, { manual: true });
   const leave = () => { manual = null; };
   row.addEventListener("pointerenter", enter);
   row.addEventListener("focus", enter);
   row.addEventListener("pointerleave", leave);
   row.addEventListener("blur", leave);
-
   return row;
 }
 
 function buildCatalog() {
   const order = meta.order;
-  for (const [title, states] of GROUPS) {
+  const listed = new Set(GROUPS.flatMap(([, s]) => s));
+  const groups = [...GROUPS];
+
+  for (const [title, states] of groups) {
     const present = states.filter((s) => order.includes(s));
     if (!present.length) continue;
-    const group = document.createElement("div");
-    group.className = "group reveal";
+    const g = document.createElement("div");
+    g.className = "group reveal";
     const h = document.createElement("div");
     h.className = "group-title";
-    h.textContent = title;
-    const rows = document.createElement("div");
-    rows.className = "rows";
-    present.forEach((s) => rows.append(buildRow(s)));
-    group.append(h, rows);
-    catalog.append(group);
+    h.innerHTML = `<span>${title}</span><em>${present.length}</em>`;
+    const box = document.createElement("div");
+    box.className = "rows";
+    present.forEach((s) => box.append(buildRow(s)));
+    g.append(h, box);
+    catalog.append(g);
   }
 
-  const listed = new Set(GROUPS.flatMap(([, states]) => states));
   const twins = order.filter((s) => s.startsWith("chonk-") && !listed.has(s));
   if (twins.length) {
-    const group = document.createElement("div");
-    group.className = "group reveal";
+    const g = document.createElement("div");
+    g.className = "group reveal";
     const h = document.createElement("div");
     h.className = "group-title";
-    h.textContent = "Chonk variants — " + twins.length + " states, resolved automatically";
-    const rows = document.createElement("div");
-    rows.className = "rows";
-    twins.forEach((s) => rows.append(buildRow(s)));
-    group.append(h, rows);
-    catalog.append(group);
+    h.innerHTML = `<span>Chonk variants — resolved automatically</span><em>${twins.length}</em>`;
+    const box = document.createElement("div");
+    box.className = "rows";
+    twins.forEach((s) => box.append(buildRow(s)));
+    g.append(h, box);
+    catalog.append(g);
   }
+}
+
+/* ── loop ───────────────────────────────────────────────── */
+
+function frame(t) {
+  advance(t);
+  draw(heroCanvas, hero.state, t);
+  if (stageCanvas) draw(stageCanvas, stage.state, t);
+  for (const r of rows) if (r.visible) draw(r.canvas, r.state, t);
+  requestAnimationFrame(frame);
 }
 
 function reveal() {
   const io = new IntersectionObserver((entries) => {
-    entries.forEach((e) => { if (e.isIntersecting) { e.target.classList.add("in"); io.unobserve(e.target); } });
+    for (const e of entries) if (e.isIntersecting) { e.target.classList.add("in"); io.unobserve(e.target); }
   }, { rootMargin: "0px 0px -8% 0px" });
   document.querySelectorAll(".reveal").forEach((el) => io.observe(el));
+}
+
+function observeRows() {
+  const io = new IntersectionObserver((entries) => {
+    for (const e of entries) {
+      const rec = rows.find((r) => r.el === e.target);
+      if (rec) rec.visible = e.isIntersecting;
+    }
+  }, { rootMargin: "120px 0px" });
+  rows.forEach((r) => io.observe(r.el));
+}
+
+function trackProgress() {
+  const onScroll = () => {
+    const h = document.documentElement.scrollHeight - innerHeight;
+    progress.style.width = h > 0 ? (scrollY / h) * 100 + "%" : "0%";
+  };
+  addEventListener("scroll", onScroll, { passive: true });
+  onScroll();
 }
 
 async function boot() {
@@ -228,10 +257,19 @@ async function boot() {
     new Promise((res, rej) => { const i = new Image(); i.onload = () => res(i); i.onerror = rej; i.src = "atlas.png"; }),
   ]);
   meta = m; atlas = img;
+
   buildCatalog();
+  observeRows();
   reveal();
-  play("idle");
-  requestAnimationFrame(tick);
+  trackProgress();
+
+  setHero("idle", "waiting for an order");
+  setStage("idle");
+
+  requestAnimationFrame(() => {
+    document.documentElement.classList.add("ready");
+    requestAnimationFrame(frame);
+  });
 }
 
 boot().catch((err) => {

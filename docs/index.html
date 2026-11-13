@@ -5,13 +5,18 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>dafeiyu — a desk whale for your coding agent</title>
 <meta name="description" content="A small pixel whale that sits in the corner of your screen and shows what your coding agent is doing. 89 animations, read-only, no account.">
+<meta property="og:title" content="dafeiyu — a desk whale for your coding agent">
+<meta property="og:description" content="89 animations. Three adapters. No account, no network.">
+<meta property="og:image" content="atlas.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300;9..144,500;9..144,700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,500;0,9..144,700;1,9..144,400&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="style.css">
 <link rel="icon" href="atlas.png">
 </head>
 <body>
+
+<div class="progress" id="progress"></div>
 
 <header class="masthead">
   <a class="mark" href="#top">
@@ -19,9 +24,9 @@
     <span class="mark-en">dafeiyu</span>
   </a>
   <nav class="nav">
-    <a href="#states">01 &nbsp;States</a>
-    <a href="#feed">02 &nbsp;Feed</a>
-    <a href="#install">03 &nbsp;Install</a>
+    <a href="#states"><span>01</span> States</a>
+    <a href="#feed"><span>02</span> Feed</a>
+    <a href="#install"><span>03</span> Install</a>
     <a class="nav-out" href="https://github.com/49vxn/opencode-dafeiyu" target="_blank" rel="noreferrer">GitHub&nbsp;↗</a>
   </nav>
 </header>
@@ -31,8 +36,8 @@
   <!-- ───────────────────────────── hero ───────────────────────────── -->
   <section class="hero">
     <div class="hero-copy">
-      <p class="eyebrow">Windows · v0.4.6 · 108 MB · no account</p>
-      <h1>A small whale<br>for a long build.</h1>
+      <p class="eyebrow"><span class="dot"></span> Windows · v0.4.6 · 108 MB · no account</p>
+      <h1><span class="l">A small whale</span><span class="l">for a long build.</span></h1>
       <p class="lede">
         It sits in the corner of your screen and shows what your coding agent is
         doing — not what a timer guesses. It reads Freebuff, opencode and Claude
@@ -41,7 +46,7 @@
       </p>
       <div class="cta">
         <a class="btn" href="https://github.com/49vxn/opencode-dafeiyu/releases/latest/download/dafeiyu-Setup-0.4.6.exe">Download the installer</a>
-        <a class="btn-quiet" href="#states">See all 89 states</a>
+        <a class="btn-quiet" href="#states">See all 89 states <span class="arr">↓</span></a>
       </div>
     </div>
 
@@ -49,18 +54,27 @@
       <div class="specimen-desktop">
         <div class="widget">
           <div class="widget-tag" id="hero-tag">maths + mascot</div>
-          <div class="widget-doing" id="hero-doing">running a command</div>
+          <div class="widget-doing" id="hero-doing">waiting for an order</div>
           <canvas id="hero" width="64" height="64"></canvas>
         </div>
       </div>
       <figcaption>
-        <span class="live"><i></i> live<span class="live-state" id="hero-state">running-cmd</span></span>
-        <span class="hint">hover a state below to try it</span>
+        <span class="live"><i></i> live<span class="live-state" id="hero-state">idle</span></span>
+        <span class="hint" id="hero-clock">00:00</span>
       </figcaption>
     </figure>
   </section>
 
-  <!-- ───────────────────────────── numbers ───────────────────────────── -->
+  <!-- ───────────────────────────── session ───────────────────────────── -->
+  <section class="session" aria-label="A session, replayed">
+    <div class="session-side">
+      <span class="session-label">Session</span>
+      <span class="session-sub">recorded<br>replayed at 1×</span>
+    </div>
+    <ol class="session-lines" id="session-lines"></ol>
+  </section>
+
+  <!-- ───────────────────────────── figures ───────────────────────────── -->
   <section class="figures" aria-label="Specification">
     <dl>
       <div><dt>States</dt><dd>89</dd></div>
@@ -81,10 +95,21 @@
         a reason — if the agent does it, the whale has a face for it.
       </p>
     </div>
+
+    <div class="stage" id="stage">
+      <canvas id="stage-canvas" width="64" height="64"></canvas>
+      <span class="stage-label">preview</span>
+      <div class="stage-text">
+        <span class="stage-state" id="stage-state">idle</span>
+        <span class="stage-why" id="stage-why">nothing is running</span>
+      </div>
+      <div class="stage-meta"><span class="stage-hint">hover a row</span> <span id="stage-meta">8 frames · 6 fps · loop</span></div>
+    </div>
+
     <div class="catalog" id="catalog"></div>
     <p class="catalog-foot">
-      Hover any row to see it on the whale above. Chonk variants resolve
-      automatically once it has been fed rice.
+      Hover any row to run it on the whale. Chonk variants resolve automatically
+      once it has been fed.
     </p>
   </section>
 
@@ -103,24 +128,31 @@
       <div class="feed-row">
         <span class="feed-name">Freebuff</span>
         <code class="path">~/.config/freebuff-desktop/projects/*/desktop-v2.db</code>
+        <span class="feed-flag">sqlite</span>
       </div>
       <div class="feed-row">
         <span class="feed-name">opencode</span>
         <code class="path">~/.local/share/opencode/opencode.db</code>
+        <span class="feed-flag">sqlite</span>
       </div>
       <div class="feed-row">
         <span class="feed-name">Claude Code</span>
         <code class="path">~/.claude/projects/*/*.jsonl</code>
+        <span class="feed-flag">jsonl</span>
       </div>
     </div>
 
     <div class="push">
-      <p>
-        A harness that can run a shell command doesn't need an adapter at all.
-        Push the state directly — it holds for a minute, then sampling takes
-        over again.
-      </p>
-      <pre><code>curl -X POST --data-binary '{"state":"running-cmd","detail":"the tests"}' \
+      <div>
+        <h3>Any other harness</h3>
+        <p>
+          A tool that can run a shell command doesn't need an adapter at all.
+          Push the state directly — it holds for a minute, then sampling takes
+          over again.
+        </p>
+      </div>
+      <pre><code>curl -X POST --data-binary \
+  '{"state":"running-cmd","detail":"the tests"}' \
   http://127.0.0.1:8791/event</code></pre>
     </div>
   </section>
@@ -140,8 +172,8 @@
       <div class="install-main">
         <a class="btn btn-large" href="https://github.com/49vxn/opencode-dafeiyu/releases/latest/download/dafeiyu-Setup-0.4.6.exe">dafeiyu-Setup-0.4.6.exe</a>
         <p class="fine">
-          Windows 10 / 11, 64-bit · 108 MB · installs to
-          <code>%LOCALAPPDATA%\Programs\dafeiyu</code>
+          Windows 10 / 11, 64-bit · 108 MB<br>
+          installs to <code>%LOCALAPPDATA%\Programs\dafeiyu</code>
         </p>
       </div>
       <div class="install-notes">
@@ -158,13 +190,17 @@
 </main>
 
 <footer class="footer">
-  <div class="footer-left">
-    <span class="mark-cn">大肥鱼</span>
+  <div class="footer-top">
+    <span class="footer-mark">大肥鱼</span>
     <span class="footer-note">A fan project. Not affiliated with DeepSeek, Freebuff, opencode or Anthropic.</span>
+    <a class="footer-out" href="https://github.com/49vxn/opencode-dafeiyu" target="_blank" rel="noreferrer">GitHub ↗</a>
   </div>
-  <div class="footer-right">
-    <span>Code MIT · Sprites CC BY-NC-SA 4.0</span>
-    <a href="https://github.com/49vxn/opencode-dafeiyu" target="_blank" rel="noreferrer">GitHub ↗</a>
+  <div class="footer-bottom">
+    <span>Code MIT</span>
+    <span>Sprites CC BY-NC-SA 4.0</span>
+    <span>Set in Fraunces &amp; IBM Plex Mono</span>
+    <span>One 236 KB atlas · no trackers</span>
+    <span id="colophon-build">Build v0.4.6</span>
   </div>
 </footer>
 
