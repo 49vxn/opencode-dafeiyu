@@ -35,7 +35,7 @@ state:"idle",detail:"abandoned turn",confident:false};const usable=live.content.
 confident:false}}switch(part.type){case"reasoning":return{state:"long-think",detail:"reasoning",confident:true}
 ;case"text":return{state:"streaming",detail:"answering",confident:true};case"tool":{if(part.status==="error"){return{
 state:"tests-fail",detail:`${part.name||"tool"} failed`,confident:true}}
-if(heart>=BLOCK_AFTER_MS&&(part.status==="running"||part.status==="pending")){return{state:"blocked",
+if(heart>=BLOCK_AFTER_MS&&part.status==="pending"){return{state:"blocked",
 detail:"waiting for you",confident:true}}const mapped=TOOL_STATE[part.name];return{
 state:part.status==="running"||part.status==="pending"?mapped||"tool-call":"thinking",detail:part.name||"tool",
 confident:part.status==="running"||part.status==="pending"}}default:return{state:"tool-call",detail:part.type||"part",
