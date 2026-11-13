@@ -7,10 +7,10 @@
 <meta name="description" content="A small pixel whale that sits in the corner of your screen and shows what your coding agent is doing. 89 animations, read-only, no account.">
 <meta property="og:title" content="dafeiyu — a desk whale for your coding agent">
 <meta property="og:description" content="89 animations. Three adapters. No account, no network.">
-<meta property="og:image" content="atlas.png">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,500;0,9..144,700;1,9..144,400&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<meta property="og:image" content="og.png">
+<meta name="theme-color" content="#f4f1e8">
+<link rel="preload" href="fonts/fraunces-var.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="fonts/plex-400.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="stylesheet" href="style.css">
 <link rel="icon" href="atlas.png">
 </head>
@@ -38,17 +38,17 @@
   <section class="cover" id="cover">
     <div class="cover-grid">
       <div class="cover-title">
-        <p class="kicker"><span class="dot"></span> A field study of the desk whale</p>
+        <p class="kicker">A field study of the desk whale</p>
         <h1><span class="l">A small whale</span><span class="l">for a long build.</span></h1>
         <p class="lede">
           It sits in the corner of your screen and shows what your coding agent is
-          doing — not what a timer guesses. It reads Freebuff, opencode and Claude
+          doing. It reads Freebuff, opencode and Claude
           Code read-only, then picks one of eighty-nine animations to match the
           actual work.
         </p>
         <div class="cta">
           <a class="btn" href="https://github.com/49vxn/opencode-dafeiyu/releases/latest/download/dafeiyu-Setup-0.4.6.exe">Download the installer</a>
-          <a class="btn-quiet" href="#plates">See all 89 states <span class="arr">↓</span></a>
+          <a class="btn-quiet" href="#plates">89 animations <span class="arr">↓</span></a>
         </div>
       </div>
 
@@ -62,18 +62,16 @@
             </div>
           </div>
           <figcaption>
-            <span class="live"><i></i> live<span class="live-state" id="hero-state">idle</span></span>
+            <span class="live">live<span class="live-state" id="hero-state">idle</span></span>
             <span class="hint" id="hero-clock">00:00</span>
           </figcaption>
         </figure>
-        <p class="plate-caption"><b>Plate 0</b> — the specimen, at 2× · click it to feed</p>
+        <p class="feed-cue">click it to feed</p>
       </div>
     </div>
 
     <div class="cover-foot">
-      <span>v0.4.6 · Windows 10 / 11</span>
-      <span class="scroll-cue"><i></i> scroll</span>
-      <span>89 states · 618 frames · one atlas</span>
+      <p class="cover-line">If the app needs a login, then you probably don't need it.</p>
     </div>
   </section>
 
@@ -81,7 +79,6 @@
   <section class="session" aria-label="A session, replayed">
     <div class="session-side">
       <span class="session-label">Session</span>
-      <span class="session-sub">recorded<br>replayed at 1×</span>
     </div>
     <ol class="session-lines" id="session-lines"></ol>
   </section>
@@ -103,8 +100,8 @@
       <span class="num">01</span>
       <h2>The vocabulary</h2>
       <p class="section-note">
-        Every animation answers a real event. Nothing here is a loop waiting for
-        a reason — if the agent does it, the whale has a face for it.
+        Every animation answers a real event. If the agent does it, the whale
+        has a face for it.
       </p>
     </div>
 

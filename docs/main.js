@@ -73,7 +73,8 @@ const progress = $("progress");
 let meta = null, atlas = null;
 let hero = { state: "idle", since: 0, detail: "waiting for an order" };
 let stage = { state: "idle", since: 0 };
-let hovered = null;      // state under the cursor
+let hovered = null;
+let resumeTimer = null;      // state under the cursor
 let feeding = null;      // { state, until }
 let step = -1, stepAt = 0, clock = 9 * 3600 + 41 * 60 + 2;
 
@@ -164,12 +165,18 @@ function feed() {
   if (feeding && feeding.state === "chonk-idle") {
     setHero("too-full-rice", "it can't — it's full", now);
     feeding = { state: "too-full-rice", until: now + 2200 };
-    setTimeout(() => { if (feeding) { setHero("chonk-idle", "fed, and idle"); feeding = { state: "chonk-idle", until: performance.now() + 1e9 }; } }, 2100);
+    setTimeout(() => {
+      if (!feeding) return;
+      if (hovered) { feeding = null; return; }
+      setHero("chonk-idle", "fed, and idle");
+      feeding = { state: "chonk-idle", until: performance.now() + 1e9 };
+    }, 2100);
     return;
   }
   setHero("eating-rice", "you clicked it", now);
   feeding = { state: "eating-rice", until: now + 2600 };
   setTimeout(() => {
+    if (hovered) { feeding = null; return; }
     setHero("chonk-idle", "full of rice");
     feeding = { state: "chonk-idle", until: performance.now() + 1e9 };
     setTimeout(() => { feeding = null; stepAt = performance.now(); }, 5200);
@@ -198,11 +205,29 @@ function buildRow(state, index) {
   m.textContent = ms ? `${ms.frames}fr · ${ms.fps}fps` : "";
   row.append(c, name, w, m);
 
+  row.classList.add("reveal");
   const rec = { el: row, canvas: c, state, visible: false };
   rows.push(rec);
 
-  const enter = () => { hovered = state; setHero(state); setStage(state); };
-  const leave = () => { hovered = null; };
+  // Hover follows you across rows: entering a new row cancels the pending
+  // resume, so sweeping down the catalogue never flickers back to the session.
+  const enter = () => {
+    clearTimeout(resumeTimer);
+    hovered = state;
+    document.body.classList.add("hovering");
+    setHero(state);
+    setStage(state);
+  };
+  const leave = () => {
+    clearTimeout(resumeTimer);
+    resumeTimer = setTimeout(() => {
+      hovered = null;
+      document.body.classList.remove("hovering");
+      const cur = SESSION[step] || SESSION[0];
+      if (cur) setHero(cur[0], cur[1]);
+      stepAt = performance.now();
+    }, 90);
+  };
   row.addEventListener("pointerenter", enter);
   row.addEventListener("focus", enter);
   row.addEventListener("pointerleave", leave);
@@ -281,7 +306,10 @@ function observe() {
   const rowIO = new IntersectionObserver((entries) => {
     for (const e of entries) {
       const rec = rows.find((r) => r.el === e.target);
-      if (rec) rec.visible = e.isIntersecting;
+      if (rec) {
+        rec.visible = e.isIntersecting;
+        if (e.isIntersecting) e.target.classList.add("in");
+      }
     }
   }, { rootMargin: "150px 0px" });
   rows.forEach((r) => rowIO.observe(r.el));
@@ -296,6 +324,8 @@ function trackProgress() {
   onScroll();
 }
 
+if ("scrollRestoration" in history) history.scrollRestoration = "manual";
+
 async function boot() {
   const [m, img] = await Promise.all([
     fetch("atlas.json").then((r) => r.json()),
@@ -303,6 +333,7 @@ async function boot() {
   ]);
   meta = m; atlas = img;
 
+  scrollTo(0, 0);
   buildCatalog();
   buildNight();
   observe();
