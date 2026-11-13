@@ -9,6 +9,9 @@
   --muted: #6f6b5f;
   --rule: #d7d1c0;
   --blue: #4d6bfe;
+  --term-bg: #0c0e14;
+  --term-line: #232936;
+  --term-dim: #7b8398;
   --mono: "IBM Plex Mono", ui-monospace, "Cascadia Mono", monospace;
   --serif: "Fraunces", "Iowan Old Style", Georgia, serif;
   --gut: clamp(20px, 4vw, 56px);
@@ -409,32 +412,7 @@ figcaption {
 
 /* ── dark: the same room at night ────────────────────────── */
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --paper: #0d1018;
-    --paper-deep: #141824;
-    --ink: #e9e6da;
-    --muted: #8b887a;
-    --rule: #242836;
-    --blue: #7d90ff;
-    --cream: #11141d;
-  }
-  body {
-    background-image: radial-gradient(rgba(233, 230, 218, .055) 1px, transparent 1px);
-  }
-  .lede, .push p, .install-notes p { color: #b9b6aa; }
-  .specimen-desktop::before {
-    background-image:
-      linear-gradient(to right, rgba(233,230,218,.06) 1px, transparent 1px),
-      linear-gradient(to bottom, rgba(233,230,218,.06) 1px, transparent 1px);
-  }
-  .push pre { background: #05070d; color: #cdd6ff; }
-  .session { background: rgba(233, 230, 218, .022); }
-  .btn { color: #0d1018; }
-  .btn:hover, .btn:focus-visible { background: #93a3ff; border-color: #93a3ff; }
-  .nav-out, .footer-out { color: var(--ink) !important; }
-  .stage { box-shadow: 0 1px 0 var(--paper); }
-}
+
 
 .hovering .specimen-desktop { border-color: var(--blue); }
 .specimen-desktop { transition: border-color .18s ease; }
@@ -534,4 +512,103 @@ figcaption {
   color: var(--ink);
   max-width: 36ch;
   text-align: center;
+}
+
+/* ── replay: a log, not a clip-art terminal ──────────────── */
+
+.term {
+  border-radius: 0;
+  border: 1px solid var(--term-line);
+  background: var(--term-bg);
+}
+
+.term-bar {
+  height: 34px;
+  padding: 0 16px;
+  background: transparent;
+  border-bottom: 1px solid var(--term-line);
+  justify-content: space-between;
+}
+.term-title { color: #9aa3b8; font-size: 10px; letter-spacing: .18em; }
+.term-meta { color: #586074; }
+
+.term-body {
+  padding: 22px 22px 26px;
+  border-left: 2px solid #4d6bfe;
+}
+
+.term-cmd { font-size: 12.5px; color: #8b93a7; margin-bottom: 16px; }
+.term-cmd .prompt { color: #9fe6b0; }
+
+.session-lines { min-height: 176px; gap: 7px; font-size: 12.5px; }
+.session-lines li { grid-template-columns: 78px 150px 1fr; gap: 14px; color: #7b8398; opacity: .45; }
+.session-lines li.now .t-state { color: #9fe6b0; }
+.session-lines li.now .t-detail { color: #f0f3fa; }
+.session-lines li.now .caret::after { color: #9fe6b0; }
+
+/* ── the catalogue preview, finally at a readable size ───── */
+
+.stage {
+  grid-template-columns: 84px 96px minmax(0, 1fr) auto;
+  gap: 18px;
+  padding: 14px 0;
+}
+.stage canvas { width: 84px; height: 84px; }
+.stage-label { font-size: 10px; }
+.stage-state { font-size: 17px; letter-spacing: -.01em; }
+.stage-why { font-size: 13px; }
+.stage-meta { font-size: 10px; }
+
+/* ── the cover specimen, larger again ────────────────────── */
+
+#hero { width: 288px; height: 288px; }
+.specimen-desktop { min-height: clamp(360px, 34vw, 440px); }
+.widget-tag { font-size: 11.5px; padding: 5px 11px; }
+.widget-doing { font-size: 12px; }
+
+/* ── dark: same page, lights down — not a different site ─── */
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --paper: #151821;
+    --paper-deep: #1b1f2b;
+    --ink: #ece9de;
+    --muted: #a6a294;
+    --rule: #2b303e;
+    --blue: #8b9dff;
+    --cream: #1a1e29;
+    --term-bg: #10131b;
+    --term-line: #2a3040;
+    --term-dim: #9aa2b6;
+  }
+
+  body {
+    background-image: radial-gradient(rgba(236, 233, 222, .045) 1px, transparent 1px);
+  }
+
+  .lede, .push p, .install-notes p, .section-note { color: #bdb9ab; }
+
+  .specimen-desktop::before {
+    background-image:
+      linear-gradient(to right, rgba(236,233,222,.05) 1px, transparent 1px),
+      linear-gradient(to bottom, rgba(236,233,222,.05) 1px, transparent 1px);
+  }
+
+  .push pre { background: #0b0e16; color: #cdd6ff; }
+
+  .btn { color: #0f1219; }
+  .btn:hover, .btn:focus-visible { background: #a3b2ff; border-color: #a3b2ff; }
+  .nav-out, .footer-out { color: var(--ink) !important; }
+
+  /* the catalogue rows: contrast that survives a dim screen */
+  .row-name { color: #e9e6db; }
+  .row-why { color: #a6a294; }
+  .row:hover, .row:focus-visible { background: rgba(139, 157, 255, .09); }
+  .row-meta { color: #6d7488; }
+
+  .group-title { color: #b3afa2; }
+  .stage-why { color: #a6a294; }
+  .stage-meta, .stage-hint { color: #7d8497; }
+
+  .night { background: #0f121a; }
 }

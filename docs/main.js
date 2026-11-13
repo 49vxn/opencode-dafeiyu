@@ -150,6 +150,8 @@ function advance(t) {
     // Roll the log rather than clearing it: the clock keeps running and the
     // oldest line drops off, which is what a terminal actually does.
     step = 0;
+    clock += 4;
+    heroClock.textContent = hhmmss(clock);
     const [s0, d0] = SESSION[0];
     setHero(s0, d0);
     pushLine(s0, d0);
