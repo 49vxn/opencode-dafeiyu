@@ -1,5 +1,6 @@
 // dafeiyu — one atlas, one manifest, one loop.
-// The hero is driven by a recorded session; the catalogue drives the stage.
+// Hero: a recorded session drives it. Plates: hover drives the stage.
+// Night: its own six loops. Click the whale and it eats.
 
 const GROUPS = [
   ["At rest", ["idle", "idle-left", "idle-right", "look-around", "yawn", "sleeping", "waiting-prompt", "done-flop"]],
@@ -10,6 +11,8 @@ const GROUPS = [
   ["Drift", ["doze-off", "walk-away", "wake-up", "fish-spot", "fish-chase", "fish-return", "boba-run", "boba-return"]],
   ["Other agents", ["agent-spot", "agent-follow", "agent-return"]],
 ];
+
+const NIGHT = [["doze-off"], ["sleeping"], ["walk-away", 4], ["wake-up"], ["fish-spot"], ["fish-chase", 3]];
 
 const WHY = {
   idle: "nothing is running", "idle-left": "you're off to its left", "idle-right": "you're off to its right",
@@ -36,7 +39,6 @@ const WHY = {
   "agent-return": "it's alone again",
 };
 
-/* A recorded session. The whale follows it line for line. */
 const SESSION = [
   ["idle", "waiting for an order", 1600],
   ["thinking", "the request went out", 1400],
@@ -54,68 +56,83 @@ const SESSION = [
   ["slim-down", "the rice wears off", 1500],
 ];
 
-const heroCanvas = document.getElementById("hero");
-const heroState = document.getElementById("hero-state");
-const heroDoing = document.getElementById("hero-doing");
-const heroClock = document.getElementById("hero-clock");
-const stageCanvas = document.getElementById("stage-canvas");
-const stageState = document.getElementById("stage-state");
-const stageWhy = document.getElementById("stage-why");
-const stageMeta = document.getElementById("stage-meta");
-const list = document.getElementById("session-lines");
-const catalog = document.getElementById("catalog");
-const progress = document.getElementById("progress");
+const $ = (id) => document.getElementById(id);
+const heroCanvas = $("hero");
+const heroState = $("hero-state");
+const heroDoing = $("hero-doing");
+const heroClock = $("hero-clock");
+const stageCanvas = $("stage-canvas");
+const stageState = $("stage-state");
+const stageWhy = $("stage-why");
+const stageMeta = $("stage-meta");
+const list = $("session-lines");
+const catalog = $("catalog");
+const nightGrid = $("night-grid");
+const progress = $("progress");
 
 let meta = null, atlas = null;
-let hero = { state: "idle", startedAt: performance.now() };
-let stage = { state: "idle", startedAt: performance.now() };
-let manual = null;
+let hero = { state: "idle", since: 0, detail: "waiting for an order" };
+let stage = { state: "idle", since: 0 };
+let hovered = null;      // state under the cursor
+let feeding = null;      // { state, until }
 let step = -1, stepAt = 0, clock = 9 * 3600 + 41 * 60 + 2;
 
 const rows = [];
+const nights = [];
 
 const pad = (n) => String(n).padStart(2, "0");
 const hhmmss = (s) => `${pad(Math.floor(s / 3600))}:${pad(Math.floor((s % 3600) / 60))}:${pad(s % 60)}`;
 const why = (s) => WHY[s] || (s.startsWith("chonk-") ? "the fed version of " + s.slice(6) : "");
+const num = (i) => String(i + 1).padStart(3, "0");
 
-function draw(canvas, state, t) {
+const frameCache = new Map();
+function framesOf(state) {
+  if (frameCache.has(state)) return frameCache.get(state);
+  const s = meta && meta.states[state];
+  if (!s) return null;
+  const blanks = (meta.empty && meta.empty[state]) || [];
+  const vis = [];
+  for (let i = 0; i < s.frames; i++) if (!blanks.includes(i)) vis.push(i);
+  const rec = { s, vis: vis.length ? vis : [0] };
+  frameCache.set(state, rec);
+  return rec;
+}
+
+function draw(canvas, state, t, since, cap) {
   if (!meta || !atlas) return;
-  const s = meta.states[state];
-  if (!s) return;
+  const f = framesOf(state);
+  if (!f) return;
+  const { s } = f;
+  const vis = cap ? f.vis.slice(0, cap) : f.vis;
   const fps = s.fps || 8;
-  const origin = state === hero.state ? hero.startedAt : state === stage.state ? stage.startedAt : 0;
-  const raw = Math.floor((t - origin) / (1000 / fps));
-  const idx = s.loop === "loop" ? raw % s.frames : Math.min(Math.max(raw, 0), s.frames - 1);
+  const raw = Math.floor((t - since) / (1000 / fps));
+  const k = s.loop === "loop" ? Math.max(raw, 0) % vis.length : Math.min(Math.max(raw, 0), vis.length - 1);
+  const idx = vis[k];
   const ctx = canvas.getContext("2d");
   ctx.imageSmoothingEnabled = false;
   ctx.clearRect(0, 0, 64, 64);
   ctx.drawImage(atlas, idx * 64, s.row * 64, 64, 64, 0, 0, 64, 64);
 }
 
-function setHero(state, detail) {
-  hero = { state, startedAt: performance.now() };
+function setHero(state, detail, since = performance.now()) {
+  hero = { state, detail: detail || why(state), since };
   heroState.textContent = state;
-  heroDoing.textContent = detail || why(state);
-  draw(heroCanvas, state, performance.now());
+  heroDoing.textContent = hero.detail;
 }
 
 function setStage(state) {
-  stage = { state, startedAt: performance.now() };
+  stage = { state, since: performance.now() };
   const s = meta.states[state];
   stageState.textContent = state;
   stageWhy.textContent = why(state);
   stageMeta.textContent = s ? `${s.frames} frames · ${s.fps} fps · ${s.loop}` : "";
-  draw(stageCanvas, state, performance.now());
 }
 
-/* ── session player ─────────────────────────────────────── */
+/* ── session ──────────────────────────────────────────────── */
 
 function pushLine(state, detail) {
   const li = document.createElement("li");
-  li.innerHTML =
-    `<span class="t">${hhmmss(clock)}</span>` +
-    `<span class="t-state">${state}</span>` +
-    `<span class="t-detail">${detail}</span>`;
+  li.innerHTML = `<span class="t">${hhmmss(clock)}</span><span class="t-state">${state}</span><span class="t-detail">${detail}</span>`;
   list.append(li);
   [...list.children].forEach((el) => el.classList.remove("now", "caret"));
   li.classList.add("now", "caret");
@@ -123,14 +140,13 @@ function pushLine(state, detail) {
 }
 
 function advance(t) {
-  if (manual) { stepAt = t; return; }
+  if (hovered || feeding) { stepAt = t; return; }
   if (!stepAt) stepAt = t;
   if (t - stepAt < SESSION[step < 0 ? 0 : step][2]) return;
   step += 1;
   stepAt = t;
   if (step >= SESSION.length) {
-    step = -1;
-    list.innerHTML = "";
+    step = -1; list.innerHTML = "";
     clock = 9 * 3600 + 41 * 60 + 2;
     return;
   }
@@ -141,9 +157,28 @@ function advance(t) {
   pushLine(state, detail);
 }
 
-/* ── catalogue ──────────────────────────────────────────── */
+/* ── feeding ──────────────────────────────────────────────── */
 
-function buildRow(state) {
+function feed() {
+  const now = performance.now();
+  if (feeding && feeding.state === "chonk-idle") {
+    setHero("too-full-rice", "it can't — it's full", now);
+    feeding = { state: "too-full-rice", until: now + 2200 };
+    setTimeout(() => { if (feeding) { setHero("chonk-idle", "fed, and idle"); feeding = { state: "chonk-idle", until: performance.now() + 1e9 }; } }, 2100);
+    return;
+  }
+  setHero("eating-rice", "you clicked it", now);
+  feeding = { state: "eating-rice", until: now + 2600 };
+  setTimeout(() => {
+    setHero("chonk-idle", "full of rice");
+    feeding = { state: "chonk-idle", until: performance.now() + 1e9 };
+    setTimeout(() => { feeding = null; stepAt = performance.now(); }, 5200);
+  }, 2500);
+}
+
+/* ── catalogue ────────────────────────────────────────────── */
+
+function buildRow(state, index) {
   const row = document.createElement("div");
   row.className = "row";
   row.tabIndex = 0;
@@ -153,26 +188,21 @@ function buildRow(state) {
   c.width = 64; c.height = 64;
   const name = document.createElement("span");
   name.className = "row-name";
-  name.textContent = state;
-  const whyEl = document.createElement("span");
-  whyEl.className = "row-why";
-  whyEl.textContent = why(state);
+  name.innerHTML = `<span class="row-num">${num(index)}</span>${state}`;
+  const w = document.createElement("span");
+  w.className = "row-why";
+  w.textContent = why(state);
   const m = document.createElement("span");
   m.className = "row-meta";
   const ms = meta.states[state];
   m.textContent = ms ? `${ms.frames}fr · ${ms.fps}fps` : "";
-
-  row.append(c, name, whyEl, m);
+  row.append(c, name, w, m);
 
   const rec = { el: row, canvas: c, state, visible: false };
   rows.push(rec);
 
-  const enter = () => {
-    manual = state;
-    setHero(state);
-    setStage(state);
-  };
-  const leave = () => { manual = null; };
+  const enter = () => { hovered = state; setHero(state); setStage(state); };
+  const leave = () => { hovered = null; };
   row.addEventListener("pointerenter", enter);
   row.addEventListener("focus", enter);
   row.addEventListener("pointerleave", leave);
@@ -195,7 +225,7 @@ function buildCatalog() {
     h.innerHTML = `<span>${title}</span><em>${present.length}</em>`;
     const box = document.createElement("div");
     box.className = "rows";
-    present.forEach((s) => box.append(buildRow(s)));
+    present.forEach((s) => box.append(buildRow(s, order.indexOf(s))));
     g.append(h, box);
     catalog.append(g);
   }
@@ -209,37 +239,52 @@ function buildCatalog() {
     h.innerHTML = `<span>Chonk variants — resolved automatically</span><em>${twins.length}</em>`;
     const box = document.createElement("div");
     box.className = "rows";
-    twins.forEach((s) => box.append(buildRow(s)));
+    twins.forEach((s) => box.append(buildRow(s, order.indexOf(s))));
     g.append(h, box);
     catalog.append(g);
   }
 }
 
-/* ── loop ───────────────────────────────────────────────── */
+/* ── night ────────────────────────────────────────────────── */
+
+function buildNight() {
+  for (const [state, cap] of NIGHT) {
+    const cell = document.createElement("div");
+    cell.className = "night-cell";
+    const c = document.createElement("canvas");
+    c.width = 64; c.height = 64;
+    const box = document.createElement("div");
+    box.innerHTML = `<b>${state}</b><span>${why(state)}</span>`;
+    cell.append(c, box);
+    nightGrid.append(cell);
+    nights.push({ canvas: c, state, cap, since: performance.now() });
+  }
+}
+
+/* ── loop ─────────────────────────────────────────────────── */
 
 function frame(t) {
   advance(t);
-  draw(heroCanvas, hero.state, t);
-  if (stageCanvas) draw(stageCanvas, stage.state, t);
-  for (const r of rows) if (r.visible) draw(r.canvas, r.state, t);
+  draw(heroCanvas, hero.state, t, hero.since);
+  draw(stageCanvas, stage.state, t, stage.since);
+  for (const r of rows) if (r.visible) draw(r.canvas, r.state, t, 0);
+  for (const n of nights) draw(n.canvas, n.state, t, n.since, n.cap);
   requestAnimationFrame(frame);
 }
 
-function reveal() {
-  const io = new IntersectionObserver((entries) => {
-    for (const e of entries) if (e.isIntersecting) { e.target.classList.add("in"); io.unobserve(e.target); }
+function observe() {
+  const revealIO = new IntersectionObserver((entries) => {
+    for (const e of entries) if (e.isIntersecting) { e.target.classList.add("in"); revealIO.unobserve(e.target); }
   }, { rootMargin: "0px 0px -8% 0px" });
-  document.querySelectorAll(".reveal").forEach((el) => io.observe(el));
-}
+  document.querySelectorAll(".reveal").forEach((el) => revealIO.observe(el));
 
-function observeRows() {
-  const io = new IntersectionObserver((entries) => {
+  const rowIO = new IntersectionObserver((entries) => {
     for (const e of entries) {
       const rec = rows.find((r) => r.el === e.target);
       if (rec) rec.visible = e.isIntersecting;
     }
-  }, { rootMargin: "120px 0px" });
-  rows.forEach((r) => io.observe(r.el));
+  }, { rootMargin: "150px 0px" });
+  rows.forEach((r) => rowIO.observe(r.el));
 }
 
 function trackProgress() {
@@ -259,16 +304,26 @@ async function boot() {
   meta = m; atlas = img;
 
   buildCatalog();
-  observeRows();
-  reveal();
+  buildNight();
+  observe();
   trackProgress();
 
   setHero("idle", "waiting for an order");
   setStage("idle");
+  heroCanvas.addEventListener("click", feed);
 
-  requestAnimationFrame(() => {
-    document.documentElement.classList.add("ready");
-    requestAnimationFrame(frame);
+  document.documentElement.classList.add("ready");
+
+  // Paint one frame synchronously: a page opened in a background tab has rAF
+  // paused, and an empty canvas is worse than a still one.
+  const now = performance.now();
+  draw(heroCanvas, hero.state, now, hero.since);
+  draw(stageCanvas, stage.state, now, stage.since);
+  for (const n of nights) draw(n.canvas, n.state, now, n.since, n.cap);
+
+  requestAnimationFrame(frame);
+  addEventListener("visibilitychange", () => {
+    if (!document.hidden) requestAnimationFrame(frame);
   });
 }
 

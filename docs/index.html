@@ -19,53 +19,65 @@
 <div class="progress" id="progress"></div>
 
 <header class="masthead">
-  <a class="mark" href="#top">
+  <a class="mark" href="#cover">
     <span class="mark-cn">大肥鱼</span>
     <span class="mark-en">dafeiyu</span>
   </a>
   <nav class="nav">
-    <a href="#states"><span>01</span> States</a>
-    <a href="#feed"><span>02</span> Feed</a>
-    <a href="#install"><span>03</span> Install</a>
+    <a href="#plates"><span>01</span> Plates</a>
+    <a href="#night"><span>02</span> Night</a>
+    <a href="#feed"><span>03</span> Feed</a>
+    <a href="#install"><span>04</span> Install</a>
     <a class="nav-out" href="https://github.com/49vxn/opencode-dafeiyu" target="_blank" rel="noreferrer">GitHub&nbsp;↗</a>
   </nav>
 </header>
 
-<main id="top">
+<main>
 
-  <!-- ───────────────────────────── hero ───────────────────────────── -->
-  <section class="hero">
-    <div class="hero-copy">
-      <p class="eyebrow"><span class="dot"></span> Windows · v0.4.6 · 108 MB · no account</p>
-      <h1><span class="l">A small whale</span><span class="l">for a long build.</span></h1>
-      <p class="lede">
-        It sits in the corner of your screen and shows what your coding agent is
-        doing — not what a timer guesses. It reads Freebuff, opencode and Claude
-        Code read-only, then picks one of eighty-nine animations to match the
-        actual work.
-      </p>
-      <div class="cta">
-        <a class="btn" href="https://github.com/49vxn/opencode-dafeiyu/releases/latest/download/dafeiyu-Setup-0.4.6.exe">Download the installer</a>
-        <a class="btn-quiet" href="#states">See all 89 states <span class="arr">↓</span></a>
+  <!-- ═══════════════ cover ═══════════════ -->
+  <section class="cover" id="cover">
+    <div class="cover-grid">
+      <div class="cover-title">
+        <p class="kicker"><span class="dot"></span> A field study of the desk whale</p>
+        <h1><span class="l">A small whale</span><span class="l">for a long build.</span></h1>
+        <p class="lede">
+          It sits in the corner of your screen and shows what your coding agent is
+          doing — not what a timer guesses. It reads Freebuff, opencode and Claude
+          Code read-only, then picks one of eighty-nine animations to match the
+          actual work.
+        </p>
+        <div class="cta">
+          <a class="btn" href="https://github.com/49vxn/opencode-dafeiyu/releases/latest/download/dafeiyu-Setup-0.4.6.exe">Download the installer</a>
+          <a class="btn-quiet" href="#plates">See all 89 states <span class="arr">↓</span></a>
+        </div>
+      </div>
+
+      <div class="cover-plate">
+        <figure class="specimen" aria-label="The widget, live">
+          <div class="specimen-desktop">
+            <div class="widget">
+              <div class="widget-tag">maths + mascot</div>
+              <div class="widget-doing" id="hero-doing">waiting for an order</div>
+              <canvas id="hero" width="64" height="64" title="click to feed"></canvas>
+            </div>
+          </div>
+          <figcaption>
+            <span class="live"><i></i> live<span class="live-state" id="hero-state">idle</span></span>
+            <span class="hint" id="hero-clock">00:00</span>
+          </figcaption>
+        </figure>
+        <p class="plate-caption"><b>Plate 0</b> — the specimen, at 2× · click it to feed</p>
       </div>
     </div>
 
-    <figure class="specimen" aria-label="The widget, live">
-      <div class="specimen-desktop">
-        <div class="widget">
-          <div class="widget-tag" id="hero-tag">maths + mascot</div>
-          <div class="widget-doing" id="hero-doing">waiting for an order</div>
-          <canvas id="hero" width="64" height="64"></canvas>
-        </div>
-      </div>
-      <figcaption>
-        <span class="live"><i></i> live<span class="live-state" id="hero-state">idle</span></span>
-        <span class="hint" id="hero-clock">00:00</span>
-      </figcaption>
-    </figure>
+    <div class="cover-foot">
+      <span>v0.4.6 · Windows 10 / 11</span>
+      <span class="scroll-cue"><i></i> scroll</span>
+      <span>89 states · 618 frames · one atlas</span>
+    </div>
   </section>
 
-  <!-- ───────────────────────────── session ───────────────────────────── -->
+  <!-- ═══════════════ session ═══════════════ -->
   <section class="session" aria-label="A session, replayed">
     <div class="session-side">
       <span class="session-label">Session</span>
@@ -74,7 +86,7 @@
     <ol class="session-lines" id="session-lines"></ol>
   </section>
 
-  <!-- ───────────────────────────── figures ───────────────────────────── -->
+  <!-- ═══════════════ figures ═══════════════ -->
   <section class="figures" aria-label="Specification">
     <dl>
       <div><dt>States</dt><dd>89</dd></div>
@@ -85,8 +97,8 @@
     </dl>
   </section>
 
-  <!-- ───────────────────────────── states ───────────────────────────── -->
-  <section class="section" id="states">
+  <!-- ═══════════════ plates ═══════════════ -->
+  <section class="section" id="plates">
     <div class="section-head">
       <span class="num">01</span>
       <h2>The vocabulary</h2>
@@ -113,10 +125,27 @@
     </p>
   </section>
 
-  <!-- ───────────────────────────── feed ───────────────────────────── -->
+  <!-- ═══════════════ night ═══════════════ -->
+  <section class="night" id="night">
+    <div class="night-inner">
+      <div class="night-head">
+        <span class="num">02</span>
+        <h2>It sleeps<br>when you do.</h2>
+        <p>
+          Six of the eighty-nine only happen when you are gone. It dozes, it
+          wanders, it comes back when you do — and nothing here is a screensaver.
+          Each of these is triggered by the clock on your machine, not the agent's.
+        </p>
+      </div>
+      <div class="night-grid" id="night-grid"></div>
+      <p class="night-foot">Drift states · triggered by system idle time</p>
+    </div>
+  </section>
+
+  <!-- ═══════════════ feed ═══════════════ -->
   <section class="section" id="feed">
     <div class="section-head">
-      <span class="num">02</span>
+      <span class="num">03</span>
       <h2>How it knows</h2>
       <p class="section-note">
         Three local adapters, opened read-only. Nothing is uploaded, and no
@@ -157,10 +186,10 @@
     </div>
   </section>
 
-  <!-- ───────────────────────────── install ───────────────────────────── -->
+  <!-- ═══════════════ install ═══════════════ -->
   <section class="section" id="install">
     <div class="section-head">
-      <span class="num">03</span>
+      <span class="num">04</span>
       <h2>Install</h2>
       <p class="section-note">
         One click, per user, no admin prompt. It starts with Windows and lives
@@ -200,7 +229,7 @@
     <span>Sprites CC BY-NC-SA 4.0</span>
     <span>Set in Fraunces &amp; IBM Plex Mono</span>
     <span>One 236 KB atlas · no trackers</span>
-    <span id="colophon-build">Build v0.4.6</span>
+    <span>Build v0.4.6</span>
   </div>
 </footer>
 
