@@ -438,3 +438,100 @@ figcaption {
 
 .hovering .specimen-desktop { border-color: var(--blue); }
 .specimen-desktop { transition: border-color .18s ease; }
+
+/* ── the tag, as the product draws it ────────────────────── */
+
+.widget-tag {
+  background: #000;
+  color: #9fe6b0;
+  font-size: 10.5px;
+  letter-spacing: .04em;
+}
+
+/* ── session as a terminal window ────────────────────────── */
+
+.session {
+  display: block;
+  max-width: var(--max);
+  margin: clamp(36px, 5vw, 72px) auto 0;
+  padding: 0 var(--gut);
+  background: none;
+  border: 0;
+  width: auto;
+}
+
+.term {
+  background: #0b0d12;
+  border: 1px solid #1d2331;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.term-bar {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  height: 36px;
+  padding: 0 14px;
+  background: #12151d;
+  border-bottom: 1px solid #1d2331;
+}
+
+.lights { display: flex; gap: 6px; }
+.lights i { width: 10px; height: 10px; border-radius: 50%; display: block; }
+.lights i:nth-child(1) { background: #ff5f57; }
+.lights i:nth-child(2) { background: #febc2e; }
+.lights i:nth-child(3) { background: #28c840; }
+
+.term-title {
+  font-size: 10px; letter-spacing: .14em; text-transform: uppercase; color: #7d869c;
+}
+.term-meta {
+  margin-left: auto; font-size: 9px; letter-spacing: .18em;
+  text-transform: uppercase; color: #4b5568;
+}
+
+.term-body { padding: 18px 20px 22px; }
+
+.term-cmd {
+  margin: 0 0 14px; font-size: 11.5px; color: #7d869c;
+}
+.term-cmd .prompt { color: #4fcf86; margin-right: 6px; }
+
+.session-lines {
+  margin: 0; padding: 0; list-style: none;
+  min-height: 158px;
+  display: flex; flex-direction: column; justify-content: flex-end; gap: 3px;
+  font-size: 11.5px;
+}
+
+.session-lines li {
+  display: grid;
+  grid-template-columns: 74px 138px 1fr;
+  gap: 12px;
+  color: #6b7488;
+  opacity: .52;
+  transition: opacity .25s ease, color .25s ease;
+}
+.session-lines li .t { color: #4b5568; font-variant-numeric: tabular-nums; }
+.session-lines li .t-state { color: #8b93a7; }
+.session-lines li .t-detail { color: #6b7488; }
+
+.session-lines li.now { opacity: 1; }
+.session-lines li.now .t { color: #5b6478; }
+.session-lines li.now .t-state { color: #4fcf86; }
+.session-lines li.now .t-detail { color: #e8eef7; }
+.session-lines li.now .caret::after { content: "▍"; color: #4fcf86; margin-left: 2px; animation: blink 1.1s steps(1) infinite; }
+
+/* ── the closing line, at pull-quote size ────────────────── */
+
+.cover-line {
+  font-family: var(--serif);
+  font-weight: 500;
+  font-size: clamp(18px, 1.95vw, 27px);
+  line-height: 1.3;
+  letter-spacing: -.012em;
+  color: var(--ink);
+  max-width: 36ch;
+  text-align: center;
+}

@@ -147,8 +147,12 @@ function advance(t) {
   step += 1;
   stepAt = t;
   if (step >= SESSION.length) {
-    step = -1; list.innerHTML = "";
-    clock = 9 * 3600 + 41 * 60 + 2;
+    // Roll the log rather than clearing it: the clock keeps running and the
+    // oldest line drops off, which is what a terminal actually does.
+    step = 0;
+    const [s0, d0] = SESSION[0];
+    setHero(s0, d0);
+    pushLine(s0, d0);
     return;
   }
   const [state, detail] = SESSION[step];
@@ -341,6 +345,11 @@ async function boot() {
 
   setHero("idle", "waiting for an order");
   setStage("idle");
+  // Seed the transcript so the terminal is never empty on first paint.
+  pushLine(SESSION[0][0], SESSION[0][1]);
+  step = 0;
+  stepAt = performance.now();
+  heroClock.textContent = hhmmss(clock);
   heroCanvas.addEventListener("click", feed);
 
   document.documentElement.classList.add("ready");
