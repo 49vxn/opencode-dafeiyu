@@ -78,6 +78,11 @@
         }
       ],
       "artifactName": "dafeiyu-${version}-mac-${arch}.${ext}"
+    },
+    "publish": {
+      "provider": "github",
+      "owner": "49vxn",
+      "repo": "opencode-dafeiyu"
     }
   }
 }
