@@ -32,7 +32,7 @@ forward:true})}refreshTray()}function refreshTray(){if(!tray)return;tray.setCont
 {label:"Setup check…",click:runDoctor},
 {label:"Open logs folder",click:()=>{shell.openPath(RUNTIME)}},
 {type:"separator"},
-{label:"Quit",click:()=>{app.isQuitting=true;app.quit()}}]))}
+{label:"Quit",click:()=>{try{fs.writeFileSync(path.join(RUNTIME,"graceful-quit"),String(Date.now()))}catch{}app.isQuitting=true;app.quit()}}]))}
 function toggleVisible(){if(!win||win.isDestroyed())return;if(win.isVisible()){hiddenByUser=true;win.hide();mlog("hidden","by tray")}
 else{hiddenByUser=false;win.showInactive();win.setAlwaysOnTop(true,"screen-saver");mlog("shown","by tray")}refreshTray()}
 function settingsFile(){return path.join(app.getPath("userData"),"settings.json")}
