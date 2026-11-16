@@ -16,8 +16,8 @@ preview_evaluate:"tool-call",preview_scroll:"tool-call",preview_logs:"tool-call"
 ;if(!fs.existsSync(db))continue;let stamp=0;for(const f of[db+"-wal",db]){try{
 stamp=Math.max(stamp,fs.statSync(f).mtimeMs)}catch{}}out.push({db:db,project:e.name,stamp:stamp})}
 out.sort((a,b)=>b.stamp-a.stamp);return out.slice(0,n)}const partsCache={at:0,threadId:null,parts:[]};const LONG_THINK_MS=Number(process.env.DAFEIYU_LONG_THINK_MS)||15000;const reasonTrack={threadId:null,since:0};function reasonDwell(threadId,parts,now){const last=parts&&parts.length?parts[parts.length-1]:null;if(last&&last.kind==="reasoning"){if(reasonTrack.threadId!==threadId||!reasonTrack.since){reasonTrack.threadId=threadId;reasonTrack.since=now}return now-reasonTrack.since}reasonTrack.since=0;return 0}function shape(p){
-return{kind:p.kind,toolName:p.toolName??null,status:p.status??null,exitCode:p.exitCode??null}}function readThread(db){
-return db.prepare(`\n    select id, title, updated_at, turn_state, agent_mode, attention_reason, last_turn_outcome,\n           turn_alive_at, last_turn_finished_at\n    from threads\n    order by updated_at desc\n    limit 1\n  `).get()
+return{kind:p.kind,toolName:p.toolName??null,status:p.status??null,exitCode:p.exitCode??null}}function readThread(db,now){
+return db.prepare(`\n    select id, title, updated_at, turn_state, agent_mode, attention_reason, last_turn_outcome,\n           turn_alive_at, last_turn_finished_at\n    from threads\n    order by (turn_state = 'running' and turn_alive_at is not null and turn_alive_at > ?) desc, updated_at desc\n    limit 1\n  `).get(now?now-STALE_MS:0)
 }const MAX_AGENTS=3;const AGENT_WINDOW_MS=45*60000;function readAgents(db,now){let rows=[];try{
 rows=db.prepare(`\n      select id, title, updated_at, turn_state, agent_mode, last_turn_outcome,\n             turn_alive_at, last_turn_finished_at\n      from threads\n      where updated_at > ?\n      order by turn_state = 'running' desc, updated_at desc\n      limit ?\n    `).all(now-AGENT_WINDOW_MS,MAX_AGENTS)
 }catch{}if(!rows.length){try{
@@ -36,9 +36,9 @@ function readStoredPart(db,threadId){try{
 const msg=db.prepare(`\n      select parts_json from messages where thread_id = ? order by seq desc limit 1\n    `).get(threadId)
 ;if(!msg)return null;const parts=JSON.parse(msg.parts_json).filter(p=>p&&typeof p==="object"&&p.kind!=="ad")
 ;return parts.length?shape(parts[parts.length-1]):null}catch{return null}}function classify(snap,now){
-const{thread:thread,part:part,outType:outType,queueRunning:queueRunning,toolLive:toolLive,reasonMs:reasonMs}=snap;if(!thread)return{
+const{thread:thread,part:part,outType:outType,queueRunning:queueRunning,toolLive:toolLive,dbFresh:dbFresh,reasonMs:reasonMs}=snap;if(!thread)return{
 state:"idle",detail:"no session",confident:false};const alive=thread.turn_alive_at?now-thread.turn_alive_at:Infinity
-;if(thread.turn_state==="running"){if(alive>STALE_MS&&!toolLive){return{state:"idle",detail:"abandoned turn",
+;if(thread.turn_state==="running"){if(alive>STALE_MS&&!toolLive&&!dbFresh){return{state:"idle",detail:"abandoned turn",
 confident:false}}if(outType==="error")return{state:"error",detail:"turn failed",confident:true};if(!part){return{
 state:"thinking",detail:"starting",confident:false}}switch(part.kind){case"reasoning":return{state:(reasonMs||0)>=LONG_THINK_MS?"long-think":"thinking",
 detail:"reasoning",confident:true};case"text":return{state:"streaming",detail:"answering",confident:true};case"changes":
@@ -63,26 +63,27 @@ const waited=now-this.pendingSince;const held=now-this.adoptedAt
 this.current={state:cand.state,detail:cand.detail,confident:cand.confident};this.adoptedAt=now;this.pending=null}}
 function sample(smoother){const candidates=activeDbs(3);if(!candidates.length){return smoother.push({state:"idle",
 detail:"freebuff not found",confident:false},Date.now())}let db=null;let thread=null;let bestScore=-1;const pool=[]
-;const now0=Date.now();for(const c of candidates){let handle=null;try{handle=new DatabaseSync(c.db,{readOnly:true})
-;handle.exec("PRAGMA busy_timeout = 400");const t=readThread(handle);if(!t){handle.close();continue}let toolLive=false
+;let dbFresh=false;const now0=Date.now();for(const c of candidates){let handle=null;try{handle=new DatabaseSync(c.db,{readOnly:true})
+;handle.exec("PRAGMA busy_timeout = 400");const t=readThread(handle,now0);if(!t){handle.close();continue}let toolLive=false;let partLive=false
 ;if(t.turn_state==="running"){const live=readLiveParts(handle,t.id).filter(p=>p&&typeof p==="object"&&p.kind!=="ad")
 ;const last=live.length?shape(live[live.length-1]):null
-;toolLive=!!(last&&last.kind==="tool"&&(last.status==="running"||last.status==="pending"||last.status==null))}
+;toolLive=!!(last&&last.kind==="tool"&&(last.status==="running"||last.status==="pending"||last.status==null));partLive=!!last}
 const aliveAge=t.turn_alive_at?now0-t.turn_alive_at:Infinity
-;const fresh=t.turn_state==="running"&&(aliveAge<STALE_MS||toolLive);const score=(fresh?1e15:0)+(t.updated_at||0)
+;const walFresh=(now0-c.stamp)<10000
+;const fresh=t.turn_state==="running"&&(aliveAge<STALE_MS||partLive||toolLive||walFresh);const score=(fresh?1e15:0)+(t.updated_at||0)
 ;pool.push({t:t,fresh:fresh,score:score});if(score>bestScore){if(db){try{db.close()}catch{}}db=handle;thread=t
-;bestScore=score}else{handle.close()}}catch{try{handle&&handle.close()}catch{}}}if(!db||!thread){return smoother.push({
-state:"idle",detail:"no threads",confident:false},Date.now())}try{let part=null;let outType=null;let toolLive=false
+;bestScore=score;dbFresh=walFresh}else{handle.close()}}catch{try{handle&&handle.close()}catch{}}}if(!db||!thread){return smoother.push({
+state:"idle",detail:"no threads",confident:false},Date.now())}try{let part=null;let outType=null;let toolLive=false;let partLive=false
 ;if(thread.turn_state==="running"){const live=readLiveParts(db,thread.id);outType=partsCache.outType??null
 ;const usable=live.filter(p=>p&&typeof p==="object"&&p.kind!=="ad");if(usable.length){
-part=shape(usable[usable.length-1])
+part=shape(usable[usable.length-1]);partLive=true
 ;var reasonMs=reasonDwell(thread.id,usable,Date.now())
 ;toolLive=part.kind==="tool"&&(part.status==="running"||part.status==="pending"||part.status==null)}}else{
 partsCache.at=0;partsCache.threadId=null;partsCache.parts=[];part=readStoredPart(db,thread.id);reasonTrack.since=0}let queueRunning=false
 ;try{
 const q=db.prepare(`\n        select count(*) c from queue_items where thread_id = ? and state = 'running'\n      `).get(thread.id)
 ;queueRunning=!!(q&&q.c)}catch{}const now=Date.now();const cand=classify({thread:thread,part:part,outType:outType,
-queueRunning:queueRunning,toolLive:toolLive,reasonMs:reasonMs},now);const chosen=smoother.push(cand,now);return{...chosen,
+queueRunning:queueRunning,toolLive:toolLive,partLive:partLive,dbFresh:dbFresh,reasonMs:reasonMs},now);const chosen=smoother.push(cand,now);return{...chosen,
 thread:thread.id.slice(0,8),mode:thread.agent_mode,turn:thread.turn_state,ts:now,
 agents:(pool.length?pool.sort((a,b)=>b.score-a.score).slice(0,MAX_AGENTS):[{t:thread,
 fresh:thread.turn_state==="running",score:0}]).map(({t:t,fresh:fresh})=>({id:t.id.slice(0,8),
