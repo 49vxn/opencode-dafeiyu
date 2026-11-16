@@ -3,7 +3,7 @@ const fs=require("fs");const os=require("os");const path=require("path");const h
 ;const{DatabaseSync:DatabaseSync}=require("node:sqlite");const POLL_MS=200;const PARTS_EVERY_MS=300;const CONFIRM_MS=250
 ;const MIN_HOLD_MS=380;const STALE_MS=120000;const PORT=Number(process.env.DAFEIYU_PORT||8791)
 ;const OUT=path.join(process.env.DAFEIYU_RUNTIME||path.join(__dirname,"runtime"),"state.json")
-;const ROOT=path.join(os.homedir(),".config","freebuff-desktop","projects");const WEIGHT={error:9,blocked:8,
+;const ROOT=[path.join(os.homedir(),".config","freebuff-desktop","projects"),path.join(os.homedir(),"Library","Application Support","freebuff-desktop","projects")].find(p=>fs.existsSync(p))||path.join(os.homedir(),".config","freebuff-desktop","projects");const WEIGHT={error:9,blocked:8,
 "running-cmd":6,"tests-fail":6,"tests-pass":6,"writing-code":5,"propose-diff":5,"read-file":4,searching:4,"tool-call":4,
 compacting:4,streaming:3,"long-think":3,thinking:2,"waiting-prompt":1,idle:1,sleeping:0,"chonk-idle":0}
 ;const TOOL_STATE={run_terminal_command:"running-cmd",read_files:"read-file",list_directory:"read-file",
@@ -15,7 +15,7 @@ preview_evaluate:"tool-call",preview_scroll:"tool-call",preview_logs:"tool-call"
 ;for(const e of entries){if(!e.isDirectory())continue;const db=path.join(ROOT,e.name,"desktop-v2.db")
 ;if(!fs.existsSync(db))continue;let stamp=0;for(const f of[db+"-wal",db]){try{
 stamp=Math.max(stamp,fs.statSync(f).mtimeMs)}catch{}}out.push({db:db,project:e.name,stamp:stamp})}
-out.sort((a,b)=>b.stamp-a.stamp);return out.slice(0,n)}const partsCache={at:0,threadId:null,parts:[]};function shape(p){
+out.sort((a,b)=>b.stamp-a.stamp);return out.slice(0,n)}const partsCache={at:0,threadId:null,parts:[]};const LONG_THINK_MS=Number(process.env.DAFEIYU_LONG_THINK_MS)||15000;const reasonTrack={threadId:null,since:0};function reasonDwell(threadId,parts,now){const last=parts&&parts.length?parts[parts.length-1]:null;if(last&&last.kind==="reasoning"){if(reasonTrack.threadId!==threadId||!reasonTrack.since){reasonTrack.threadId=threadId;reasonTrack.since=now}return now-reasonTrack.since}reasonTrack.since=0;return 0}function shape(p){
 return{kind:p.kind,toolName:p.toolName??null,status:p.status??null,exitCode:p.exitCode??null}}function readThread(db){
 return db.prepare(`\n    select id, title, updated_at, turn_state, agent_mode, attention_reason, last_turn_outcome,\n           turn_alive_at, last_turn_finished_at\n    from threads\n    order by updated_at desc\n    limit 1\n  `).get()
 }const MAX_AGENTS=3;const AGENT_WINDOW_MS=45*60000;function readAgents(db,now){let rows=[];try{
@@ -36,11 +36,11 @@ function readStoredPart(db,threadId){try{
 const msg=db.prepare(`\n      select parts_json from messages where thread_id = ? order by seq desc limit 1\n    `).get(threadId)
 ;if(!msg)return null;const parts=JSON.parse(msg.parts_json).filter(p=>p&&typeof p==="object"&&p.kind!=="ad")
 ;return parts.length?shape(parts[parts.length-1]):null}catch{return null}}function classify(snap,now){
-const{thread:thread,part:part,outType:outType,queueRunning:queueRunning,toolLive:toolLive}=snap;if(!thread)return{
+const{thread:thread,part:part,outType:outType,queueRunning:queueRunning,toolLive:toolLive,reasonMs:reasonMs}=snap;if(!thread)return{
 state:"idle",detail:"no session",confident:false};const alive=thread.turn_alive_at?now-thread.turn_alive_at:Infinity
 ;if(thread.turn_state==="running"){if(alive>STALE_MS&&!toolLive){return{state:"idle",detail:"abandoned turn",
 confident:false}}if(outType==="error")return{state:"error",detail:"turn failed",confident:true};if(!part){return{
-state:"thinking",detail:"starting",confident:false}}switch(part.kind){case"reasoning":return{state:"long-think",
+state:"thinking",detail:"starting",confident:false}}switch(part.kind){case"reasoning":return{state:(reasonMs||0)>=LONG_THINK_MS?"long-think":"thinking",
 detail:"reasoning",confident:true};case"text":return{state:"streaming",detail:"answering",confident:true};case"changes":
 return{state:"propose-diff",detail:"editing files",confident:true};case"compaction":return{state:"compacting",
 detail:"compacting context",confident:true};case"agent":return{state:"tool-call",detail:"subagent",confident:true}
@@ -76,12 +76,13 @@ state:"idle",detail:"no threads",confident:false},Date.now())}try{let part=null;
 ;if(thread.turn_state==="running"){const live=readLiveParts(db,thread.id);outType=partsCache.outType??null
 ;const usable=live.filter(p=>p&&typeof p==="object"&&p.kind!=="ad");if(usable.length){
 part=shape(usable[usable.length-1])
+;var reasonMs=reasonDwell(thread.id,usable,Date.now())
 ;toolLive=part.kind==="tool"&&(part.status==="running"||part.status==="pending"||part.status==null)}}else{
-partsCache.at=0;partsCache.threadId=null;partsCache.parts=[];part=readStoredPart(db,thread.id)}let queueRunning=false
+partsCache.at=0;partsCache.threadId=null;partsCache.parts=[];part=readStoredPart(db,thread.id);reasonTrack.since=0}let queueRunning=false
 ;try{
 const q=db.prepare(`\n        select count(*) c from queue_items where thread_id = ? and state = 'running'\n      `).get(thread.id)
 ;queueRunning=!!(q&&q.c)}catch{}const now=Date.now();const cand=classify({thread:thread,part:part,outType:outType,
-queueRunning:queueRunning,toolLive:toolLive},now);const chosen=smoother.push(cand,now);return{...chosen,
+queueRunning:queueRunning,toolLive:toolLive,reasonMs:reasonMs},now);const chosen=smoother.push(cand,now);return{...chosen,
 thread:thread.id.slice(0,8),mode:thread.agent_mode,turn:thread.turn_state,ts:now,
 agents:(pool.length?pool.sort((a,b)=>b.score-a.score).slice(0,MAX_AGENTS):[{t:thread,
 fresh:thread.turn_state==="running",score:0}]).map(({t:t,fresh:fresh})=>({id:t.id.slice(0,8),

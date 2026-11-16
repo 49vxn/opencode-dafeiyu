@@ -1,9 +1,9 @@
 {
   "name": "dafeiyu",
   "productName": "dafeiyu",
-  "version": "0.4.6",
+  "version": "0.4.7",
   "private": true,
-  "description": "dafeiyu \u00e2\u20ac\u201d desktop mascot widget",
+  "description": "dafeiyu â€” desktop mascot widget",
   "author": "dafeiyu",
   "main": "main.js",
   "scripts": {
@@ -63,6 +63,21 @@
       "shortcutName": "dafeiyu",
       "include": "build/installer.nsh",
       "artifactName": "dafeiyu-Setup-${version}.${ext}"
+    },
+    "mac": {
+      "icon": "build/icon-512.png",
+      "category": "public.app-category.developer-tools",
+      "identity": null,
+      "target": [
+        {
+          "target": "dmg",
+          "arch": [
+            "x64",
+            "arm64"
+          ]
+        }
+      ],
+      "artifactName": "dafeiyu-${version}-mac-${arch}.${ext}"
     }
   }
 }

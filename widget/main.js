@@ -8,7 +8,7 @@ const{app:app,BrowserWindow:BrowserWindow,ipcMain:ipcMain,Tray:Tray,Menu:Menu,gl
 ;app.commandLine.appendSwitch("disable-features","CalculateNativeWinOcclusion")
 ;const MANIFEST=JSON.parse(fs.readFileSync(path.join(__dirname,"assets","sprites.json"),"utf8"))
 ;const RUNTIME=(()=>{const d=app.isPackaged?path.join(app.getPath("userData"),"runtime"):path.join(__dirname,"runtime");try{fs.mkdirSync(d,{recursive:true})}catch{}process.env.DAFEIYU_RUNTIME=d;return d})()
-;ipcMain.handle("get-manifest",()=>({...MANIFEST,departMs:Number(process.env.DFY_DEPART_MS)||600000}));let win=null;let tray=null;let ignoreMouse=true
+;ipcMain.handle("get-manifest",()=>({...MANIFEST,departMs:Number(process.env.DFY_DEPART_MS)||600000}));let win=null;let tray=null;let ignoreMouse=true;let wantW=SIZE,wantH=SIZE
 ;let dragOrigin=null;const stateFile=()=>path.join(app.getPath("userData"),"position.json");function loadPosition(){try{
 const p=JSON.parse(fs.readFileSync(stateFile(),"utf8"));if(typeof p.x==="number"&&typeof p.y==="number")return p}catch{}
 const wa=screen.getPrimaryDisplay().workArea;return{x:wa.x+wa.width-SIZE-24,y:wa.y+wa.height-SIZE-24}}
@@ -49,7 +49,10 @@ function runDoctor(){const{execFile}=require("child_process")
 ;execFile(process.execPath,[path.join(__dirname,"doctor.js")],{env:{...process.env,ELECTRON_RUN_AS_NODE:"1",DAFEIYU_RUNTIME:RUNTIME,DAFEIYU_PACKAGED:app.isPackaged?"1":"0"},windowsHide:true,timeout:20000},(err,stdout,stderr)=>{
 const body=[stdout,stderr,err?err.message:""].filter(Boolean).join("\n").trim()||"no output"
 ;dialog.showMessageBox({type:"info",title:"dafeiyu",message:"Setup check",detail:body.slice(0,6000),buttons:["Close"]})})}function resetPosition(){const wa=screen.getPrimaryDisplay().workArea
-;if(!win)return;win.setPosition(wa.x+wa.width-SIZE-24,wa.y+wa.height-SIZE-24);savePosition()}function createWindow(){
+;if(!win)return;win.setPosition(wa.x+wa.width-SIZE-24,wa.y+wa.height-SIZE-24);savePosition()}function refit(){if(!win||win.isDestroyed())return;const b=win.getBounds()
+;if(b.width===wantW&&b.height===wantH)return;win.setSize(wantW,wantH,false)
+;const[wx,wy]=win.getPosition();const np=clampToWorkArea(wx,wy);if(np.x!==wx||np.y!==wy)win.setPosition(np.x,np.y)
+;console.log(`[win] refit ${b.width}x${b.height} -> ${wantW}x${wantH}`)}function createWindow(){
 let pos=loadPosition();const p=clampToWorkArea(pos.x,pos.y)
 ;const opaque=process.env.DFY_OPAQUE==="1";win=new BrowserWindow({width:SIZE,height:SIZE,x:p.x,y:p.y,frame:false,
 transparent:!opaque,backgroundColor:opaque?"#0f1226":"#00000000",hasShadow:false,roundedCorners:false,thickFrame:false,
@@ -65,7 +68,7 @@ if(win&&!win.isDestroyed())win.setIgnoreMouseEvents(ignoreMouse,{forward:true});
 ;win.webContents.on("render-process-gone",()=>{if(win&&!win.isDestroyed())win.reload()})
 ;app.on("child-process-gone",(_e,details)=>{if(details.type==="GPU"&&win&&!win.isDestroyed()){
 console.warn("[dafeiyu] GPU process gone — recreating window");const[x,y]=win.getPosition();win.destroy();win=null
-;createWindow();if(win)win.setPosition(x,y)}});win.on("moved",savePosition)}
+;createWindow();if(win)win.setPosition(x,y)}});win.on("moved",()=>{savePosition();refit();setTimeout(refit,250)})}
 const STATE_FILE=path.join(RUNTIME,"state.json")
 ;const OC_STATE_FILE=path.join(RUNTIME,"state-opencode.json");const CL_STATE_FILE=path.join(RUNTIME,"state-claude.json");let lastPushed=null;let lastSource=null
 ;const ACTIVE_STATES=new Set(["thinking","long-think","streaming","running-cmd","read-file","writing-code","searching","propose-diff","compacting","tool-call","tests-fail","blocked","error"])
@@ -81,7 +84,7 @@ function createTray(){const iconPath=path.join(__dirname,"assets","frames","idle
 ;const img=nativeImage.createFromPath(iconPath).resize({width:16,height:16});tray=new Tray(img)
 ;tray.setToolTip("dafeiyu");refreshTray()}let hookProcs=[];const hookRestarts={};function spawnHook(hookPath){
 const name=path.basename(hookPath);try{const lp=path.join(RUNTIME,name+".log");try{fs.mkdirSync(path.dirname(lp),{recursive:true})}catch{}const out=fs.openSync(lp,"a");const proc=spawn(process.execPath,[hookPath,"--watch"],{env:{...process.env,
-ELECTRON_RUN_AS_NODE:"1"},stdio:["ignore",out,out],windowsHide:true});try{fs.closeSync(out)}catch{}proc.on("exit",code=>{
+DAFEIYU_PORT:String({"freebuff-hook.js":8791,"opencode-hook.js":8792,"claude-hook.js":8793}[name]||8791),ELECTRON_RUN_AS_NODE:"1"},stdio:["ignore",out,out],windowsHide:true});try{fs.closeSync(out)}catch{}proc.on("exit",code=>{
 console.log(`[hook] ${name} exited (${code}) — restarting in 3s`);hookProcs=hookProcs.filter(p=>p!==proc);hookRestarts[name]=(hookRestarts[name]||0)+1
 ;setTimeout(()=>spawnHook(hookPath),Math.min(30000,3000*Math.pow(2,Math.min(hookRestarts[name]-1,4))))});hookProcs.push(proc);proc.on("spawn",()=>{hookRestarts[name]=0});console.log(`[hook] started ${name}`)}catch(err){
 console.error(`[hook] ${name} failed to start:`,err.message)}}function opencodeDbExists(){
@@ -94,13 +97,14 @@ const freebuffHook=path.join(__dirname,"freebuff-hook.js");if(fs.existsSync(free
 ;const claudeHook=path.join(__dirname,"claude-hook.js");if(fs.existsSync(claudeHook)&&claudeDirExists())spawnHook(claudeHook)}app.on("second-instance",()=>{
 if(win&&!win.isDestroyed()){win.showInactive();win.setAlwaysOnTop(true,"screen-saver");resetPosition()}})
 ;app.whenReady().then(()=>{startHook();createWindow();createTray();watchStateFile()
+;screen.on("display-metrics-changed",()=>{if(win&&!win.isDestroyed()){const[x,y]=win.getPosition();const np=clampToWorkArea(x,y);if(np.x!==x||np.y!==y)win.setPosition(np.x,np.y)}refit();setTimeout(refit,400)})
 ;if(firstRun()){setAutoStart(true);setTimeout(noAgentBalloon,6000)};syncAutoStart()
 ;app.on("activate",()=>{
 if(BrowserWindow.getAllWindows().length===0)createWindow()})});app.on("window-all-closed",()=>{if(!app.isQuitting)return
 ;app.quit()});app.on("will-quit",()=>{globalShortcut.unregisterAll();
 ;for(const p of hookProcs){p.removeAllListeners("exit");p.kill()}hookProcs=[]});ipcMain.on("resize",(_e,w,h)=>{
 if(!win||win.isDestroyed())return;const width=Math.max(96,Math.min(640,Math.round(w)))
-;const height=Math.max(96,Math.min(320,Math.round(h)));const b=win.getBounds()
+;const height=Math.max(96,Math.min(320,Math.round(h)));wantW=width;wantH=height;const b=win.getBounds()
 ;if(b.width===width&&b.height===height)return;win.setSize(width,height,false)
 ;const[wx,wy]=win.getPosition();const np=clampToWorkArea(wx,wy);if(np.x!==wx||np.y!==wy)win.setPosition(np.x,np.y)
 ;console.log(`[win] ${width}x${height}`)})
