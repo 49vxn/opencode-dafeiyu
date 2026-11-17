@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 const fs=require("fs");const os=require("os");const path=require("path");const http=require("http")
 ;const{DatabaseSync:DatabaseSync}=require("node:sqlite");const POLL_MS=200;const PARTS_EVERY_MS=300;const CONFIRM_MS=250
-;const MIN_HOLD_MS=380;const STALE_MS=120000;const MISSION_FRESH_MS=45000;const PORT=Number(process.env.DAFEIYU_PORT||8791)
+;const MIN_HOLD_MS=380;const STALE_MS=120000;const MISSION_FRESH_MS=45000;const PROMPT_INFLIGHT_MAX=15*60000;const PORT=Number(process.env.DAFEIYU_PORT||8791)
 ;const OUT=path.join(process.env.DAFEIYU_RUNTIME||path.join(__dirname,"runtime"),"state.json")
 ;const ROOT=[path.join(os.homedir(),".config","freebuff-desktop","projects"),path.join(os.homedir(),"Library","Application Support","freebuff-desktop","projects")].find(p=>fs.existsSync(p))||path.join(os.homedir(),".config","freebuff-desktop","projects");const WEIGHT={error:9,blocked:8,
 "running-cmd":6,"tests-fail":6,"tests-pass":6,"writing-code":5,"propose-diff":5,"read-file":4,searching:4,"tool-call":4,
@@ -16,14 +16,16 @@ preview_evaluate:"tool-call",preview_scroll:"tool-call",preview_logs:"tool-call"
 ;if(!fs.existsSync(db))continue;let stamp=0;for(const f of[db+"-wal",db]){try{
 stamp=Math.max(stamp,fs.statSync(f).mtimeMs)}catch{}}out.push({db:db,project:e.name,stamp:stamp})}
 out.sort((a,b)=>b.stamp-a.stamp);return out.slice(0,n)}const partsCache={at:0,threadId:null,parts:[]};const LONG_THINK_MS=Number(process.env.DAFEIYU_LONG_THINK_MS)||15000;const reasonTrack={threadId:null,since:0};function reasonDwell(threadId,parts,now){const last=parts&&parts.length?parts[parts.length-1]:null;if(last&&last.kind==="reasoning"){if(reasonTrack.threadId!==threadId||!reasonTrack.since){reasonTrack.threadId=threadId;reasonTrack.since=now}return now-reasonTrack.since}reasonTrack.since=0;return 0}function shape(p){
-return{kind:p.kind,toolName:p.toolName??null,status:p.status??null,exitCode:p.exitCode??null}}function readThread(db,now){
-return db.prepare(`\n    select id, title, updated_at, turn_state, auto_run, auto_run_started_at, auto_run_stopped_at, agent_mode, attention_reason, last_turn_outcome,\n           turn_alive_at, last_turn_finished_at\n    from threads\n    order by (turn_state = 'running' and turn_alive_at is not null and turn_alive_at > ?) desc, updated_at desc\n    limit 1\n  `).get(now?now-STALE_MS:0)
+return{kind:p.kind,toolName:p.toolName??null,status:p.status??null,exitCode:p.exitCode??null}}
+;const FB_BASE=path.dirname(ROOT);const HEARTBEAT_FILES=[path.join(FB_BASE,"state.json.session-ends.json"),path.join(FB_BASE,"state.json")];function appAlive(now){for(const f of HEARTBEAT_FILES){try{if(now-fs.statSync(f).mtimeMs<120000)return true}catch{}}return false}
+function readThread(db,now){
+return db.prepare(`\n    select id, title, updated_at, turn_state, auto_run, auto_run_started_at, auto_run_stopped_at, agent_mode, attention_reason, last_turn_outcome,\n           turn_alive_at, last_turn_finished_at, last_prompt_at\n    from threads\n    order by (turn_state = 'running' and turn_alive_at is not null and turn_alive_at > ?) desc, updated_at desc\n    limit 1\n  `).get(now?now-STALE_MS:0)
 }const MAX_AGENTS=3;const AGENT_WINDOW_MS=45*60000;function readAgents(db,now){let rows=[];try{
-rows=db.prepare(`\n      select id, title, updated_at, turn_state, auto_run, agent_mode, last_turn_outcome,\n             turn_alive_at, last_turn_finished_at\n      from threads\n      where updated_at > ?\n      order by turn_state = 'running' desc, updated_at desc\n      limit ?\n    `).all(now-AGENT_WINDOW_MS,MAX_AGENTS)
+rows=db.prepare(`\n      select id, title, updated_at, turn_state, auto_run, agent_mode, last_turn_outcome,\n             turn_alive_at, last_turn_finished_at, last_prompt_at\n      from threads\n      where updated_at > ?\n      order by turn_state = 'running' desc, updated_at desc\n      limit ?\n    `).all(now-AGENT_WINDOW_MS,MAX_AGENTS)
 }catch{}if(!rows.length){try{
-const t=db.prepare(`\n        select id, title, updated_at, turn_state, auto_run, agent_mode, last_turn_outcome,\n               turn_alive_at, last_turn_finished_at\n        from threads order by updated_at desc limit 1\n      `).get()
+const t=db.prepare(`\n        select id, title, updated_at, turn_state, auto_run, agent_mode, last_turn_outcome,\n               turn_alive_at, last_turn_finished_at, last_prompt_at\n        from threads order by updated_at desc limit 1\n      `).get()
 ;if(t)rows=[t]}catch{}}return rows}function coarseState(thread,now){if(!thread)return"idle"
-;if(thread.turn_state==="running")return"thinking";if(thread.auto_run===1)return"thinking";if(thread.last_turn_outcome==="failed")return"error"
+;if(thread.turn_state==="running")return"thinking";if(thread.auto_run===1)return"thinking";{const pf=thread.last_prompt_at&&(!thread.last_turn_finished_at||thread.last_prompt_at>thread.last_turn_finished_at);if(pf&&now-thread.last_prompt_at<PROMPT_INFLIGHT_MAX)return"thinking"}if(thread.last_turn_outcome==="failed")return"error"
 ;const since=thread.last_turn_finished_at?now-thread.last_turn_finished_at:Infinity
 ;if(since<60000)return"waiting-prompt";if(since<10*60000)return"idle";if(since<30*60000)return"sleeping"
 ;return"sleeping"}function readLiveParts(db,threadId){const now=Date.now();const same=partsCache.threadId===threadId
@@ -45,9 +47,9 @@ if(seen>0)missionSeen.set(thread.id,seen)
 ;if(missionSeen.size>8){const drop=[...missionSeen.entries()].sort((a,b)=>a[1]-b[1]).slice(0,missionSeen.size-8);for(const[k]of drop)missionSeen.delete(k)}
 const last=missionSeen.get(thread.id)||0;return last>0&&now-last<MISSION_FRESH_MS}
 function classify(snap,now){
-const{thread:thread,part:part,outType:outType,queueRunning:queueRunning,toolLive:toolLive,dbFresh:dbFresh,reasonMs:reasonMs,missionActive:missionActive}=snap;if(!thread)return{
+const{thread:thread,part:part,outType:outType,queueRunning:queueRunning,toolLive:toolLive,dbFresh:dbFresh,reasonMs:reasonMs,missionActive:missionActive,promptInFlight:promptInFlight,appAlive:appAlive}=snap;if(!thread)return{
 state:"idle",detail:"no session",confident:false};const alive=thread.turn_alive_at?now-thread.turn_alive_at:Infinity
-;if(thread.turn_state==="running"){if(alive>STALE_MS&&!toolLive&&!dbFresh){return{state:"idle",detail:"abandoned turn",
+;if(thread.turn_state==="running"){if(alive>STALE_MS&&!toolLive&&!dbFresh&&!appAlive){return{state:"idle",detail:"abandoned turn",
 confident:false}}if(outType==="error")return{state:"error",detail:"turn failed",confident:true};if(!part){return{
 state:"thinking",detail:"starting",confident:false}}switch(part.kind){case"reasoning":return{state:(reasonMs||0)>=LONG_THINK_MS?"long-think":"thinking",
 detail:"reasoning",confident:true};case"text":return{state:"streaming",detail:"answering",confident:true};case"changes":
@@ -57,7 +59,7 @@ detail:"compacting context",confident:true};case"agent":return{state:"tool-call"
 detail:`${part.toolName||"tool"} failed`,confident:true}}const mapped=TOOL_STATE[part.toolName];return{
 state:mapped||"tool-call",detail:part.toolName||"tool",confident:true}}default:return{state:"tool-call",
 detail:part.kind||"tool",confident:true}}}if(thread.last_turn_outcome==="failed"){return{state:"error",
-detail:"turn failed",confident:true}}if(missionActive)return{state:"thinking",detail:"mission step",confident:true};if(queueRunning){return{state:"running-cmd",detail:"queue running",confident:true}}
+detail:"turn failed",confident:true}}if(missionActive)return{state:"thinking",detail:"mission step",confident:true};if(promptInFlight)return{state:"thinking",detail:"in flight",confident:true};if(queueRunning){return{state:"running-cmd",detail:"queue running",confident:true}}
 const sinceEnd=thread.last_turn_finished_at?now-thread.last_turn_finished_at:Infinity;if(sinceEnd<60000)return{
 state:"waiting-prompt",detail:"finished",confident:true};if(sinceEnd<10*60000)return{state:"idle",detail:"resting",
 confident:true};if(sinceEnd<30*60000)return{state:"sleeping",detail:"asleep",confident:true};return{state:"sleeping",
@@ -72,7 +74,7 @@ const waited=now-this.pendingSince;const held=now-this.adoptedAt
 this.current={state:cand.state,detail:cand.detail,confident:cand.confident};this.adoptedAt=now;this.pending=null}}
 function sample(smoother){const candidates=activeDbs(3);if(!candidates.length){return smoother.push({state:"idle",
 detail:"freebuff not found",confident:false},Date.now())}let db=null;let thread=null;let bestScore=-1;const pool=[]
-;let dbFresh=false;const now0=Date.now();for(const c of candidates){let handle=null;try{handle=new DatabaseSync(c.db,{readOnly:true})
+;let dbFresh=false;const now0=Date.now();const appAliveNow=appAlive(now0);for(const c of candidates){let handle=null;try{handle=new DatabaseSync(c.db,{readOnly:true})
 ;handle.exec("PRAGMA busy_timeout = 400");const t=readThread(handle,now0);if(!t){handle.close();continue}let toolLive=false;let partLive=false
 ;if(t.turn_state==="running"){const live=readLiveParts(handle,t.id).filter(p=>p&&typeof p==="object"&&p.kind!=="ad")
 ;const last=live.length?shape(live[live.length-1]):null
@@ -91,8 +93,8 @@ part=shape(usable[usable.length-1]);partLive=true
 partsCache.at=0;partsCache.threadId=null;partsCache.parts=[];part=readStoredPart(db,thread.id);reasonTrack.since=0}let queueRunning=false
 ;try{
 const q=db.prepare(`\n        select count(*) c from queue_items where thread_id = ? and state = 'running'\n      `).get(thread.id)
-;queueRunning=!!(q&&q.c)}catch{}const now=Date.now();const missionActive=missionCheck(db,thread,now);const cand=classify({thread:thread,part:part,outType:outType,
-queueRunning:queueRunning,toolLive:toolLive,partLive:partLive,dbFresh:dbFresh,reasonMs:reasonMs,missionActive:missionActive},now);const chosen=smoother.push(cand,now);return{...chosen,
+;queueRunning=!!(q&&q.c)}catch{}const now=Date.now();const missionActive=missionCheck(db,thread,now);const promptInFlight=!!(thread.last_prompt_at&&(!thread.last_turn_finished_at||thread.last_prompt_at>thread.last_turn_finished_at)&&now-thread.last_prompt_at<PROMPT_INFLIGHT_MAX);const cand=classify({thread:thread,part:part,outType:outType,
+queueRunning:queueRunning,toolLive:toolLive,partLive:partLive,dbFresh:dbFresh,reasonMs:reasonMs,missionActive:missionActive,promptInFlight:promptInFlight,appAlive:appAliveNow},now);const chosen=smoother.push(cand,now);return{...chosen,
 thread:thread.id.slice(0,8),mode:thread.agent_mode,turn:thread.turn_state,ts:now,
 agents:(pool.length?pool.sort((a,b)=>b.score-a.score).slice(0,MAX_AGENTS):[{t:thread,
 fresh:thread.turn_state==="running",score:0}]).map(({t:t,fresh:fresh})=>({id:t.id.slice(0,8),
