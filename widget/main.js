@@ -83,7 +83,7 @@ const STATE_FILE=path.join(RUNTIME,"state.json")
 ;if(typeof s.ts!=="number"){try{s.ts=fs.statSync(file).mtimeMs}catch{}}return s}catch{return null}}
 function pickPayload(){const fb=readPayload(STATE_FILE);const oc=readPayload(OC_STATE_FILE);const cl=readPayload(CL_STATE_FILE);const fresh=p=>p&&typeof p.ts==="number"&&Date.now()-p.ts<15000;const available=p=>p&&!/not found/i.test(p.detail||"");const busy=p=>fresh(p)&&(p.turn==="running"||ACTIVE_STATES.has(p.state));if(busy(fb))return fb;const side=[oc,cl].filter(busy).sort((a,b)=>b.ts-a.ts)[0];if(side)return side;if(available(fb))return fb;const idleSide=[oc,cl].filter(available).sort((a,b)=>b.ts-a.ts)[0];if(idleSide)return idleSide;return fb||oc||cl}function watchStateFile(){const push=()=>{try{if(!win||win.isDestroyed())return;const s=pickPayload()
 ;if(!s)return
-;const sig=[s.source,s.state,(s.agents||[]).map(a=>a.id+":"+a.state+":"+(a.running?1:0)).join(",")].join("|")
+;const sig=[s.source,s.state,(s.model||""),(s.agents||[]).map(a=>a.id+":"+a.state+":"+(a.running?1:0)).join(",")].join("|")
 ;if(sig===lastPushed)return;lastPushed=sig;if(s.source!==lastSource){lastSource=s.source
 ;console.log(`[feed] source -> ${s.source}`)}if(win&&!win.isDestroyed())win.webContents.send("pet-state",s)}catch(err){mlog("feed-error",String(err&&err.message||err))}}
 ;for(const f of[STATE_FILE,OC_STATE_FILE,CL_STATE_FILE]){try{fs.watch(f,{persistent:false},push)}catch{}}setInterval(push,500)}
@@ -124,3 +124,9 @@ if(!win||!dragOrigin)return;const p=clampToWorkArea(dragOrigin[0]+dx,dragOrigin[
 ;ipcMain.on("drag-end",()=>{dragOrigin=null;savePosition()});let seenStates=new Set
 ;ipcMain.on("state-changed",(_e,name)=>{if(tray)tray.setToolTip(`dafeiyu — ${name}`);if(!seenStates.has(name)){
 seenStates.add(name);console.log(`[dafeiyu] playing: ${name} (${seenStates.size} distinct)`)}});
+ipcMain.handle("get-accessories",()=>{const s=readSettings();return s.accessories&&typeof s.accessories==="object"?s.accessories:{}})
+;ipcMain.on("set-accessories",(_e,map)=>{const next=map&&typeof map==="object"&&!Array.isArray(map)?map:{}
+;try{const s=readSettings();s.accessories=next;fs.mkdirSync(path.dirname(settingsFile()),{recursive:true})
+;fs.writeFileSync(settingsFile(),JSON.stringify(s,null,1));mlog("accessories",JSON.stringify(next))}catch(err){
+console.error("[accessories]",err.message)}})
+;ipcMain.on("hide-pet",()=>{if(win&&!win.isDestroyed()&&win.isVisible()){hiddenByUser=true;win.hide();mlog("hidden","by menu");refreshTray()}});

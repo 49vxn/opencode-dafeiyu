@@ -71,6 +71,52 @@
     image-rendering: crisp-edges;
     background: transparent;
   }
+
+  /* right-click menu: ocean gradient, navy pixel border, wave scallops */
+  #menu {
+    position: fixed;
+    z-index: 99;
+    min-width: 118px;
+    padding: 4px;
+    background: linear-gradient(#6a86ff, #4d6bfe 55%, #3546c4);
+    border: 2px solid #1a2160;
+    border-radius: 6px;
+    box-shadow: 2px 3px 0 rgba(26, 33, 96, .45);
+    overflow: hidden;
+  }
+  #menu::after {
+    content: "";
+    position: absolute;
+    left: 0; right: 0; bottom: 0;
+    height: 14px;
+    pointer-events: none;
+    border-radius: 0 0 4px 4px;
+    background:
+      radial-gradient(circle 7px at 8px 16px, rgba(197, 208, 245, .30) 6px, transparent 7px) 0 0 / 16px 16px repeat-x,
+      radial-gradient(circle 9px at 9px 21px, rgba(197, 208, 245, .16) 8px, transparent 9px) 8px 0 / 18px 18px repeat-x;
+  }
+  .mi {
+    position: relative;
+    z-index: 1;
+    padding: 4px 10px;
+    border-radius: 4px;
+    color: #e9eeff;
+    font-size: 10px;
+    font-weight: 700;
+    line-height: 13px;
+    white-space: nowrap;
+    text-shadow: 1px 1px 0 #1a2160;
+  }
+  .mi:hover { background: rgba(26, 33, 96, .38); }
+  .mi .sub { color: #c5d0f5; font-weight: 400; }
+  .mi-head {
+    padding: 3px 10px 1px;
+    color: #c5d0f5;
+    font-size: 8px;
+    letter-spacing: .08em;
+    text-shadow: 1px 1px 0 #1a2160;
+  }
+  .mi-sep { height: 1px; margin: 3px 6px; background: rgba(26, 33, 96, .55); position: relative; z-index: 1; }
 </style>
 </head>
 <body>

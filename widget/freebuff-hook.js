@@ -55,7 +55,7 @@ function dropHandle(dbPath){const h=handles.get(dbPath);if(!h)return;try{h.db.cl
 
 function readThread(db,now){
 return db.prepare(`
-    select id, title, updated_at, turn_state, auto_run, auto_run_started_at, auto_run_stopped_at, agent_mode, attention_reason, last_turn_outcome,
+    select id, title, updated_at, turn_state, auto_run, auto_run_started_at, auto_run_stopped_at, agent_mode, attention_reason, last_turn_outcome, model,
            turn_alive_at, last_turn_finished_at
     from threads
     order by (turn_state = 'running' and turn_alive_at is not null and turn_alive_at > ?) desc, updated_at desc
@@ -69,7 +69,7 @@ return t}
 const MAX_AGENTS=3;const AGENT_WINDOW_MS=45*60000
 function readAgents(db,now){let rows=[];try{
 rows=db.prepare(`
-      select id, title, updated_at, turn_state, auto_run, agent_mode, last_turn_outcome,
+      select id, title, updated_at, turn_state, auto_run, agent_mode, last_turn_outcome, model,
              turn_alive_at, last_turn_finished_at
       from threads
       where updated_at > ?
@@ -113,7 +113,8 @@ if(rm){try{
 h.parts=parts;h.outType=outType;h.at=now;h.threadId=threadId;h.stamp=stamp
 return parts}
 
-function shape(p){return{kind:p.kind,toolName:p.toolName??null,status:p.status??null,exitCode:p.exitCode??null}}
+const TEST_CMD=/(?:^|[\s;&|()])(?:npm|pnpm|yarn|bun|npx|deno)\s+(?:run\s+)?(?:test|t)(?::[\w-]+)?\b|\b(?:pytest|jest|vitest|mocha|rspec|phpunit|ctest|tox|nox|go\s+test|cargo\s+(?:test|nextest)|dotnet\s+test|node\s+--test|python3?\s+-m\s+(?:pytest|unittest))\b/i
+function shape(p){return{kind:p.kind,toolName:p.toolName??null,status:p.status??null,exitCode:p.exitCode??null,cmd:(p.input&&(p.input.command||p.input.cmd))||null}}
 const LONG_THINK_MS=Number(process.env.DAFEIYU_LONG_THINK_MS)||15000
 const reasonTrack={threadId:null,since:0}
 function reasonDwell(threadId,parts,now){const last=parts&&parts.length?parts[parts.length-1]:null
@@ -167,7 +168,8 @@ if(thread.turn_state==="running"){
     case"agent":return{state:"tool-call",detail:"subagent",confident:true}
     case"tool":{
       if(part.status==="failure"||typeof part.exitCode==="number"&&part.exitCode!==0){
-        return{state:"tests-fail",detail:`${part.toolName||"tool"} failed`,confident:true}}
+        return{state:TEST_CMD.test(part.cmd||"")?"tests-fail":"run-failed",detail:`${part.toolName||"tool"} failed`,confident:true}}
+      if(part.status==="success"&&TEST_CMD.test(part.cmd||""))return{state:"tests-pass",detail:"suite passed",confident:true}
       const mapped=TOOL_STATE[part.toolName]
       return{state:mapped||"tool-call",detail:part.toolName||"tool",confident:true}}
     default:return{state:"tool-call",detail:part.kind||"tool",confident:true}}}
@@ -175,7 +177,7 @@ if(thread.turn_state==="running"){
 const sinceEnd=thread.last_turn_finished_at?now-thread.last_turn_finished_at:Infinity
 if(thread.last_turn_outcome==="error"&&sinceEnd<OUTCOME_HOLD_MS)return{state:"error",detail:"turn failed",confident:true}
 if(thread.last_turn_outcome==="stopped"&&sinceEnd<OUTCOME_HOLD_MS)return{state:"interrupted",detail:"you stopped it",confident:true}
-if(takeSuccess(thread))return{state:"success",detail:"turn completed",confident:true}
+if(thread.last_turn_outcome==="completed"&&sinceEnd<OUTCOME_HOLD_MS&&takeSuccess(thread))return{state:"success",detail:"turn completed",confident:true}
 if(missionActive)return{state:"thinking",detail:"mission step",confident:true}
 if(queueRunning)return{state:"running-cmd",detail:"queue running",confident:true}
 if(sinceEnd<60000)return{state:"waiting-prompt",detail:"finished",confident:true}
@@ -199,7 +201,7 @@ const hit=sideCache.get(thread.id)
 if(hit&&(!walFresh||now-hit.at<800))return hit
 let queueRunning=false
 try{
-  const q=db.prepare(`select count(*) c from queue_items where thread_id = ? and state = 'running'`).get(thread.id)
+  const q=db.prepare(`select count(*) c from queue_items where thread_id = ? and state = 'running' and updated_at > ?`).get(thread.id,now-60000)
   queueRunning=!!(q&&q.c)
 }catch{}
 const missionActive=missionCheck(db,thread,now)
@@ -249,7 +251,7 @@ try{
     toolLive:toolLive,partLive:partLive,dbFresh:best.walFresh,reasonMs:reasonMs,dwell:dwell,
     missionActive:side.missionActive},now)
   const chosen=smoother.push(cand,now)
-  return{...chosen,thread:thread.id.slice(0,8),mode:thread.agent_mode,turn:thread.turn_state,ts:now,
+  return{...chosen,thread:thread.id.slice(0,8),mode:thread.agent_mode,model:thread.model||null,turn:thread.turn_state,ts:now,
     agents:(pool.length?pool.sort((a,b)=>b.score-a.score).slice(0,MAX_AGENTS):[{t:thread,fresh:thread.turn_state==="running",score:0}]).map(({t:t,fresh:fresh})=>({id:t.id.slice(0,8),
       title:t.title&&t.title.trim()||t.id.slice(0,6),state:t.id===thread.id?chosen.state:coarseState(t,now),running:!!fresh,updatedAt:t.updated_at
     })),source:"sqlite",stale:false}

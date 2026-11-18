@@ -2,6 +2,14 @@
  "cell": 64,
  "cols": 12,
  "rows": 89,
+ "accessories": [
+  {
+   "id": "devil-horns",
+   "name": "Devil horns",
+   "src": "assets/accessories/devil-horns.png",
+   "auto": "deepseek"
+  }
+ ],
  "states": {
   "idle": {
    "row": 0,
