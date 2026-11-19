@@ -55,7 +55,10 @@ for(const a of agents.values()){const s=manifest.states[a.state]
 ;if(a.fed&&a.fedAt&&wall-a.fedAt>300000){a.fed=false;a.fedAt=0;setState(a,"slim-down");continue}if(idx===a.lastDrawn)continue
 ;const im=imageFor(a.state,s.frames[idx]);if(!im.complete||!im.naturalWidth)continue;a.ctx.clearRect(0,0,CELL,CELL)
 ;a.ctx.drawImage(im,0,0);if(wornAcc&&wornAgents.has(a.id)){const am=accImg(wornAcc)
-;if(am.complete&&am.naturalWidth)a.ctx.drawImage(am,0,0)}a.lastDrawn=idx}requestAnimationFrame(tick)}function applyIncoming(snap){
+;if(am.complete&&am.naturalWidth){const an=manifest.anchors&&manifest.anchors[a.state+"/"+s.frames[idx]]
+;if(an&&wornAcc.parts&&wornAcc.parts.length){for(let pi=0;pi<wornAcc.parts.length;pi++){const pt=wornAcc.parts[pi]
+;a.ctx.drawImage(am,pt.sx,pt.sy,pt.w,pt.h,an[pi*2]||0,an[pi*2+1]||0,pt.w,pt.h)}}
+else if(an)a.ctx.drawImage(am,an?an[0]:0,an?an[1]:0)}}a.lastDrawn=idx}requestAnimationFrame(tick)}function applyIncoming(snap){
 const list=snap.agents&&snap.agents.length?snap.agents:[{id:snap.thread||"default",title:"dafeiyu",state:snap.state,
 running:snap.turn==="running"}];const keep=new Set;const before=agents.size;list.forEach((entry,i)=>{
 const id=entry.id||"agent"+i;const st=entry.state||FALLBACK
@@ -75,7 +78,8 @@ return a.ctx.getImageData(cx,cy,1,1).data[3]>0}catch{return true}}let interactiv
 ;let pendingCount=0;window.addEventListener("mousemove",e=>{if(dragging||menuOpen)return;const a=cellAt(e.clientX,e.clientY)
 ;const over=!!(a&&alphaAt(a,e.clientX,e.clientY));hovered=over&&a?a.id:null;if(over===interactive){pendingCount=0;return
 }if(over!==pendingOver){pendingOver=over;pendingCount=1;return}if(++pendingCount<2)return;interactive=over
-;api.setIgnoreMouse(!interactive)});window.addEventListener("mouseleave",()=>{hovered=null;if(!interactive)return
+;api.setIgnoreMouse(!interactive)});window.addEventListener("mouseleave",()=>{hovered=null
+;if(menuOpen){closeMenu();interactive=false;api.setIgnoreMouse(true);return}if(!interactive)return
 ;interactive=false;api.setIgnoreMouse(true)});let dragging=false;let downAt=null;let moved=false
 ;window.addEventListener("mousedown",e=>{if(menuOpen){if(!menu.contains(e.target))closeMenu();return}
 ;if(!interactive||e.button!==0)return;downAt={x:e.screenX,y:e.screenY};moved=false})
@@ -131,12 +135,19 @@ function goAway(){closeMenu();const a=menuAgent||agents.values().next().value
 ;overrideUntil=performance.now()+clipMs("walk-away");warm("walk-away");setState(a,"walk-away")
 ;goAwayTimer=setTimeout(()=>{goAwayTimer=null;api.hidePet()},clipMs("walk-away"))}
 function openMenu(x,y){if(!manifest.accessories||!manifest.accessories.length)return
-;menuAgent=cellAt(x,y);menuX=x;menuY=y;menuSub=false;renderMenu();menu.hidden=false;menuOpen=true
-;fitMenu();api.setIgnoreMouse(false)}
+;menuAgent=cellAt(x,y);menuSub=false;renderMenu();menu.hidden=false;menuOpen=true
+;const mw=menu.offsetWidth,mh=menu.offsetHeight;const r=menuAgent?menuAgent.canvas.getBoundingClientRect():null
+;let px=r?Math.round(r.right)+6:Math.round(x)+6,py=r?Math.round(r.top)+6:Math.round(y)-8
+;if(r&&px+mw+6>viewW){const left=Math.round(r.left)-mw-6;if(left>=4)px=left}
+;sendSize(Math.max(viewW,px+mw+8),Math.max(viewH,py+mh+8))
+;menuX=Math.max(4,Math.min(px,viewW-mw-6));menuY=Math.max(4,Math.min(py,viewH-mh-6))
+;menu.style.left=menuX+"px";menu.style.top=menuY+"px"
+;api.setIgnoreMouse(false)}
 function closeMenu(){if(!menuOpen)return;menuOpen=false;menuSub=false;menu.hidden=true
 ;if(goAwayTimer){clearTimeout(goAwayTimer);goAwayTimer=null}
 ;sendSize(lastW,lastH);api.setIgnoreMouse(!interactive)}
 window.addEventListener("contextmenu",e=>{e.preventDefault();if(!interactive)return
 ;if(menuOpen){closeMenu();return}openMenu(e.clientX,e.clientY)})
 window.addEventListener("keydown",e=>{if(e.key==="Escape")closeMenu()})
+window.addEventListener("blur",()=>{if(menuOpen)closeMenu()})
 ;boot().catch(err=>console.error("boot failed",err));

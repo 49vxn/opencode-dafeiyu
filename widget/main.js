@@ -7,12 +7,13 @@ const{app:app,BrowserWindow:BrowserWindow,ipcMain:ipcMain,Tray:Tray,Menu:Menu,gl
 ;app.commandLine.appendSwitch("disable-backgrounding-occluded-windows")
 ;app.commandLine.appendSwitch("disable-features","CalculateNativeWinOcclusion")
 ;const MANIFEST=JSON.parse(fs.readFileSync(path.join(__dirname,"assets","sprites.json"),"utf8"))
+;const ANCHORS=(()=>{try{return JSON.parse(fs.readFileSync(path.join(__dirname,"assets","accessories","anchors.json"),"utf8"))}catch{return{}}})()
 ;const RUNTIME=(()=>{const d=app.isPackaged?path.join(app.getPath("userData"),"runtime"):path.join(__dirname,"runtime");try{fs.mkdirSync(d,{recursive:true})}catch{}process.env.DAFEIYU_RUNTIME=d;return d})()
 ;const MAIN_LOG=path.join(RUNTIME,"main.log");function mlog(kind,detail){const line=`[${new Date().toISOString()}] ${kind}${detail?" "+detail:""}\n`;try{fs.appendFileSync(MAIN_LOG,line)}catch{}console.log(`[main] ${kind}${detail?" "+detail:""}`)}
 ;process.on("uncaughtException",err=>{mlog("uncaughtException",String(err&&err.stack||err).split("\n").slice(0,6).join(" | "))})
 ;process.on("unhandledRejection",r=>{mlog("unhandledRejection",String(r&&r.stack||r))})
 ;process.on("exit",code=>{try{fs.appendFileSync(MAIN_LOG,`[${new Date().toISOString()}] exit code=${code}\n`)}catch{}})
-;ipcMain.handle("get-manifest",()=>({...MANIFEST,departMs:Number(process.env.DFY_DEPART_MS)||600000}));let win=null;let tray=null;let hiddenByUser=false;let ignoreMouse=true;let wantW=SIZE,wantH=SIZE
+;ipcMain.handle("get-manifest",()=>({...MANIFEST,anchors:ANCHORS,departMs:Number(process.env.DFY_DEPART_MS)||600000}));let win=null;let tray=null;let hiddenByUser=false;let ignoreMouse=true;let wantW=SIZE,wantH=SIZE
 ;let dragOrigin=null;const stateFile=()=>path.join(app.getPath("userData"),"position.json");function loadPosition(){try{
 const p=JSON.parse(fs.readFileSync(stateFile(),"utf8"));if(typeof p.x==="number"&&typeof p.y==="number")return p}catch{}
 const wa=screen.getPrimaryDisplay().workArea;return{x:wa.x+wa.width-SIZE-24,y:wa.y+wa.height-SIZE-24}}
@@ -53,8 +54,13 @@ function runDoctor(){const{execFile}=require("child_process")
 ;execFile(process.execPath,[path.join(__dirname,"doctor.js")],{env:{...process.env,ELECTRON_RUN_AS_NODE:"1",DAFEIYU_RUNTIME:RUNTIME,DAFEIYU_PACKAGED:app.isPackaged?"1":"0"},windowsHide:true,timeout:20000},(err,stdout,stderr)=>{
 const body=[stdout,stderr,err?err.message:""].filter(Boolean).join("\n").trim()||"no output"
 ;dialog.showMessageBox({type:"info",title:"dafeiyu",message:"Setup check",detail:body.slice(0,6000),buttons:["Close"]})})}function resetPosition(){const wa=screen.getPrimaryDisplay().workArea
-;if(!win)return;win.setPosition(wa.x+wa.width-SIZE-24,wa.y+wa.height-SIZE-24);savePosition()}function refit(){if(!win||win.isDestroyed())return;const b=win.getBounds()
-;if(b.width===wantW&&b.height===wantH)return;win.setSize(wantW,wantH,false)
+;if(!win)return;win.setPosition(wa.x+wa.width-SIZE-24,wa.y+wa.height-SIZE-24);savePosition()}function resizeWin(w,h){
+// Windows ignores setSize on a non-resizable window when shrinking. Without
+// this, any transient wide state (menu open, second agent) sticks forever and
+// the pet grows every time.
+const was=win.isResizable();if(!was)win.setResizable(true);win.setSize(w,h,false)
+;if(!was)win.setResizable(false)}function refit(){if(!win||win.isDestroyed())return;const b=win.getBounds()
+;if(b.width===wantW&&b.height===wantH)return;resizeWin(wantW,wantH)
 ;const[wx,wy]=win.getPosition();const np=clampToWorkArea(wx,wy);if(np.x!==wx||np.y!==wy)win.setPosition(np.x,np.y)
 ;console.log(`[win] refit ${b.width}x${b.height} -> ${wantW}x${wantH}`)}function createWindow(){
 let pos=loadPosition();const p=clampToWorkArea(pos.x,pos.y)
@@ -115,7 +121,7 @@ if(BrowserWindow.getAllWindows().length===0)createWindow()})});app.on("before-qu
 ;for(const p of hookProcs){p.removeAllListeners("exit");p.kill()}hookProcs=[]});app.on("quit",(_e,code)=>{mlog("quit","exit code="+code)});ipcMain.on("resize",(_e,w,h)=>{
 if(!win||win.isDestroyed())return;const width=Math.max(96,Math.min(640,Math.round(w)))
 ;const height=Math.max(96,Math.min(320,Math.round(h)));wantW=width;wantH=height;const b=win.getBounds()
-;if(b.width===width&&b.height===height)return;win.setSize(width,height,false)
+;if(b.width===width&&b.height===height)return;resizeWin(width,height)
 ;const[wx,wy]=win.getPosition();const np=clampToWorkArea(wx,wy);if(np.x!==wx||np.y!==wy)win.setPosition(np.x,np.y)
 ;console.log(`[win] ${width}x${height}`)})
 ;ipcMain.on("set-ignore-mouse",(_e,ignore)=>{if(ignore===ignoreMouse)return;setClickThrough(ignore)})
