@@ -1,3675 +1,3675 @@
 {
  "agent-follow/agent-follow-00.png": [
   10,
-  29,
+  22,
   35,
-  29
+  22
  ],
  "agent-follow/agent-follow-01.png": [
   7,
-  27,
+  20,
   32,
-  27
+  20
  ],
  "agent-follow/agent-follow-02.png": [
   2,
-  29,
+  22,
   26,
-  29
+  22
  ],
  "agent-follow/agent-follow-03.png": [
   -3,
-  27,
+  20,
   16,
-  27
+  20
  ],
  "agent-follow/agent-follow-04.png": [
   0,
-  34,
+  27,
   12,
-  34
+  27
  ],
  "agent-follow/agent-follow-05.png": null,
  "agent-return/agent-return-00.png": [
   -3,
-  30,
+  23,
   9,
-  30
+  23
  ],
  "agent-return/agent-return-01.png": [
   -2,
-  30,
+  23,
   10,
-  30
+  23
  ],
  "agent-return/agent-return-02.png": [
   4,
-  28,
+  21,
   25,
-  28
+  21
  ],
  "agent-return/agent-return-03.png": [
   10,
-  29,
+  22,
   32,
-  29
+  22
  ],
  "agent-return/agent-return-04.png": [
   13,
-  29,
+  22,
   35,
-  29
+  22
  ],
  "agent-return/agent-return-05.png": [
   12,
-  29,
+  22,
   37,
-  29
+  22
  ],
  "agent-return/agent-return-06.png": [
   12,
-  29,
+  22,
   37,
-  29
+  22
  ],
  "agent-return/agent-return-07.png": [
   12,
-  29,
+  22,
   37,
-  29
+  22
  ],
  "agent-spot/agent-spot-00.png": [
   13,
-  29,
+  22,
   35,
-  29
+  22
  ],
  "agent-spot/agent-spot-01.png": [
   15,
-  29,
+  22,
   34,
-  29
+  22
  ],
  "agent-spot/agent-spot-02.png": [
   15,
-  29,
+  22,
   34,
-  29
+  22
  ],
  "agent-spot/agent-spot-03.png": [
   15,
-  29,
+  22,
   34,
-  29
+  22
  ],
  "agent-spot/agent-spot-04.png": [
   13,
-  29,
+  22,
   32,
-  29
+  22
  ],
  "agent-spot/agent-spot-05.png": [
   13,
-  29,
+  22,
   32,
-  29
+  22
  ],
  "boba/boba-00.png": [
   13,
-  29,
+  22,
   35,
-  29
+  22
  ],
  "boba/boba-01.png": [
   13,
-  29,
+  22,
   35,
-  29
+  22
  ],
  "boba/boba-02.png": [
   13,
-  29,
+  22,
   35,
-  29
+  22
  ],
  "boba/boba-03.png": [
   15,
-  29,
+  22,
   34,
-  29
+  22
  ],
  "boba/boba-04.png": [
   15,
-  29,
+  22,
   34,
-  29
+  22
  ],
  "boba/boba-05.png": [
   15,
-  29,
+  22,
   34,
-  29
+  22
  ],
  "boba-return/boba-return-00.png": [
   49,
-  38,
-  61,
-  38
- ],
- "boba-return/boba-return-01.png": [
-  43,
-  28,
-  58,
-  28
- ],
- "boba-return/boba-return-02.png": [
-  25,
-  29,
-  47,
-  29
- ],
- "boba-return/boba-return-03.png": [
-  19,
-  29,
-  38,
-  29
- ],
- "boba-return/boba-return-04.png": [
-  15,
-  29,
-  34,
-  29
- ],
- "boba-return/boba-return-05.png": [
-  15,
-  29,
-  34,
-  29
- ],
- "boba-return/boba-return-06.png": [
-  15,
-  29,
-  34,
-  29
- ],
- "boba-return/boba-return-07.png": [
-  13,
-  29,
-  35,
-  29
- ],
- "boba-run/boba-run-00.png": [
-  11,
-  30,
-  37,
-  30
- ],
- "boba-run/boba-run-01.png": [
-  18,
-  28,
-  41,
-  28
- ],
- "boba-run/boba-run-02.png": [
-  21,
-  30,
-  47,
-  30
- ],
- "boba-run/boba-run-03.png": [
-  37,
-  28,
-  56,
-  28
- ],
- "boba-run/boba-run-04.png": [
-  48,
   31,
   61,
   31
+ ],
+ "boba-return/boba-return-01.png": [
+  43,
+  21,
+  58,
+  21
+ ],
+ "boba-return/boba-return-02.png": [
+  25,
+  22,
+  47,
+  22
+ ],
+ "boba-return/boba-return-03.png": [
+  19,
+  22,
+  38,
+  22
+ ],
+ "boba-return/boba-return-04.png": [
+  15,
+  22,
+  34,
+  22
+ ],
+ "boba-return/boba-return-05.png": [
+  15,
+  22,
+  34,
+  22
+ ],
+ "boba-return/boba-return-06.png": [
+  15,
+  22,
+  34,
+  22
+ ],
+ "boba-return/boba-return-07.png": [
+  13,
+  22,
+  35,
+  22
+ ],
+ "boba-run/boba-run-00.png": [
+  11,
+  23,
+  37,
+  23
+ ],
+ "boba-run/boba-run-01.png": [
+  18,
+  21,
+  41,
+  21
+ ],
+ "boba-run/boba-run-02.png": [
+  21,
+  23,
+  47,
+  23
+ ],
+ "boba-run/boba-run-03.png": [
+  37,
+  21,
+  56,
+  21
+ ],
+ "boba-run/boba-run-04.png": [
+  48,
+  24,
+  61,
+  24
  ],
  "boba-run/boba-run-05.png": null,
  "chonk-agent-follow/chonk-agent-follow-00.png": [
   8,
-  27,
+  20,
   34,
-  27
+  20
  ],
  "chonk-agent-follow/chonk-agent-follow-01.png": [
   5,
-  25,
+  18,
   31,
-  25
+  18
  ],
  "chonk-agent-follow/chonk-agent-follow-02.png": [
   0,
-  27,
+  20,
   26,
-  27
+  20
  ],
  "chonk-agent-follow/chonk-agent-follow-03.png": [
   -3,
-  25,
+  18,
   17,
-  25
+  18
  ],
  "chonk-agent-follow/chonk-agent-follow-04.png": [
   -5,
-  29,
+  22,
   10,
-  29
+  22
  ],
  "chonk-agent-follow/chonk-agent-follow-05.png": null,
  "chonk-agent-return/chonk-agent-return-00.png": [
   -3,
-  42,
+  35,
   9,
-  42
+  35
  ],
  "chonk-agent-return/chonk-agent-return-01.png": [
   -5,
-  27,
+  20,
   12,
-  27
+  20
  ],
  "chonk-agent-return/chonk-agent-return-02.png": [
   2,
-  26,
+  19,
   25,
-  26
+  19
  ],
  "chonk-agent-return/chonk-agent-return-03.png": [
   7,
-  27,
+  20,
   33,
-  27
+  20
  ],
  "chonk-agent-return/chonk-agent-return-04.png": [
   10,
-  27,
+  20,
   36,
-  27
+  20
  ],
  "chonk-agent-return/chonk-agent-return-05.png": [
   10,
-  27,
+  20,
   36,
-  27
+  20
  ],
  "chonk-agent-return/chonk-agent-return-06.png": [
   10,
-  27,
+  20,
   36,
-  27
+  20
  ],
  "chonk-agent-return/chonk-agent-return-07.png": [
   10,
-  27,
+  20,
   36,
-  27
+  20
  ],
  "chonk-agent-spot/chonk-agent-spot-00.png": [
   10,
-  27,
+  20,
   36,
-  27
+  20
  ],
  "chonk-agent-spot/chonk-agent-spot-01.png": [
   10,
-  27,
+  20,
   36,
-  27
+  20
  ],
  "chonk-agent-spot/chonk-agent-spot-02.png": [
   10,
-  27,
+  20,
   36,
-  27
+  20
  ],
  "chonk-agent-spot/chonk-agent-spot-03.png": [
   10,
-  27,
+  20,
   36,
-  27
+  20
  ],
  "chonk-agent-spot/chonk-agent-spot-04.png": [
   8,
-  27,
+  20,
   34,
-  27
+  20
  ],
  "chonk-agent-spot/chonk-agent-spot-05.png": [
   8,
-  27,
+  20,
   34,
-  27
+  20
  ],
  "chonk-compacting/chonk-compacting-00.png": [
   14,
-  21,
+  14,
   31,
-  21
+  14
  ],
  "chonk-compacting/chonk-compacting-01.png": [
   15,
-  22,
+  15,
   32,
-  22
+  15
  ],
  "chonk-compacting/chonk-compacting-02.png": [
   14,
-  23,
+  16,
   33,
-  23
+  16
  ],
  "chonk-compacting/chonk-compacting-03.png": [
   14,
+  17,
+  33,
+  17
+ ],
+ "chonk-compacting/chonk-compacting-04.png": [
+  14,
+  15,
+  31,
+  15
+ ],
+ "chonk-compacting/chonk-compacting-05.png": [
+  10,
+  18,
+  35,
+  18
+ ],
+ "chonk-compacting/chonk-compacting-06.png": [
+  10,
+  19,
+  35,
+  19
+ ],
+ "chonk-compacting/chonk-compacting-07.png": [
+  10,
+  19,
+  35,
+  19
+ ],
+ "chonk-doze-off/chonk-doze-off-00.png": [
+  10,
+  20,
+  36,
+  20
+ ],
+ "chonk-doze-off/chonk-doze-off-01.png": [
+  10,
+  21,
+  36,
+  21
+ ],
+ "chonk-doze-off/chonk-doze-off-02.png": [
+  10,
+  22,
+  36,
+  22
+ ],
+ "chonk-doze-off/chonk-doze-off-03.png": [
+  10,
+  19,
+  36,
+  19
+ ],
+ "chonk-doze-off/chonk-doze-off-04.png": [
+  10,
+  22,
+  36,
+  22
+ ],
+ "chonk-doze-off/chonk-doze-off-05.png": [
+  10,
+  22,
+  36,
+  22
+ ],
+ "chonk-error/chonk-error-00.png": [
+  10,
+  22,
+  36,
+  22
+ ],
+ "chonk-error/chonk-error-01.png": [
+  11,
+  18,
+  36,
+  18
+ ],
+ "chonk-error/chonk-error-02.png": [
+  11,
+  20,
+  37,
+  20
+ ],
+ "chonk-error/chonk-error-03.png": [
+  9,
+  20,
+  35,
+  20
+ ],
+ "chonk-error/chonk-error-04.png": [
+  10,
+  21,
+  36,
+  21
+ ],
+ "chonk-error/chonk-error-05.png": [
+  10,
+  21,
+  36,
+  21
+ ],
+ "chonk-fish-chase/chonk-fish-chase-00.png": [
+  7,
   24,
   33,
   24
  ],
- "chonk-compacting/chonk-compacting-04.png": [
-  14,
-  22,
-  31,
-  22
- ],
- "chonk-compacting/chonk-compacting-05.png": [
-  10,
-  25,
-  35,
-  25
- ],
- "chonk-compacting/chonk-compacting-06.png": [
-  10,
-  26,
-  35,
-  26
- ],
- "chonk-compacting/chonk-compacting-07.png": [
-  10,
-  26,
-  35,
-  26
- ],
- "chonk-doze-off/chonk-doze-off-00.png": [
-  10,
-  27,
-  36,
-  27
- ],
- "chonk-doze-off/chonk-doze-off-01.png": [
-  10,
-  28,
-  36,
-  28
- ],
- "chonk-doze-off/chonk-doze-off-02.png": [
-  10,
-  29,
-  36,
-  29
- ],
- "chonk-doze-off/chonk-doze-off-03.png": [
-  10,
-  26,
-  36,
-  26
- ],
- "chonk-doze-off/chonk-doze-off-04.png": [
-  10,
-  29,
-  36,
-  29
- ],
- "chonk-doze-off/chonk-doze-off-05.png": [
-  10,
-  29,
-  36,
-  29
- ],
- "chonk-error/chonk-error-00.png": [
-  10,
-  29,
-  36,
-  29
- ],
- "chonk-error/chonk-error-01.png": [
-  11,
-  25,
-  36,
-  25
- ],
- "chonk-error/chonk-error-02.png": [
-  11,
-  27,
-  37,
-  27
- ],
- "chonk-error/chonk-error-03.png": [
-  9,
-  27,
-  35,
-  27
- ],
- "chonk-error/chonk-error-04.png": [
-  10,
-  28,
-  36,
-  28
- ],
- "chonk-error/chonk-error-05.png": [
-  10,
-  28,
-  36,
-  28
- ],
- "chonk-fish-chase/chonk-fish-chase-00.png": [
-  7,
-  31,
-  33,
-  31
- ],
  "chonk-fish-chase/chonk-fish-chase-01.png": [
   -6,
-  26,
+  19,
   20,
-  26
+  19
  ],
  "chonk-fish-chase/chonk-fish-chase-02.png": [
   0,
-  28,
   21,
-  28
+  21,
+  21
  ],
  "chonk-fish-chase/chonk-fish-chase-03.png": [
   -3,
-  27,
+  20,
   9,
-  27
+  20
  ],
  "chonk-fish-chase/chonk-fish-chase-04.png": [
   -4,
-  37,
+  30,
   8,
-  37
+  30
  ],
  "chonk-fish-chase/chonk-fish-chase-05.png": null,
  "chonk-fish-return/chonk-fish-return-00.png": [
   -3,
-  40,
+  33,
   9,
-  40
+  33
  ],
  "chonk-fish-return/chonk-fish-return-01.png": [
   -6,
-  27,
+  20,
   13,
-  27
+  20
  ],
  "chonk-fish-return/chonk-fish-return-02.png": [
   0,
-  27,
+  20,
   26,
-  27
+  20
  ],
  "chonk-fish-return/chonk-fish-return-03.png": [
   7,
-  27,
+  20,
   33,
-  27
+  20
  ],
  "chonk-fish-return/chonk-fish-return-04.png": [
   10,
-  25,
+  18,
   36,
-  25
+  18
  ],
  "chonk-fish-return/chonk-fish-return-05.png": [
   10,
-  26,
+  19,
   36,
-  26
+  19
  ],
  "chonk-fish-return/chonk-fish-return-06.png": [
   10,
-  27,
+  20,
   36,
-  27
+  20
  ],
  "chonk-fish-return/chonk-fish-return-07.png": [
   10,
-  27,
+  20,
   36,
-  27
+  20
  ],
  "chonk-fish-spot/chonk-fish-spot-00.png": [
   10,
-  27,
+  20,
   36,
-  27
+  20
  ],
  "chonk-fish-spot/chonk-fish-spot-01.png": [
   13,
-  27,
+  20,
   39,
-  27
+  20
  ],
  "chonk-fish-spot/chonk-fish-spot-02.png": [
   11,
-  27,
+  20,
   37,
-  27
+  20
  ],
  "chonk-fish-spot/chonk-fish-spot-03.png": [
   13,
-  27,
+  20,
   39,
-  27
+  20
  ],
  "chonk-fish-spot/chonk-fish-spot-04.png": [
   10,
-  27,
+  20,
   36,
-  27
+  20
  ],
  "chonk-fish-spot/chonk-fish-spot-05.png": [
   8,
-  27,
+  20,
   34,
-  27
+  20
  ],
  "chonk-idle/chonk-idle-00.png": [
   10,
-  27,
+  20,
   36,
-  27
+  20
  ],
  "chonk-idle/chonk-idle-01.png": [
   10,
-  27,
+  20,
   36,
-  27
+  20
  ],
  "chonk-idle/chonk-idle-02.png": [
   10,
-  28,
+  21,
   36,
-  28
+  21
  ],
  "chonk-idle/chonk-idle-03.png": [
   10,
-  28,
+  21,
   36,
-  28
+  21
  ],
  "chonk-idle/chonk-idle-04.png": [
   10,
-  28,
+  21,
   36,
-  28
+  21
  ],
  "chonk-idle/chonk-idle-05.png": [
   10,
-  27,
+  20,
   36,
-  27
+  20
  ],
  "chonk-interrupted/chonk-interrupted-00.png": [
   10,
-  27,
+  20,
   36,
-  27
+  20
  ],
  "chonk-interrupted/chonk-interrupted-01.png": [
   10,
-  28,
+  21,
   36,
-  28
+  21
  ],
  "chonk-interrupted/chonk-interrupted-02.png": [
   10,
-  24,
+  17,
   36,
-  24
+  17
  ],
  "chonk-interrupted/chonk-interrupted-03.png": [
   11,
-  25,
+  18,
   37,
-  25
+  18
  ],
  "chonk-interrupted/chonk-interrupted-04.png": [
   10,
-  25,
+  18,
   36,
-  25
+  18
  ],
  "chonk-interrupted/chonk-interrupted-05.png": [
   10,
-  26,
+  19,
   36,
-  26
+  19
  ],
  "chonk-interrupted/chonk-interrupted-06.png": [
   10,
-  27,
+  20,
   36,
-  27
+  20
  ],
  "chonk-interrupted/chonk-interrupted-07.png": [
   10,
-  27,
+  20,
   36,
-  27
+  20
  ],
  "chonk-long-think/chonk-long-think-00.png": [
   12,
-  25,
+  18,
   35,
-  25
+  18
  ],
  "chonk-long-think/chonk-long-think-01.png": [
   12,
-  25,
+  18,
   35,
-  25
+  18
  ],
  "chonk-long-think/chonk-long-think-02.png": [
   11,
-  25,
+  18,
   36,
-  25
+  18
  ],
  "chonk-long-think/chonk-long-think-03.png": [
   12,
-  25,
+  18,
   35,
-  25
+  18
  ],
  "chonk-long-think/chonk-long-think-04.png": [
   12,
-  25,
+  18,
   35,
-  25
+  18
  ],
  "chonk-long-think/chonk-long-think-05.png": [
   11,
-  25,
+  18,
   37,
-  25
+  18
  ],
  "chonk-long-think/chonk-long-think-06.png": [
   12,
-  25,
+  18,
   35,
-  25
+  18
  ],
  "chonk-long-think/chonk-long-think-07.png": [
   11,
-  25,
+  18,
   36,
-  25
+  18
  ],
  "chonk-long-think/chonk-long-think-08.png": [
   12,
-  25,
+  18,
   35,
-  25
+  18
  ],
  "chonk-long-think/chonk-long-think-09.png": [
   12,
-  25,
+  18,
   35,
-  25
+  18
  ],
  "chonk-look-around/chonk-look-around-00.png": [
   10,
-  27,
+  20,
   36,
-  27
+  20
  ],
  "chonk-look-around/chonk-look-around-01.png": [
   10,
-  27,
+  20,
   36,
-  27
+  20
  ],
  "chonk-look-around/chonk-look-around-02.png": [
   10,
-  27,
+  20,
   36,
-  27
+  20
  ],
  "chonk-look-around/chonk-look-around-03.png": [
   10,
-  27,
+  20,
   36,
-  27
+  20
  ],
  "chonk-look-around/chonk-look-around-04.png": [
   10,
-  27,
+  20,
   36,
-  27
+  20
  ],
  "chonk-look-around/chonk-look-around-05.png": [
   10,
-  27,
+  20,
   36,
-  27
+  20
  ],
  "chonk-look-around/chonk-look-around-06.png": [
   11,
-  27,
+  20,
   36,
-  27
+  20
  ],
  "chonk-look-around/chonk-look-around-07.png": [
   11,
-  27,
+  20,
   36,
-  27
+  20
  ],
  "chonk-plan/chonk-plan-00.png": [
   12,
-  26,
+  19,
   35,
-  26
+  19
  ],
  "chonk-plan/chonk-plan-01.png": [
   10,
-  27,
+  20,
   36,
-  27
+  20
  ],
  "chonk-plan/chonk-plan-02.png": [
   10,
-  27,
+  20,
   36,
-  27
+  20
  ],
  "chonk-plan/chonk-plan-03.png": [
   10,
-  27,
+  20,
   36,
-  27
+  20
  ],
  "chonk-plan/chonk-plan-04.png": [
   10,
-  27,
+  20,
   36,
-  27
+  20
  ],
  "chonk-plan/chonk-plan-05.png": [
   10,
-  27,
+  20,
   36,
-  27
+  20
  ],
  "chonk-plan/chonk-plan-06.png": [
   10,
-  27,
+  20,
   36,
-  27
+  20
  ],
  "chonk-plan/chonk-plan-07.png": [
   10,
-  27,
+  20,
   36,
-  27
+  20
  ],
  "chonk-plan/chonk-plan-08.png": [
   10,
-  28,
+  21,
   36,
-  28
+  21
  ],
  "chonk-plan/chonk-plan-09.png": [
   10,
-  26,
+  19,
   36,
-  26
+  19
  ],
  "chonk-plan/chonk-plan-10.png": [
   10,
-  27,
+  20,
   36,
-  27
+  20
  ],
  "chonk-plan/chonk-plan-11.png": [
   10,
-  27,
+  20,
   36,
-  27
+  20
  ],
  "chonk-propose-diff/chonk-propose-diff-00.png": [
   11,
-  27,
+  20,
   37,
-  27
+  20
  ],
  "chonk-propose-diff/chonk-propose-diff-01.png": [
   11,
-  26,
+  19,
   37,
-  26
+  19
  ],
  "chonk-propose-diff/chonk-propose-diff-02.png": [
   11,
-  27,
+  20,
   37,
-  27
+  20
  ],
  "chonk-propose-diff/chonk-propose-diff-03.png": [
   11,
-  26,
+  19,
   37,
-  26
+  19
  ],
  "chonk-propose-diff/chonk-propose-diff-04.png": [
   11,
-  27,
+  20,
   37,
-  27
+  20
  ],
  "chonk-propose-diff/chonk-propose-diff-05.png": [
   11,
-  26,
+  19,
   37,
-  26
+  19
  ],
  "chonk-read-file/chonk-read-file-00.png": [
   14,
-  27,
+  20,
   40,
-  27
+  20
  ],
  "chonk-read-file/chonk-read-file-01.png": [
   14,
-  27,
+  20,
   40,
-  27
+  20
  ],
  "chonk-read-file/chonk-read-file-02.png": [
   14,
-  27,
+  20,
   40,
-  27
+  20
  ],
  "chonk-read-file/chonk-read-file-03.png": [
   14,
-  27,
+  20,
   40,
-  27
+  20
  ],
  "chonk-read-file/chonk-read-file-04.png": [
   14,
-  27,
+  20,
   40,
-  27
+  20
  ],
  "chonk-read-file/chonk-read-file-05.png": [
   14,
-  27,
+  20,
   40,
-  27
+  20
  ],
  "chonk-reading/chonk-reading-00.png": [
-  10,
-  31,
-  36,
-  31
- ],
- "chonk-reading/chonk-reading-01.png": [
-  10,
-  31,
-  36,
-  31
- ],
- "chonk-reading/chonk-reading-02.png": [
-  10,
-  31,
-  36,
-  31
- ],
- "chonk-reading/chonk-reading-03.png": [
-  10,
-  31,
-  36,
-  31
- ],
- "chonk-reading/chonk-reading-04.png": [
-  10,
-  31,
-  36,
-  31
- ],
- "chonk-run-failed/chonk-run-failed-00.png": [
-  11,
-  27,
-  36,
-  27
- ],
- "chonk-run-failed/chonk-run-failed-01.png": [
-  13,
-  26,
-  34,
-  26
- ],
- "chonk-run-failed/chonk-run-failed-02.png": [
-  11,
-  28,
-  36,
-  28
- ],
- "chonk-run-failed/chonk-run-failed-03.png": [
-  10,
-  29,
-  36,
-  29
- ],
- "chonk-run-failed/chonk-run-failed-04.png": [
-  10,
-  30,
-  36,
-  30
- ],
- "chonk-run-failed/chonk-run-failed-05.png": [
-  10,
-  30,
-  36,
-  30
- ],
- "chonk-run-failed/chonk-run-failed-06.png": [
-  10,
-  26,
-  36,
-  26
- ],
- "chonk-run-failed/chonk-run-failed-07.png": [
-  10,
-  27,
-  36,
-  27
- ],
- "chonk-running-cmd/chonk-running-cmd-00.png": [
-  10,
-  27,
-  36,
-  27
- ],
- "chonk-running-cmd/chonk-running-cmd-01.png": [
-  10,
-  27,
-  36,
-  27
- ],
- "chonk-running-cmd/chonk-running-cmd-02.png": [
-  10,
-  27,
-  36,
-  27
- ],
- "chonk-running-cmd/chonk-running-cmd-03.png": [
-  10,
-  27,
-  36,
-  27
- ],
- "chonk-running-cmd/chonk-running-cmd-04.png": [
-  10,
-  27,
-  36,
-  27
- ],
- "chonk-running-cmd/chonk-running-cmd-05.png": [
-  10,
-  27,
-  36,
-  27
- ],
- "chonk-searching/chonk-searching-00.png": [
-  14,
-  27,
-  33,
-  27
- ],
- "chonk-searching/chonk-searching-01.png": [
-  14,
-  27,
-  33,
-  27
- ],
- "chonk-searching/chonk-searching-02.png": [
-  13,
-  27,
-  33,
-  27
- ],
- "chonk-searching/chonk-searching-03.png": [
-  13,
-  27,
-  34,
-  27
- ],
- "chonk-searching/chonk-searching-04.png": [
-  13,
-  27,
-  33,
-  27
- ],
- "chonk-searching/chonk-searching-05.png": [
-  14,
-  27,
-  33,
-  27
- ],
- "chonk-sleeping/chonk-sleeping-00.png": [
-  10,
-  29,
-  36,
-  29
- ],
- "chonk-sleeping/chonk-sleeping-01.png": [
-  10,
-  29,
-  36,
-  29
- ],
- "chonk-sleeping/chonk-sleeping-02.png": [
-  10,
-  30,
-  36,
-  30
- ],
- "chonk-sleeping/chonk-sleeping-03.png": [
-  10,
-  30,
-  36,
-  30
- ],
- "chonk-sleeping/chonk-sleeping-04.png": [
-  10,
-  30,
-  36,
-  30
- ],
- "chonk-sleeping/chonk-sleeping-05.png": [
-  10,
-  30,
-  36,
-  30
- ],
- "chonk-sleeping/chonk-sleeping-06.png": [
-  10,
-  29,
-  36,
-  29
- ],
- "chonk-sleeping/chonk-sleeping-07.png": [
-  10,
-  29,
-  36,
-  29
- ],
- "chonk-streaming/chonk-streaming-00.png": [
-  10,
-  27,
-  36,
-  27
- ],
- "chonk-streaming/chonk-streaming-01.png": [
-  10,
-  26,
-  36,
-  26
- ],
- "chonk-streaming/chonk-streaming-02.png": [
-  10,
-  27,
-  36,
-  27
- ],
- "chonk-streaming/chonk-streaming-03.png": [
-  10,
-  27,
-  36,
-  27
- ],
- "chonk-streaming/chonk-streaming-04.png": [
-  10,
-  26,
-  36,
-  26
- ],
- "chonk-streaming/chonk-streaming-05.png": [
-  10,
-  27,
-  36,
-  27
- ],
- "chonk-streaming/chonk-streaming-06.png": [
-  10,
-  27,
-  36,
-  27
- ],
- "chonk-streaming/chonk-streaming-07.png": [
-  10,
-  26,
-  36,
-  26
- ],
- "chonk-streaming/chonk-streaming-08.png": [
-  10,
-  27,
-  36,
-  27
- ],
- "chonk-streaming/chonk-streaming-09.png": [
-  10,
-  27,
-  36,
-  27
- ],
- "chonk-streaming/chonk-streaming-10.png": [
-  10,
-  26,
-  36,
-  26
- ],
- "chonk-streaming/chonk-streaming-11.png": [
-  10,
-  27,
-  36,
-  27
- ],
- "chonk-success/chonk-success-00.png": [
-  10,
-  29,
-  36,
-  29
- ],
- "chonk-success/chonk-success-01.png": [
-  10,
-  25,
-  36,
-  25
- ],
- "chonk-success/chonk-success-02.png": [
-  10,
-  26,
-  36,
-  26
- ],
- "chonk-success/chonk-success-03.png": [
-  10,
-  27,
-  36,
-  27
- ],
- "chonk-sulk/chonk-sulk-00.png": [
-  10,
-  27,
-  36,
-  27
- ],
- "chonk-sulk/chonk-sulk-01.png": [
-  10,
-  27,
-  36,
-  27
- ],
- "chonk-sulk/chonk-sulk-02.png": [
-  10,
-  28,
-  36,
-  28
- ],
- "chonk-sulk/chonk-sulk-03.png": [
-  10,
-  28,
-  36,
-  28
- ],
- "chonk-sulk/chonk-sulk-04.png": [
-  10,
-  28,
-  36,
-  28
- ],
- "chonk-sulk/chonk-sulk-05.png": [
-  10,
-  29,
-  36,
-  29
- ],
- "chonk-sulk/chonk-sulk-06.png": [
-  10,
-  29,
-  36,
-  29
- ],
- "chonk-sulk/chonk-sulk-07.png": [
-  10,
-  28,
-  36,
-  28
- ],
- "chonk-sulk-end/chonk-sulk-end-00.png": [
-  10,
-  28,
-  36,
-  28
- ],
- "chonk-sulk-end/chonk-sulk-end-01.png": [
-  10,
-  28,
-  36,
-  28
- ],
- "chonk-sulk-end/chonk-sulk-end-02.png": [
-  10,
-  27,
-  36,
-  27
- ],
- "chonk-sulk-end/chonk-sulk-end-03.png": [
-  10,
-  26,
-  36,
-  26
- ],
- "chonk-sulk-end/chonk-sulk-end-04.png": [
-  10,
-  25,
-  36,
-  25
- ],
- "chonk-sulk-end/chonk-sulk-end-05.png": [
-  10,
-  27,
-  36,
-  27
- ],
- "chonk-sulk-loop/chonk-sulk-loop-00.png": [
-  10,
-  28,
-  36,
-  28
- ],
- "chonk-sulk-loop/chonk-sulk-loop-01.png": [
-  10,
-  29,
-  36,
-  29
- ],
- "chonk-sulk-loop/chonk-sulk-loop-02.png": [
-  10,
-  29,
-  36,
-  29
- ],
- "chonk-sulk-loop/chonk-sulk-loop-03.png": [
-  10,
-  28,
-  36,
-  28
- ],
- "chonk-sulk-loop/chonk-sulk-loop-04.png": [
-  10,
-  29,
-  36,
-  29
- ],
- "chonk-sulk-loop/chonk-sulk-loop-05.png": [
-  10,
-  29,
-  36,
-  29
- ],
- "chonk-tests-fail/chonk-tests-fail-00.png": [
-  11,
-  27,
-  36,
-  27
- ],
- "chonk-tests-fail/chonk-tests-fail-01.png": [
-  11,
-  27,
-  36,
-  27
- ],
- "chonk-tests-fail/chonk-tests-fail-02.png": [
-  11,
-  27,
-  36,
-  27
- ],
- "chonk-tests-fail/chonk-tests-fail-03.png": [
-  11,
-  27,
-  36,
-  27
- ],
- "chonk-tests-fail/chonk-tests-fail-04.png": [
-  10,
-  26,
-  36,
-  26
- ],
- "chonk-tests-fail/chonk-tests-fail-05.png": [
-  10,
-  29,
-  36,
-  29
- ],
- "chonk-tests-fail/chonk-tests-fail-06.png": [
-  10,
-  29,
-  36,
-  29
- ],
- "chonk-tests-fail/chonk-tests-fail-07.png": [
-  10,
-  29,
-  36,
-  29
- ],
- "chonk-tests-pass/chonk-tests-pass-00.png": [
-  11,
-  27,
-  36,
-  27
- ],
- "chonk-tests-pass/chonk-tests-pass-01.png": [
-  11,
-  27,
-  36,
-  27
- ],
- "chonk-tests-pass/chonk-tests-pass-02.png": [
-  11,
-  27,
-  36,
-  27
- ],
- "chonk-tests-pass/chonk-tests-pass-03.png": [
-  11,
-  27,
-  36,
-  27
- ],
- "chonk-tests-pass/chonk-tests-pass-04.png": [
-  11,
-  27,
-  36,
-  27
- ],
- "chonk-tests-pass/chonk-tests-pass-05.png": [
-  10,
-  29,
-  36,
-  29
- ],
- "chonk-tests-pass/chonk-tests-pass-06.png": [
   10,
   24,
   36,
   24
  ],
+ "chonk-reading/chonk-reading-01.png": [
+  10,
+  24,
+  36,
+  24
+ ],
+ "chonk-reading/chonk-reading-02.png": [
+  10,
+  24,
+  36,
+  24
+ ],
+ "chonk-reading/chonk-reading-03.png": [
+  10,
+  24,
+  36,
+  24
+ ],
+ "chonk-reading/chonk-reading-04.png": [
+  10,
+  24,
+  36,
+  24
+ ],
+ "chonk-run-failed/chonk-run-failed-00.png": [
+  11,
+  20,
+  36,
+  20
+ ],
+ "chonk-run-failed/chonk-run-failed-01.png": [
+  13,
+  19,
+  34,
+  19
+ ],
+ "chonk-run-failed/chonk-run-failed-02.png": [
+  11,
+  21,
+  36,
+  21
+ ],
+ "chonk-run-failed/chonk-run-failed-03.png": [
+  10,
+  22,
+  36,
+  22
+ ],
+ "chonk-run-failed/chonk-run-failed-04.png": [
+  10,
+  23,
+  36,
+  23
+ ],
+ "chonk-run-failed/chonk-run-failed-05.png": [
+  10,
+  23,
+  36,
+  23
+ ],
+ "chonk-run-failed/chonk-run-failed-06.png": [
+  10,
+  19,
+  36,
+  19
+ ],
+ "chonk-run-failed/chonk-run-failed-07.png": [
+  10,
+  20,
+  36,
+  20
+ ],
+ "chonk-running-cmd/chonk-running-cmd-00.png": [
+  10,
+  20,
+  36,
+  20
+ ],
+ "chonk-running-cmd/chonk-running-cmd-01.png": [
+  10,
+  20,
+  36,
+  20
+ ],
+ "chonk-running-cmd/chonk-running-cmd-02.png": [
+  10,
+  20,
+  36,
+  20
+ ],
+ "chonk-running-cmd/chonk-running-cmd-03.png": [
+  10,
+  20,
+  36,
+  20
+ ],
+ "chonk-running-cmd/chonk-running-cmd-04.png": [
+  10,
+  20,
+  36,
+  20
+ ],
+ "chonk-running-cmd/chonk-running-cmd-05.png": [
+  10,
+  20,
+  36,
+  20
+ ],
+ "chonk-searching/chonk-searching-00.png": [
+  14,
+  20,
+  33,
+  20
+ ],
+ "chonk-searching/chonk-searching-01.png": [
+  14,
+  20,
+  33,
+  20
+ ],
+ "chonk-searching/chonk-searching-02.png": [
+  13,
+  20,
+  33,
+  20
+ ],
+ "chonk-searching/chonk-searching-03.png": [
+  13,
+  20,
+  34,
+  20
+ ],
+ "chonk-searching/chonk-searching-04.png": [
+  13,
+  20,
+  33,
+  20
+ ],
+ "chonk-searching/chonk-searching-05.png": [
+  14,
+  20,
+  33,
+  20
+ ],
+ "chonk-sleeping/chonk-sleeping-00.png": [
+  10,
+  22,
+  36,
+  22
+ ],
+ "chonk-sleeping/chonk-sleeping-01.png": [
+  10,
+  22,
+  36,
+  22
+ ],
+ "chonk-sleeping/chonk-sleeping-02.png": [
+  10,
+  23,
+  36,
+  23
+ ],
+ "chonk-sleeping/chonk-sleeping-03.png": [
+  10,
+  23,
+  36,
+  23
+ ],
+ "chonk-sleeping/chonk-sleeping-04.png": [
+  10,
+  23,
+  36,
+  23
+ ],
+ "chonk-sleeping/chonk-sleeping-05.png": [
+  10,
+  23,
+  36,
+  23
+ ],
+ "chonk-sleeping/chonk-sleeping-06.png": [
+  10,
+  22,
+  36,
+  22
+ ],
+ "chonk-sleeping/chonk-sleeping-07.png": [
+  10,
+  22,
+  36,
+  22
+ ],
+ "chonk-streaming/chonk-streaming-00.png": [
+  10,
+  20,
+  36,
+  20
+ ],
+ "chonk-streaming/chonk-streaming-01.png": [
+  10,
+  19,
+  36,
+  19
+ ],
+ "chonk-streaming/chonk-streaming-02.png": [
+  10,
+  20,
+  36,
+  20
+ ],
+ "chonk-streaming/chonk-streaming-03.png": [
+  10,
+  20,
+  36,
+  20
+ ],
+ "chonk-streaming/chonk-streaming-04.png": [
+  10,
+  19,
+  36,
+  19
+ ],
+ "chonk-streaming/chonk-streaming-05.png": [
+  10,
+  20,
+  36,
+  20
+ ],
+ "chonk-streaming/chonk-streaming-06.png": [
+  10,
+  20,
+  36,
+  20
+ ],
+ "chonk-streaming/chonk-streaming-07.png": [
+  10,
+  19,
+  36,
+  19
+ ],
+ "chonk-streaming/chonk-streaming-08.png": [
+  10,
+  20,
+  36,
+  20
+ ],
+ "chonk-streaming/chonk-streaming-09.png": [
+  10,
+  20,
+  36,
+  20
+ ],
+ "chonk-streaming/chonk-streaming-10.png": [
+  10,
+  19,
+  36,
+  19
+ ],
+ "chonk-streaming/chonk-streaming-11.png": [
+  10,
+  20,
+  36,
+  20
+ ],
+ "chonk-success/chonk-success-00.png": [
+  10,
+  22,
+  36,
+  22
+ ],
+ "chonk-success/chonk-success-01.png": [
+  10,
+  18,
+  36,
+  18
+ ],
+ "chonk-success/chonk-success-02.png": [
+  10,
+  19,
+  36,
+  19
+ ],
+ "chonk-success/chonk-success-03.png": [
+  10,
+  20,
+  36,
+  20
+ ],
+ "chonk-sulk/chonk-sulk-00.png": [
+  10,
+  20,
+  36,
+  20
+ ],
+ "chonk-sulk/chonk-sulk-01.png": [
+  10,
+  20,
+  36,
+  20
+ ],
+ "chonk-sulk/chonk-sulk-02.png": [
+  10,
+  21,
+  36,
+  21
+ ],
+ "chonk-sulk/chonk-sulk-03.png": [
+  10,
+  21,
+  36,
+  21
+ ],
+ "chonk-sulk/chonk-sulk-04.png": [
+  10,
+  21,
+  36,
+  21
+ ],
+ "chonk-sulk/chonk-sulk-05.png": [
+  10,
+  22,
+  36,
+  22
+ ],
+ "chonk-sulk/chonk-sulk-06.png": [
+  10,
+  22,
+  36,
+  22
+ ],
+ "chonk-sulk/chonk-sulk-07.png": [
+  10,
+  21,
+  36,
+  21
+ ],
+ "chonk-sulk-end/chonk-sulk-end-00.png": [
+  10,
+  21,
+  36,
+  21
+ ],
+ "chonk-sulk-end/chonk-sulk-end-01.png": [
+  10,
+  21,
+  36,
+  21
+ ],
+ "chonk-sulk-end/chonk-sulk-end-02.png": [
+  10,
+  20,
+  36,
+  20
+ ],
+ "chonk-sulk-end/chonk-sulk-end-03.png": [
+  10,
+  19,
+  36,
+  19
+ ],
+ "chonk-sulk-end/chonk-sulk-end-04.png": [
+  10,
+  18,
+  36,
+  18
+ ],
+ "chonk-sulk-end/chonk-sulk-end-05.png": [
+  10,
+  20,
+  36,
+  20
+ ],
+ "chonk-sulk-loop/chonk-sulk-loop-00.png": [
+  10,
+  21,
+  36,
+  21
+ ],
+ "chonk-sulk-loop/chonk-sulk-loop-01.png": [
+  10,
+  22,
+  36,
+  22
+ ],
+ "chonk-sulk-loop/chonk-sulk-loop-02.png": [
+  10,
+  22,
+  36,
+  22
+ ],
+ "chonk-sulk-loop/chonk-sulk-loop-03.png": [
+  10,
+  21,
+  36,
+  21
+ ],
+ "chonk-sulk-loop/chonk-sulk-loop-04.png": [
+  10,
+  22,
+  36,
+  22
+ ],
+ "chonk-sulk-loop/chonk-sulk-loop-05.png": [
+  10,
+  22,
+  36,
+  22
+ ],
+ "chonk-tests-fail/chonk-tests-fail-00.png": [
+  11,
+  20,
+  36,
+  20
+ ],
+ "chonk-tests-fail/chonk-tests-fail-01.png": [
+  11,
+  20,
+  36,
+  20
+ ],
+ "chonk-tests-fail/chonk-tests-fail-02.png": [
+  11,
+  20,
+  36,
+  20
+ ],
+ "chonk-tests-fail/chonk-tests-fail-03.png": [
+  11,
+  20,
+  36,
+  20
+ ],
+ "chonk-tests-fail/chonk-tests-fail-04.png": [
+  10,
+  19,
+  36,
+  19
+ ],
+ "chonk-tests-fail/chonk-tests-fail-05.png": [
+  10,
+  22,
+  36,
+  22
+ ],
+ "chonk-tests-fail/chonk-tests-fail-06.png": [
+  10,
+  22,
+  36,
+  22
+ ],
+ "chonk-tests-fail/chonk-tests-fail-07.png": [
+  10,
+  22,
+  36,
+  22
+ ],
+ "chonk-tests-pass/chonk-tests-pass-00.png": [
+  11,
+  20,
+  36,
+  20
+ ],
+ "chonk-tests-pass/chonk-tests-pass-01.png": [
+  11,
+  20,
+  36,
+  20
+ ],
+ "chonk-tests-pass/chonk-tests-pass-02.png": [
+  11,
+  20,
+  36,
+  20
+ ],
+ "chonk-tests-pass/chonk-tests-pass-03.png": [
+  11,
+  20,
+  36,
+  20
+ ],
+ "chonk-tests-pass/chonk-tests-pass-04.png": [
+  11,
+  20,
+  36,
+  20
+ ],
+ "chonk-tests-pass/chonk-tests-pass-05.png": [
+  10,
+  22,
+  36,
+  22
+ ],
+ "chonk-tests-pass/chonk-tests-pass-06.png": [
+  10,
+  17,
+  36,
+  17
+ ],
  "chonk-tests-pass/chonk-tests-pass-07.png": [
   10,
-  26,
+  19,
   36,
-  26
+  19
  ],
  "chonk-thinking/chonk-thinking-00.png": [
   13,
-  23,
+  16,
   34,
-  23
+  16
  ],
  "chonk-thinking/chonk-thinking-01.png": [
   13,
-  23,
+  16,
   34,
-  23
+  16
  ],
  "chonk-thinking/chonk-thinking-02.png": [
   13,
-  23,
+  16,
   34,
-  23
+  16
  ],
  "chonk-thinking/chonk-thinking-03.png": [
   13,
-  23,
+  16,
   34,
-  23
+  16
  ],
  "chonk-thinking/chonk-thinking-04.png": [
   13,
-  23,
+  16,
   34,
-  23
+  16
  ],
  "chonk-thinking/chonk-thinking-05.png": [
   13,
-  23,
+  16,
   34,
-  23
+  16
  ],
  "chonk-tool-call/chonk-tool-call-00.png": [
   10,
-  27,
+  20,
   36,
-  27
+  20
  ],
  "chonk-tool-call/chonk-tool-call-01.png": [
   10,
-  28,
+  21,
   36,
-  28
+  21
  ],
  "chonk-tool-call/chonk-tool-call-02.png": [
   10,
-  27,
+  20,
   36,
-  27
+  20
  ],
  "chonk-tool-call/chonk-tool-call-03.png": [
   10,
-  28,
+  21,
   36,
-  28
+  21
  ],
  "chonk-tool-call/chonk-tool-call-04.png": [
   10,
-  27,
+  20,
   36,
-  27
+  20
  ],
  "chonk-tool-call/chonk-tool-call-05.png": [
   10,
-  28,
+  21,
   36,
-  28
+  21
  ],
  "chonk-typing-along/chonk-typing-along-00.png": [
   10,
-  27,
+  20,
   36,
-  27
+  20
  ],
  "chonk-typing-along/chonk-typing-along-01.png": [
   10,
-  27,
+  20,
   36,
-  27
+  20
  ],
  "chonk-typing-along/chonk-typing-along-02.png": [
   10,
-  27,
+  20,
   36,
-  27
+  20
  ],
  "chonk-typing-along/chonk-typing-along-03.png": [
   10,
-  27,
+  20,
   36,
-  27
+  20
  ],
  "chonk-typing-along/chonk-typing-along-04.png": [
   10,
-  26,
+  19,
   36,
-  26
+  19
  ],
  "chonk-typing-along/chonk-typing-along-05.png": [
   10,
-  26,
+  19,
   36,
-  26
+  19
  ],
  "chonk-typing-away/chonk-typing-away-00.png": [
   10,
-  27,
+  20,
   36,
-  27
+  20
  ],
  "chonk-typing-away/chonk-typing-away-01.png": [
   10,
-  27,
+  20,
   36,
-  27
+  20
  ],
  "chonk-typing-away/chonk-typing-away-02.png": [
   10,
-  27,
+  20,
   36,
-  27
+  20
  ],
  "chonk-typing-away/chonk-typing-away-03.png": [
   10,
-  27,
+  20,
   36,
-  27
+  20
  ],
  "chonk-waiting-prompt/chonk-waiting-prompt-00.png": [
   10,
-  27,
+  20,
   36,
-  27
+  20
  ],
  "chonk-waiting-prompt/chonk-waiting-prompt-01.png": [
   10,
-  27,
+  20,
   36,
-  27
+  20
  ],
  "chonk-waiting-prompt/chonk-waiting-prompt-02.png": [
   10,
-  28,
+  21,
   36,
-  28
+  21
  ],
  "chonk-waiting-prompt/chonk-waiting-prompt-03.png": [
   10,
-  28,
+  21,
   36,
-  28
+  21
  ],
  "chonk-waiting-prompt/chonk-waiting-prompt-04.png": [
   10,
-  28,
+  21,
   36,
-  28
+  21
  ],
  "chonk-waiting-prompt/chonk-waiting-prompt-05.png": [
   10,
-  28,
+  21,
   36,
-  28
+  21
  ],
  "chonk-waiting-prompt/chonk-waiting-prompt-06.png": [
   10,
-  27,
+  20,
   36,
-  27
+  20
  ],
  "chonk-waiting-prompt/chonk-waiting-prompt-07.png": [
   10,
-  27,
+  20,
   36,
-  27
+  20
  ],
  "chonk-wake-up/chonk-wake-up-00.png": [
   48,
-  28,
+  21,
   61,
-  28
+  21
  ],
  "chonk-wake-up/chonk-wake-up-01.png": [
   30,
-  27,
+  20,
   56,
-  27
+  20
  ],
  "chonk-wake-up/chonk-wake-up-02.png": [
   17,
-  27,
+  20,
   43,
-  27
+  20
  ],
  "chonk-wake-up/chonk-wake-up-03.png": [
   10,
-  29,
+  22,
   36,
-  29
+  22
  ],
  "chonk-wake-up/chonk-wake-up-04.png": [
   11,
-  27,
+  20,
   37,
-  27
+  20
  ],
  "chonk-wake-up/chonk-wake-up-05.png": [
   9,
-  27,
+  20,
   35,
-  27
+  20
  ],
  "chonk-wake-up/chonk-wake-up-06.png": [
   10,
-  25,
+  18,
   36,
-  25
+  18
  ],
  "chonk-wake-up/chonk-wake-up-07.png": [
   10,
-  27,
+  20,
   36,
-  27
+  20
  ],
  "chonk-walk-away/chonk-walk-away-00.png": [
   10,
-  27,
+  20,
   36,
-  27
+  20
  ],
  "chonk-walk-away/chonk-walk-away-01.png": [
   10,
-  25,
+  18,
   36,
-  25
+  18
  ],
  "chonk-walk-away/chonk-walk-away-02.png": [
   10,
-  25,
+  18,
   36,
-  25
+  18
  ],
  "chonk-walk-away/chonk-walk-away-03.png": [
   10,
-  25,
+  18,
   36,
-  25
+  18
  ],
  "chonk-walk-away/chonk-walk-away-04.png": [
   13,
-  26,
+  19,
   39,
-  26
+  19
  ],
  "chonk-walk-away/chonk-walk-away-05.png": [
   22,
-  27,
+  20,
   48,
-  27
+  20
  ],
  "chonk-walk-away/chonk-walk-away-06.png": [
   40,
-  26,
+  19,
   61,
-  26
+  19
  ],
  "chonk-walk-away/chonk-walk-away-07.png": null,
  "chonk-writing-code/chonk-writing-code-00.png": [
   10,
-  27,
+  20,
   36,
-  27
+  20
  ],
  "chonk-writing-code/chonk-writing-code-01.png": [
   11,
-  27,
+  20,
   37,
-  27
+  20
  ],
  "chonk-writing-code/chonk-writing-code-02.png": [
   10,
-  27,
+  20,
   36,
-  27
+  20
  ],
  "chonk-writing-code/chonk-writing-code-03.png": [
   9,
-  27,
+  20,
   35,
-  27
+  20
  ],
  "chonk-yawn/chonk-yawn-00.png": [
   10,
-  27,
+  20,
   36,
-  27
+  20
  ],
  "chonk-yawn/chonk-yawn-01.png": [
   10,
-  26,
+  19,
   36,
-  26
+  19
  ],
  "chonk-yawn/chonk-yawn-02.png": [
   10,
-  25,
+  18,
   36,
-  25
+  18
  ],
  "chonk-yawn/chonk-yawn-03.png": [
   10,
-  26,
+  19,
   36,
-  26
+  19
  ],
  "chonk-yawn/chonk-yawn-04.png": [
   10,
-  27,
+  20,
   36,
-  27
+  20
  ],
  "chonk-yawn/chonk-yawn-05.png": [
   10,
-  27,
+  20,
   36,
-  27
+  20
  ],
  "compacting/compacting-00.png": [
   16,
-  23,
+  16,
   32,
-  23
+  16
  ],
  "compacting/compacting-01.png": [
   16,
-  24,
+  17,
   32,
-  24
+  17
  ],
  "compacting/compacting-02.png": [
   16,
-  25,
+  18,
   33,
-  25
+  18
  ],
  "compacting/compacting-03.png": [
   16,
-  26,
+  19,
   33,
-  26
+  19
  ],
  "compacting/compacting-04.png": [
   15,
-  24,
+  17,
   32,
-  24
+  17
  ],
  "compacting/compacting-05.png": [
   13,
-  27,
+  20,
   34,
-  27
+  20
  ],
  "compacting/compacting-06.png": [
   14,
-  28,
+  21,
   34,
-  28
+  21
  ],
  "compacting/compacting-07.png": [
   13,
-  28,
+  21,
   34,
-  28
+  21
  ],
  "done-flop/done-flop-00.png": [
   11,
-  38,
+  31,
   37,
-  38
+  31
  ],
  "done-flop/done-flop-01.png": [
   11,
-  38,
+  31,
   37,
-  38
+  31
  ],
  "done-flop/done-flop-02.png": [
   11,
+  30,
   37,
-  37,
-  37
+  30
  ],
  "done-flop/done-flop-03.png": [
   11,
+  30,
   37,
-  37,
-  37
+  30
  ],
  "done-flop/done-flop-04.png": [
   11,
-  38,
+  31,
   37,
-  38
+  31
  ],
  "done-flop/done-flop-05.png": [
   11,
-  38,
+  31,
   37,
-  38
+  31
  ],
  "doze-off/doze-off-00.png": [
   13,
-  29,
+  22,
   35,
-  29
+  22
  ],
  "doze-off/doze-off-01.png": [
   12,
-  30,
+  23,
   37,
-  30
+  23
  ],
  "doze-off/doze-off-02.png": [
   12,
-  31,
+  24,
   37,
-  31
+  24
  ],
  "doze-off/doze-off-03.png": [
   15,
-  28,
+  21,
   34,
-  28
+  21
  ],
  "doze-off/doze-off-04.png": [
   12,
-  31,
+  24,
   37,
-  31
+  24
  ],
  "doze-off/doze-off-05.png": [
   11,
-  31,
+  24,
   37,
-  31
+  24
  ],
  "eating-rice/eating-rice-00.png": [
   15,
-  29,
+  22,
   34,
-  29
+  22
  ],
  "eating-rice/eating-rice-01.png": [
   14,
-  29,
+  22,
   34,
-  29
+  22
  ],
  "eating-rice/eating-rice-02.png": [
   14,
-  29,
+  22,
   35,
-  29
+  22
  ],
  "eating-rice/eating-rice-03.png": [
   14,
-  29,
+  22,
   35,
-  29
+  22
  ],
  "eating-rice/eating-rice-04.png": [
   14,
-  28,
+  21,
   35,
-  28
+  21
  ],
  "eating-rice/eating-rice-05.png": [
   10,
-  27,
+  20,
   36,
-  27
+  20
  ],
  "error/error-00.png": [
   12,
-  31,
+  24,
   37,
-  31
+  24
  ],
  "error/error-01.png": [
   15,
-  27,
+  20,
   34,
-  27
+  20
  ],
  "error/error-02.png": [
   14,
-  29,
+  22,
   36,
-  29
+  22
  ],
  "error/error-03.png": [
   12,
-  29,
+  22,
   34,
-  29
+  22
  ],
  "error/error-04.png": [
   13,
-  30,
+  23,
   35,
-  30
+  23
  ],
  "error/error-05.png": [
   13,
-  30,
+  23,
   35,
-  30
+  23
  ],
  "fish-chase/fish-chase-00.png": [
   10,
-  31,
+  24,
   33,
-  31
+  24
  ],
  "fish-chase/fish-chase-01.png": [
   11,
+  21,
   28,
-  28,
-  28
+  21
  ],
  "fish-chase/fish-chase-02.png": [
   -3,
-  30,
+  23,
   16,
-  30
+  23
  ],
  "fish-chase/fish-chase-03.png": [
   2,
-  31,
+  24,
   14,
-  31
+  24
  ],
  "fish-chase/fish-chase-04.png": [
   -4,
-  29,
+  22,
   8,
-  29
+  22
  ],
  "fish-chase/fish-chase-05.png": null,
  "fish-return/fish-return-00.png": [
   -3,
-  30,
+  23,
   9,
-  30
+  23
  ],
  "fish-return/fish-return-01.png": [
   -4,
-  30,
+  23,
   12,
-  30
+  23
  ],
  "fish-return/fish-return-02.png": [
   1,
-  29,
+  22,
   27,
-  29
+  22
  ],
  "fish-return/fish-return-03.png": [
   9,
-  29,
+  22,
   33,
-  29
+  22
  ],
  "fish-return/fish-return-04.png": [
   14,
-  27,
+  20,
   35,
-  27
+  20
  ],
  "fish-return/fish-return-05.png": [
   13,
-  28,
+  21,
   35,
-  28
+  21
  ],
  "fish-return/fish-return-06.png": [
   11,
-  29,
+  22,
   37,
-  29
+  22
  ],
  "fish-return/fish-return-07.png": [
   13,
-  29,
+  22,
   35,
-  29
+  22
  ],
  "fish-spot/fish-spot-00.png": [
   13,
-  29,
+  22,
   35,
-  29
+  22
  ],
  "fish-spot/fish-spot-01.png": [
   15,
-  29,
+  22,
   34,
-  29
+  22
  ],
  "fish-spot/fish-spot-02.png": [
   15,
-  29,
+  22,
   34,
-  29
+  22
  ],
  "fish-spot/fish-spot-03.png": [
   15,
-  29,
+  22,
   34,
-  29
+  22
  ],
  "fish-spot/fish-spot-04.png": [
   13,
-  29,
+  22,
   32,
-  29
+  22
  ],
  "fish-spot/fish-spot-05.png": [
   13,
-  29,
+  22,
   32,
-  29
+  22
  ],
  "headband-on/headband-on-00.png": [
   10,
-  27,
+  20,
   36,
-  27
+  20
  ],
  "headband-on/headband-on-01.png": [
   10,
-  27,
+  20,
   36,
-  27
+  20
  ],
  "headband-on/headband-on-02.png": [
   10,
-  27,
+  20,
   36,
-  27
+  20
  ],
  "headband-on/headband-on-03.png": [
   10,
-  27,
+  20,
   36,
-  27
+  20
  ],
  "idle/idle-00.png": [
   13,
-  29,
+  22,
   35,
-  29
+  22
  ],
  "idle/idle-01.png": [
   13,
-  29,
+  22,
   35,
-  29
+  22
  ],
  "idle/idle-02.png": [
   13,
-  30,
+  23,
   35,
-  30
+  23
  ],
  "idle/idle-03.png": [
   13,
-  30,
+  23,
   35,
-  30
+  23
  ],
  "idle/idle-04.png": [
   13,
-  30,
+  23,
   35,
-  30
+  23
  ],
  "idle/idle-05.png": [
   12,
-  30,
+  23,
   37,
-  30
+  23
  ],
  "idle/idle-06.png": [
   13,
-  29,
+  22,
   36,
-  29
+  22
  ],
  "idle/idle-07.png": [
   13,
-  29,
+  22,
   35,
-  29
+  22
  ],
  "idle-left/idle-left-00.png": [
   13,
-  29,
+  22,
   35,
-  29
+  22
  ],
  "idle-left/idle-left-01.png": [
   13,
-  29,
+  22,
   35,
-  29
+  22
  ],
  "idle-left/idle-left-02.png": [
   13,
-  30,
+  23,
   35,
-  30
+  23
  ],
  "idle-left/idle-left-03.png": [
   13,
-  30,
+  23,
   35,
-  30
+  23
  ],
  "idle-left/idle-left-04.png": [
   13,
-  30,
+  23,
   35,
-  30
+  23
  ],
  "idle-left/idle-left-05.png": [
   12,
-  30,
+  23,
   37,
-  30
+  23
  ],
  "idle-left/idle-left-06.png": [
   13,
-  29,
+  22,
   36,
-  29
+  22
  ],
  "idle-left/idle-left-07.png": [
   13,
-  29,
+  22,
   35,
-  29
+  22
  ],
  "idle-right/idle-right-00.png": [
   13,
-  29,
+  22,
   35,
-  29
+  22
  ],
  "idle-right/idle-right-01.png": [
   13,
-  29,
+  22,
   35,
-  29
+  22
  ],
  "idle-right/idle-right-02.png": [
   13,
-  30,
+  23,
   35,
-  30
+  23
  ],
  "idle-right/idle-right-03.png": [
   13,
-  30,
+  23,
   35,
-  30
+  23
  ],
  "idle-right/idle-right-04.png": [
   13,
-  30,
+  23,
   35,
-  30
+  23
  ],
  "idle-right/idle-right-05.png": [
   12,
-  30,
+  23,
   37,
-  30
+  23
  ],
  "idle-right/idle-right-06.png": [
   13,
-  29,
+  22,
   36,
-  29
+  22
  ],
  "idle-right/idle-right-07.png": [
   13,
-  29,
+  22,
   35,
-  29
+  22
  ],
  "interrupted/interrupted-00.png": [
   12,
-  29,
+  22,
   37,
-  29
+  22
  ],
  "interrupted/interrupted-01.png": [
   12,
-  30,
+  23,
   37,
-  30
+  23
  ],
  "interrupted/interrupted-02.png": [
   14,
-  26,
+  19,
   35,
-  26
+  19
  ],
  "interrupted/interrupted-03.png": [
   15,
-  27,
+  20,
   36,
-  27
+  20
  ],
  "interrupted/interrupted-04.png": [
   15,
-  27,
+  20,
   34,
-  27
+  20
  ],
  "interrupted/interrupted-05.png": [
   14,
-  28,
+  21,
   35,
-  28
+  21
  ],
  "interrupted/interrupted-06.png": [
   12,
-  29,
+  22,
   37,
-  29
+  22
  ],
  "interrupted/interrupted-07.png": [
   13,
-  29,
+  22,
   35,
-  29
+  22
  ],
  "long-think/long-think-00.png": [
   17,
-  27,
+  20,
   32,
-  27
+  20
  ],
  "long-think/long-think-01.png": [
   17,
-  27,
+  20,
   32,
-  27
+  20
  ],
  "long-think/long-think-02.png": [
   17,
-  27,
+  20,
   32,
-  27
+  20
  ],
  "long-think/long-think-03.png": [
   17,
-  27,
+  20,
   32,
-  27
+  20
  ],
  "long-think/long-think-04.png": [
   17,
-  27,
+  20,
   32,
-  27
+  20
  ],
  "long-think/long-think-05.png": [
   15,
-  27,
+  20,
   34,
-  27
+  20
  ],
  "long-think/long-think-06.png": [
   17,
-  27,
+  20,
   32,
-  27
+  20
  ],
  "long-think/long-think-07.png": [
   16,
-  27,
+  20,
   32,
-  27
+  20
  ],
  "long-think/long-think-08.png": [
   16,
-  27,
+  20,
   32,
-  27
+  20
  ],
  "long-think/long-think-09.png": [
   16,
-  27,
+  20,
   32,
-  27
+  20
  ],
  "look-around/look-around-00.png": [
   13,
-  29,
+  22,
   35,
-  29
+  22
  ],
  "look-around/look-around-01.png": [
   13,
-  29,
+  22,
   35,
-  29
+  22
  ],
  "look-around/look-around-02.png": [
   13,
-  29,
+  22,
   35,
-  29
+  22
  ],
  "look-around/look-around-03.png": [
   12,
-  29,
+  22,
   37,
-  29
+  22
  ],
  "look-around/look-around-04.png": [
   13,
-  29,
+  22,
   35,
-  29
+  22
  ],
  "look-around/look-around-05.png": [
   13,
-  29,
+  22,
   35,
-  29
+  22
  ],
  "look-around/look-around-06.png": [
   14,
-  29,
+  22,
   35,
-  29
+  22
  ],
  "look-around/look-around-07.png": [
   14,
-  29,
+  22,
   35,
-  29
+  22
  ],
  "plan/plan-00.png": [
   15,
-  28,
+  21,
   34,
-  28
+  21
  ],
  "plan/plan-01.png": [
   12,
-  29,
+  22,
   37,
-  29
+  22
  ],
  "plan/plan-02.png": [
   13,
-  29,
+  22,
   35,
-  29
+  22
  ],
  "plan/plan-03.png": [
   13,
-  29,
+  22,
   35,
-  29
+  22
  ],
  "plan/plan-04.png": [
   13,
-  29,
+  22,
   35,
-  29
+  22
  ],
  "plan/plan-05.png": [
   13,
-  29,
+  22,
   35,
-  29
+  22
  ],
  "plan/plan-06.png": [
   13,
-  29,
+  22,
   35,
-  29
+  22
  ],
  "plan/plan-07.png": [
   12,
-  29,
+  22,
   36,
-  29
+  22
  ],
  "plan/plan-08.png": [
   12,
-  30,
+  23,
   37,
-  30
+  23
  ],
  "plan/plan-09.png": [
   14,
-  28,
+  21,
   35,
-  28
+  21
  ],
  "plan/plan-10.png": [
   12,
-  29,
+  22,
   37,
-  29
+  22
  ],
  "plan/plan-11.png": [
   13,
-  29,
+  22,
   35,
-  29
+  22
  ],
  "pop-flip/pop-flip-00.png": [
   13,
-  33,
+  26,
   35,
-  33
+  26
  ],
  "pop-flip/pop-flip-01.png": [
   14,
-  32,
+  25,
   35,
-  32
+  25
  ],
  "pop-flip/pop-flip-02.png": [
   14,
-  31,
+  24,
   35,
-  31
+  24
  ],
  "pop-flip/pop-flip-03.png": [
   17,
-  29,
+  22,
   32,
-  29
+  22
  ],
  "pop-idea/pop-idea-00.png": [
   15,
-  30,
+  23,
   34,
-  30
+  23
  ],
  "pop-idea/pop-idea-01.png": [
   13,
-  27,
+  20,
   35,
-  27
+  20
  ],
  "pop-idea/pop-idea-02.png": [
   12,
-  28,
+  21,
   36,
-  28
+  21
  ],
  "pop-idea/pop-idea-03.png": [
   13,
-  29,
+  22,
   35,
-  29
+  22
  ],
  "propose-diff/propose-diff-00.png": [
   14,
-  29,
+  22,
   35,
-  29
+  22
  ],
  "propose-diff/propose-diff-01.png": [
   14,
-  28,
+  21,
   34,
-  28
+  21
  ],
  "propose-diff/propose-diff-02.png": [
   14,
-  29,
+  22,
   35,
-  29
+  22
  ],
  "propose-diff/propose-diff-03.png": [
   14,
-  28,
+  21,
   34,
-  28
+  21
  ],
  "propose-diff/propose-diff-04.png": [
   14,
-  29,
+  22,
   35,
-  29
+  22
  ],
  "propose-diff/propose-diff-05.png": [
   14,
-  28,
+  21,
   34,
-  28
+  21
  ],
  "read-file/read-file-00.png": [
   13,
-  30,
+  23,
   36,
-  30
+  23
  ],
  "read-file/read-file-01.png": [
   14,
-  30,
+  23,
   35,
-  30
+  23
  ],
  "read-file/read-file-02.png": [
   14,
-  30,
+  23,
   35,
-  30
+  23
  ],
  "read-file/read-file-03.png": [
   14,
-  30,
+  23,
   35,
-  30
+  23
  ],
  "read-file/read-file-04.png": [
   14,
-  30,
+  23,
   35,
-  30
+  23
  ],
  "read-file/read-file-05.png": [
   14,
-  30,
+  23,
   35,
-  30
+  23
  ],
  "reading/reading-00.png": [
   13,
-  33,
+  26,
   35,
-  33
+  26
  ],
  "reading/reading-01.png": [
   13,
-  33,
+  26,
   35,
-  33
+  26
  ],
  "reading/reading-02.png": [
   13,
-  33,
+  26,
   35,
-  33
+  26
  ],
  "reading/reading-03.png": [
   13,
-  33,
+  26,
   35,
-  33
+  26
  ],
  "reading/reading-04.png": [
   13,
-  33,
+  26,
   35,
-  33
+  26
  ],
  "run-failed/run-failed-00.png": [
   16,
-  29,
+  22,
   33,
-  29
+  22
  ],
  "run-failed/run-failed-01.png": [
   18,
-  28,
+  21,
   31,
-  28
+  21
  ],
  "run-failed/run-failed-02.png": [
   14,
-  30,
+  23,
   34,
-  30
+  23
  ],
  "run-failed/run-failed-03.png": [
   14,
-  31,
+  24,
   35,
-  31
+  24
  ],
  "run-failed/run-failed-04.png": [
   11,
-  32,
+  25,
   37,
-  32
+  25
  ],
  "run-failed/run-failed-05.png": [
   11,
-  32,
+  25,
   37,
-  32
+  25
  ],
  "run-failed/run-failed-06.png": [
   14,
-  28,
+  21,
   35,
-  28
+  21
  ],
  "run-failed/run-failed-07.png": [
   13,
-  29,
+  22,
   35,
-  29
+  22
  ],
  "running-cmd/running-cmd-00.png": [
   15,
-  29,
+  22,
   34,
-  29
+  22
  ],
  "running-cmd/running-cmd-01.png": [
   15,
-  29,
+  22,
   34,
-  29
+  22
  ],
  "running-cmd/running-cmd-02.png": [
   15,
-  29,
+  22,
   34,
-  29
+  22
  ],
  "running-cmd/running-cmd-03.png": [
   15,
-  29,
+  22,
   34,
-  29
+  22
  ],
  "running-cmd/running-cmd-04.png": [
   15,
-  29,
+  22,
   34,
-  29
+  22
  ],
  "running-cmd/running-cmd-05.png": [
   15,
-  29,
+  22,
   34,
-  29
+  22
  ],
  "searching/searching-00.png": [
   18,
-  29,
+  22,
   31,
-  29
+  22
  ],
  "searching/searching-01.png": [
   18,
-  29,
+  22,
   31,
-  29
+  22
  ],
  "searching/searching-02.png": [
   17,
-  29,
+  22,
   32,
-  29
+  22
  ],
  "searching/searching-03.png": [
   17,
-  29,
+  22,
   32,
-  29
+  22
  ],
  "searching/searching-04.png": [
   17,
-  29,
+  22,
   32,
-  29
+  22
  ],
  "searching/searching-05.png": [
   18,
-  29,
+  22,
   31,
-  29
+  22
  ],
  "sleeping/sleeping-00.png": [
   11,
-  31,
+  24,
   37,
-  31
+  24
  ],
  "sleeping/sleeping-01.png": [
   11,
-  31,
+  24,
   37,
-  31
+  24
  ],
  "sleeping/sleeping-02.png": [
   11,
-  32,
+  25,
   37,
-  32
+  25
  ],
  "sleeping/sleeping-03.png": [
   11,
-  32,
+  25,
   37,
-  32
+  25
  ],
  "sleeping/sleeping-04.png": [
   11,
-  32,
+  25,
   37,
-  32
+  25
  ],
  "sleeping/sleeping-05.png": [
   11,
-  32,
+  25,
   37,
-  32
+  25
  ],
  "sleeping/sleeping-06.png": [
   11,
-  31,
+  24,
   37,
-  31
+  24
  ],
  "sleeping/sleeping-07.png": [
   11,
-  31,
+  24,
   37,
-  31
+  24
  ],
  "slim-down/slim-down-00.png": [
   10,
-  27,
+  20,
   36,
-  27
+  20
  ],
  "slim-down/slim-down-01.png": [
   10,
-  27,
+  20,
   36,
-  27
+  20
  ],
  "slim-down/slim-down-02.png": [
   10,
-  28,
+  21,
   36,
-  28
+  21
  ],
  "slim-down/slim-down-03.png": [
   11,
-  28,
+  21,
   37,
-  28
+  21
  ],
  "slim-down/slim-down-04.png": [
   11,
-  29,
+  22,
   37,
-  29
+  22
  ],
  "slim-down/slim-down-05.png": [
   12,
-  29,
+  22,
   37,
-  29
+  22
  ],
  "streaming/streaming-00.png": [
   12,
-  29,
+  22,
   37,
-  29
+  22
  ],
  "streaming/streaming-01.png": [
   13,
-  28,
+  21,
   35,
-  28
+  21
  ],
  "streaming/streaming-02.png": [
   12,
-  29,
+  22,
   37,
-  29
+  22
  ],
  "streaming/streaming-03.png": [
   11,
-  29,
+  22,
   37,
-  29
+  22
  ],
  "streaming/streaming-04.png": [
   12,
-  28,
+  21,
   37,
-  28
+  21
  ],
  "streaming/streaming-05.png": [
   11,
-  29,
+  22,
   37,
-  29
+  22
  ],
  "streaming/streaming-06.png": [
   12,
-  29,
+  22,
   37,
-  29
+  22
  ],
  "streaming/streaming-07.png": [
   13,
-  28,
+  21,
   35,
-  28
+  21
  ],
  "streaming/streaming-08.png": [
   12,
-  29,
+  22,
   37,
-  29
+  22
  ],
  "streaming/streaming-09.png": [
   11,
-  29,
+  22,
   37,
-  29
+  22
  ],
  "streaming/streaming-10.png": [
   12,
-  28,
+  21,
   37,
-  28
+  21
  ],
  "streaming/streaming-11.png": [
   11,
-  29,
+  22,
   37,
-  29
+  22
  ],
  "subagent/subagent-00.png": [
   13,
-  29,
+  22,
   36,
-  29
+  22
  ],
  "subagent/subagent-01.png": [
   12,
-  30,
+  23,
   37,
-  30
+  23
  ],
  "subagent/subagent-02.png": [
   12,
-  27,
+  20,
   31,
-  27
+  20
  ],
  "subagent/subagent-03.png": [
   7,
-  29,
+  22,
   32,
-  29
+  22
  ],
  "subagent/subagent-04.png": [
   8,
-  29,
+  22,
   30,
-  29
+  22
  ],
  "subagent/subagent-05.png": [
   8,
-  29,
+  22,
   30,
-  29
+  22
  ],
  "subagent/subagent-06.png": [
   6,
-  29,
+  22,
   32,
-  29
+  22
  ],
  "subagent/subagent-07.png": [
   7,
-  29,
+  22,
   32,
-  29
+  22
  ],
  "subagent/subagent-08.png": [
   10,
-  29,
+  22,
   32,
-  29
+  22
  ],
  "subagent/subagent-09.png": [
   13,
-  29,
+  22,
   35,
-  29
+  22
  ],
  "subagent-return/subagent-return-00.png": [
   8,
-  29,
+  22,
   30,
-  29
+  22
  ],
  "subagent-return/subagent-return-01.png": [
   10,
+  22,
   29,
-  29,
-  29
+  22
  ],
  "subagent-return/subagent-return-02.png": [
   7,
-  29,
+  22,
   32,
-  29
+  22
  ],
  "subagent-return/subagent-return-03.png": [
   6,
-  29,
+  22,
   32,
-  29
+  22
  ],
  "subagent-return/subagent-return-04.png": [
   7,
-  27,
+  20,
   29,
-  27
+  20
  ],
  "subagent-return/subagent-return-05.png": [
   8,
-  29,
+  22,
   33,
-  29
+  22
  ],
  "subagent-return/subagent-return-06.png": [
   10,
-  29,
+  22,
   35,
-  29
+  22
  ],
  "subagent-return/subagent-return-07.png": [
   13,
-  29,
+  22,
   35,
-  29
+  22
  ],
  "success/success-00.png": [
   12,
-  31,
+  24,
   37,
-  31
+  24
  ],
  "success/success-01.png": [
   11,
-  26,
+  19,
   37,
-  26
+  19
  ],
  "success/success-02.png": [
   11,
-  27,
+  20,
   37,
-  27
+  20
  ],
  "success/success-03.png": [
   11,
-  29,
+  22,
   37,
-  29
+  22
  ],
  "success/success-04.png": [
   11,
-  30,
+  23,
   37,
-  30
+  23
  ],
  "success/success-05.png": [
   11,
-  29,
+  22,
   37,
-  29
+  22
  ],
  "sulk/sulk-00.png": [
   13,
-  29,
+  22,
   35,
-  29
+  22
  ],
  "sulk/sulk-01.png": [
   12,
-  29,
+  22,
   37,
-  29
+  22
  ],
  "sulk/sulk-02.png": [
   11,
-  30,
+  23,
   37,
-  30
+  23
  ],
  "sulk/sulk-03.png": [
   11,
-  30,
+  23,
   37,
-  30
+  23
  ],
  "sulk/sulk-04.png": [
   11,
-  30,
+  23,
   37,
-  30
+  23
  ],
  "sulk/sulk-05.png": [
   12,
-  31,
+  24,
   37,
-  31
+  24
  ],
  "sulk/sulk-06.png": [
   16,
-  31,
+  24,
   41,
-  31
+  24
  ],
  "sulk/sulk-07.png": [
   17,
-  30,
+  23,
   40,
-  30
+  23
  ],
  "sulk-end/sulk-end-00.png": [
   12,
-  30,
+  23,
   37,
-  30
+  23
  ],
  "sulk-end/sulk-end-01.png": [
   12,
-  30,
+  23,
   37,
-  30
+  23
  ],
  "sulk-end/sulk-end-02.png": [
   13,
-  29,
+  22,
   35,
-  29
+  22
  ],
  "sulk-end/sulk-end-03.png": [
   15,
-  28,
+  21,
   33,
-  28
+  21
  ],
  "sulk-end/sulk-end-04.png": [
   14,
-  27,
+  20,
   35,
-  27
+  20
  ],
  "sulk-end/sulk-end-05.png": [
   12,
-  29,
+  22,
   37,
-  29
+  22
  ],
  "sulk-loop/sulk-loop-00.png": [
   16,
-  30,
+  23,
   41,
-  30
+  23
  ],
  "sulk-loop/sulk-loop-01.png": [
   13,
-  31,
+  24,
   36,
-  31
+  24
  ],
  "sulk-loop/sulk-loop-02.png": [
   15,
-  31,
+  24,
   40,
-  31
+  24
  ],
  "sulk-loop/sulk-loop-03.png": [
   12,
-  30,
+  23,
   37,
-  30
+  23
  ],
  "sulk-loop/sulk-loop-04.png": [
   12,
-  31,
+  24,
   37,
-  31
+  24
  ],
  "sulk-loop/sulk-loop-05.png": [
   16,
-  31,
+  24,
   41,
-  31
+  24
  ],
  "tests-fail/tests-fail-00.png": [
   15,
-  29,
+  22,
   34,
-  29
+  22
  ],
  "tests-fail/tests-fail-01.png": [
   15,
-  29,
+  22,
   34,
-  29
+  22
  ],
  "tests-fail/tests-fail-02.png": [
   15,
-  29,
+  22,
   34,
-  29
+  22
  ],
  "tests-fail/tests-fail-03.png": [
   15,
-  29,
+  22,
   34,
-  29
+  22
  ],
  "tests-fail/tests-fail-04.png": [
   15,
-  28,
+  21,
   34,
-  28
+  21
  ],
  "tests-fail/tests-fail-05.png": [
   11,
-  31,
+  24,
   37,
-  31
+  24
  ],
  "tests-fail/tests-fail-06.png": [
   11,
-  31,
+  24,
   37,
-  31
+  24
  ],
  "tests-fail/tests-fail-07.png": [
   11,
-  31,
+  24,
   37,
-  31
+  24
  ],
  "tests-pass/tests-pass-00.png": [
   15,
-  29,
+  22,
   34,
-  29
+  22
  ],
  "tests-pass/tests-pass-01.png": [
   15,
-  29,
+  22,
   34,
-  29
+  22
  ],
  "tests-pass/tests-pass-02.png": [
   15,
-  29,
+  22,
   34,
-  29
+  22
  ],
  "tests-pass/tests-pass-03.png": [
   15,
-  29,
+  22,
   34,
-  29
+  22
  ],
  "tests-pass/tests-pass-04.png": [
   15,
-  29,
+  22,
   34,
-  29
+  22
  ],
  "tests-pass/tests-pass-05.png": [
   13,
-  31,
+  24,
   35,
-  31
+  24
  ],
  "tests-pass/tests-pass-06.png": [
   12,
-  26,
+  19,
   37,
-  26
+  19
  ],
  "tests-pass/tests-pass-07.png": [
   11,
-  28,
+  21,
   37,
-  28
+  21
  ],
  "thinking/thinking-00.png": [
   17,
-  25,
+  18,
   31,
-  25
+  18
  ],
  "thinking/thinking-01.png": [
   17,
-  25,
+  18,
   31,
-  25
+  18
  ],
  "thinking/thinking-02.png": [
   17,
-  25,
+  18,
   31,
-  25
+  18
  ],
  "thinking/thinking-03.png": [
   17,
-  25,
+  18,
   31,
-  25
+  18
  ],
  "thinking/thinking-04.png": [
   17,
-  25,
+  18,
   31,
-  25
+  18
  ],
  "thinking/thinking-05.png": [
   17,
-  25,
+  18,
   31,
-  25
+  18
  ],
  "too-full-boba/too-full-boba-00.png": [
   10,
-  27,
+  20,
   36,
-  27
+  20
  ],
  "too-full-boba/too-full-boba-01.png": [
   11,
-  27,
+  20,
   37,
-  27
+  20
  ],
  "too-full-boba/too-full-boba-02.png": [
   9,
-  27,
+  20,
   35,
-  27
+  20
  ],
  "too-full-boba/too-full-boba-03.png": [
   11,
-  27,
+  20,
   37,
-  27
+  20
  ],
  "too-full-boba/too-full-boba-04.png": [
   10,
-  27,
+  20,
   36,
-  27
+  20
  ],
  "too-full-boba/too-full-boba-05.png": [
   10,
-  27,
+  20,
   36,
-  27
+  20
  ],
  "too-full-rice/too-full-rice-00.png": [
   10,
-  27,
+  20,
   36,
-  27
+  20
  ],
  "too-full-rice/too-full-rice-01.png": [
   11,
-  27,
+  20,
   37,
-  27
+  20
  ],
  "too-full-rice/too-full-rice-02.png": [
   9,
-  27,
+  20,
   35,
-  27
+  20
  ],
  "too-full-rice/too-full-rice-03.png": [
   11,
-  27,
+  20,
   37,
-  27
+  20
  ],
  "too-full-rice/too-full-rice-04.png": [
   10,
-  27,
+  20,
   36,
-  27
+  20
  ],
  "too-full-rice/too-full-rice-05.png": [
   10,
-  27,
+  20,
   36,
-  27
+  20
  ],
  "tool-call/tool-call-00.png": [
   14,
-  29,
+  22,
   35,
-  29
+  22
  ],
  "tool-call/tool-call-01.png": [
   14,
-  30,
+  23,
   34,
-  30
+  23
  ],
  "tool-call/tool-call-02.png": [
   14,
-  29,
+  22,
   35,
-  29
+  22
  ],
  "tool-call/tool-call-03.png": [
   14,
-  30,
+  23,
   34,
-  30
+  23
  ],
  "tool-call/tool-call-04.png": [
   14,
-  29,
+  22,
   35,
-  29
+  22
  ],
  "tool-call/tool-call-05.png": [
   14,
-  30,
+  23,
   34,
-  30
+  23
  ],
  "typing-along/typing-along-00.png": [
   12,
-  29,
+  22,
   37,
-  29
+  22
  ],
  "typing-along/typing-along-01.png": [
   12,
-  29,
+  22,
   37,
-  29
+  22
  ],
  "typing-along/typing-along-02.png": [
   12,
-  29,
+  22,
   37,
-  29
+  22
  ],
  "typing-along/typing-along-03.png": [
   12,
-  29,
+  22,
   37,
-  29
+  22
  ],
  "typing-along/typing-along-04.png": [
   15,
-  28,
+  21,
   33,
-  28
+  21
  ],
  "typing-along/typing-along-05.png": [
   15,
-  28,
+  21,
   34,
-  28
+  21
  ],
  "typing-away/typing-away-00.png": [
   13,
-  29,
+  22,
   35,
-  29
+  22
  ],
  "typing-away/typing-away-01.png": [
   12,
-  29,
+  22,
   37,
-  29
+  22
  ],
  "typing-away/typing-away-02.png": [
   13,
-  29,
+  22,
   35,
-  29
+  22
  ],
  "typing-away/typing-away-03.png": [
   13,
-  29,
+  22,
   35,
-  29
+  22
  ],
  "waiting-prompt/waiting-prompt-00.png": [
   13,
-  29,
+  22,
   35,
-  29
+  22
  ],
  "waiting-prompt/waiting-prompt-01.png": [
   13,
-  29,
+  22,
   35,
-  29
+  22
  ],
  "waiting-prompt/waiting-prompt-02.png": [
   13,
-  30,
+  23,
   35,
-  30
+  23
  ],
  "waiting-prompt/waiting-prompt-03.png": [
   13,
-  30,
+  23,
   35,
-  30
+  23
  ],
  "waiting-prompt/waiting-prompt-04.png": [
   13,
-  30,
+  23,
   35,
-  30
+  23
  ],
  "waiting-prompt/waiting-prompt-05.png": [
   13,
-  30,
+  23,
   35,
-  30
+  23
  ],
  "waiting-prompt/waiting-prompt-06.png": [
   12,
-  29,
+  22,
   37,
-  29
+  22
  ],
  "waiting-prompt/waiting-prompt-07.png": [
   13,
-  29,
+  22,
   35,
-  29
+  22
  ],
  "wake-up/wake-up-00.png": [
   47,
-  37,
+  30,
   59,
-  37
+  30
  ],
  "wake-up/wake-up-01.png": [
   33,
-  29,
+  22,
   56,
-  29
+  22
  ],
  "wake-up/wake-up-02.png": [
   19,
-  29,
+  22,
   44,
-  29
+  22
  ],
  "wake-up/wake-up-03.png": [
   12,
-  31,
+  24,
   37,
-  31
+  24
  ],
  "wake-up/wake-up-04.png": [
   14,
-  29,
+  22,
   37,
-  29
+  22
  ],
  "wake-up/wake-up-05.png": [
   12,
-  29,
+  22,
   34,
-  29
+  22
  ],
  "wake-up/wake-up-06.png": [
   13,
-  27,
+  20,
   36,
-  27
+  20
  ],
  "wake-up/wake-up-07.png": [
   13,
-  29,
+  22,
   35,
-  29
+  22
  ],
  "walk-away/walk-away-00.png": [
   12,
-  29,
+  22,
   37,
-  29
+  22
  ],
  "walk-away/walk-away-01.png": [
   13,
-  27,
+  20,
   36,
-  27
+  20
  ],
  "walk-away/walk-away-02.png": [
   14,
-  27,
+  20,
   35,
-  27
+  20
  ],
  "walk-away/walk-away-03.png": [
   13,
-  27,
+  20,
   36,
-  27
+  20
  ],
  "walk-away/walk-away-04.png": [
   17,
-  28,
+  21,
   38,
-  28
+  21
  ],
  "walk-away/walk-away-05.png": [
   24,
-  29,
+  22,
   49,
-  29
+  22
  ],
  "walk-away/walk-away-06.png": [
   45,
-  28,
+  21,
   60,
-  28
+  21
  ],
  "walk-away/walk-away-07.png": null,
  "writing-code/writing-code-00.png": [
   12,
-  29,
+  22,
   37,
-  29
+  22
  ],
  "writing-code/writing-code-01.png": [
   12,
-  30,
+  23,
   37,
-  30
+  23
  ],
  "writing-code/writing-code-02.png": [
   12,
-  29,
+  22,
   37,
-  29
+  22
  ],
  "writing-code/writing-code-03.png": [
   12,
-  30,
+  23,
   37,
-  30
+  23
  ],
  "writing-code/writing-code-04.png": [
   12,
-  29,
+  22,
   37,
-  29
+  22
  ],
  "writing-code/writing-code-05.png": [
   12,
-  30,
+  23,
   37,
-  30
+  23
  ],
  "writing-code/writing-code-06.png": [
   12,
-  29,
+  22,
   37,
-  29
+  22
  ],
  "writing-code/writing-code-07.png": [
   12,
-  30,
+  23,
   37,
-  30
+  23
  ],
  "yawn/yawn-00.png": [
   12,
-  29,
+  22,
   37,
-  29
+  22
  ],
  "yawn/yawn-01.png": [
   14,
-  28,
+  21,
   35,
-  28
+  21
  ],
  "yawn/yawn-02.png": [
   12,
-  27,
+  20,
   37,
-  27
+  20
  ],
  "yawn/yawn-03.png": [
   15,
-  28,
+  21,
   34,
-  28
+  21
  ],
  "yawn/yawn-04.png": [
   12,
-  29,
+  22,
   37,
-  29
+  22
  ],
  "yawn/yawn-05.png": [
   12,
-  29,
+  22,
   37,
-  29
+  22
  ]
 }
