@@ -55,9 +55,13 @@ for(const a of agents.values()){const s=manifest.states[a.state]
 ;if(a.fed&&a.fedAt&&wall-a.fedAt>300000){a.fed=false;a.fedAt=0;setState(a,"slim-down");continue}if(idx===a.lastDrawn)continue
 ;const im=imageFor(a.state,s.frames[idx]);if(!im.complete||!im.naturalWidth)continue;a.ctx.clearRect(0,0,CELL,CELL)
 ;a.ctx.drawImage(im,0,0);if(wornAcc&&wornAgents.has(a.id)){const am=accImg(wornAcc)
-;if(am.complete&&am.naturalWidth){const an=manifest.anchors&&manifest.anchors[a.state+"/"+s.frames[idx]]
+;if(am.complete&&am.naturalWidth){const an=manifest.anchors&&manifest.anchors[wornAcc.id]&&manifest.anchors[wornAcc.id][a.state+"/"+s.frames[idx]]
 ;if(an&&wornAcc.parts&&wornAcc.parts.length){for(let pi=0;pi<wornAcc.parts.length;pi++){const pt=wornAcc.parts[pi]
-;a.ctx.drawImage(am,pt.sx,pt.sy,pt.w,pt.h,an[pi*2]||0,an[pi*2+1]||0,pt.w,pt.h)}}
+;a.ctx.drawImage(am,pt.sx,pt.sy,pt.w,pt.h,an[pi*2]||0,an[pi*2+1]||0,pt.w,pt.h)}
+// Head accessories sit behind props: redraw the frame's non-whale pixels over
+// the horns so a paper/cup/bar in front of the skull hides them, instead of the
+// horns printing on top of the prop.
+;if(wornAcc.anchor==="head"){const pl=propLayer(a.state,s.frames[idx],im);if(pl)a.ctx.drawImage(pl,0,0)}}
 else if(an)a.ctx.drawImage(am,an?an[0]:0,an?an[1]:0)}}a.lastDrawn=idx}requestAnimationFrame(tick)}function applyIncoming(snap){
 const list=snap.agents&&snap.agents.length?snap.agents:[{id:snap.thread||"default",title:"dafeiyu",state:snap.state,
 running:snap.turn==="running"}];const keep=new Set;const before=agents.size;list.forEach((entry,i)=>{
@@ -93,10 +97,63 @@ if(dragging){moved=true;api.dragMove(dx,dy)}});window.addEventListener("mouseup"
 // winning session's model (payload.model). One accessory worn at a time.
 const manualAcc={};const autoAcc=new Set;const wornAgents=new Set;let wornAcc=null;const accImgs=new Map
 ;function accImg(acc){let im=accImgs.get(acc.id);if(!im){im=new Image;im.src=acc.src;accImgs.set(acc.id,im)}return im}
+// The whale is the largest core-blue blob around the face. Everything outside
+// that silhouette is a prop (paper, boba cup, code bar, bubbles, fish). Prop
+// pixels are redrawn above head accessories so the horns grow out from behind
+// them. A colour test alone fails because prop borders reuse the whale outline;
+// the silhouette keeps the whale's own edge and rejects the prop's.
+const CORE_HUES=new Set(["#262c8f","#3546c4","#4d6bfe","#6a86ff"])
+;const PROP_CACHE_MAX=48;const propCache=new Map
+;function whaleMask(d){const N=CELL*CELL;const mask=new Uint8Array(N);let pinkN=0,pinkX=0,pinkY=0
+;for(let i=0;i<N;i++){const p=i*4;if(d[p+3]===0)continue
+;if(d[p]===255&&d[p+1]===157&&d[p+2]===192){pinkX+=i%CELL;pinkY+=(i/CELL)|0;pinkN++}
+;const h="#"+d[p].toString(16).padStart(2,"0")+d[p+1].toString(16).padStart(2,"0")+d[p+2].toString(16).padStart(2,"0")
+;if(CORE_HUES.has(h))mask[i]=1}
+const face=pinkN?{x:pinkX/pinkN,y:pinkY/pinkN}:null
+const seen=new Uint8Array(N);const comps=[];const stack=[]
+;for(let i=0;i<N;i++){if(!mask[i]||seen[i])continue
+;stack.length=0;stack.push(i);seen[i]=1;const cells=[]
+;while(stack.length){const c=stack.pop();cells.push(c);const x=c%CELL,y=(c/CELL)|0
+;for(let dy=-1;dy<=1;dy++)for(let dx=-1;dx<=1;dx++){const nx=x+dx,ny=y+dy
+;if(nx<0||ny<0||nx>=CELL||ny>=CELL)continue;const n=ny*CELL+nx
+;if(mask[n]&&!seen[n]){seen[n]=1;stack.push(n)}}}
+comps.push({cells,area:cells.length})}
+if(!comps.length)return null
+comps.sort((a,b)=>b.area-a.area);let pick=comps[0]
+;if(face){outer:for(const c of comps)for(const cidx of c.cells){const x=cidx%CELL,y=(cidx/CELL)|0
+;if(Math.hypot(x-face.x,y-face.y)<=14){pick=c;break outer}}}
+const inBlob=new Uint8Array(N);let minX=CELL,maxX=-1,minY=CELL,maxY=-1
+;for(const c of pick.cells){inBlob[c]=1;const x=c%CELL,y=(c/CELL)|0
+;if(x<minX)minX=x;if(x>maxX)maxX=x;if(y<minY)minY=y;if(y>maxY)maxY=y}
+const outside=new Uint8Array(N);stack.length=0
+;const seed=(x,y)=>{if(x<minX||y<minY||x>maxX||y>maxY)return;const i=y*CELL+x
+;if(inBlob[i]||outside[i])return;outside[i]=1;stack.push(i)}
+;for(let x=minX;x<=maxX;x++){seed(x,minY);seed(x,maxY)}
+;for(let y=minY;y<=maxY;y++){seed(minX,y);seed(maxX,y)}
+;while(stack.length){const c=stack.pop();const x=c%CELL,y=(c/CELL)|0
+;for(let dy=-1;dy<=1;dy++)for(let dx=-1;dx<=1;dx++)seed(x+dx,y+dy)}
+const solid=new Uint8Array(N)
+;for(let y=minY;y<=maxY;y++)for(let x=minX;x<=maxX;x++){const i=y*CELL+x;if(inBlob[i]||!outside[i])solid[i]=1}
+const dil=new Uint8Array(N)
+;for(let y=minY;y<=maxY;y++)for(let x=minX;x<=maxX;x++){if(!solid[y*CELL+x])continue
+;for(let dy=-1;dy<=1;dy++)for(let dx=-1;dx<=1;dx++){const nx=x+dx,ny=y+dy
+;if(nx<0||ny<0||nx>=CELL||ny>=CELL)continue;dil[ny*CELL+nx]=1}}
+return dil}
+function propLayer(state,file,im){const key=state+"/"+file;const hit=propCache.get(key);if(hit){propCache.delete(key);propCache.set(key,hit);return hit}
+;const cv=document.createElement("canvas");cv.width=CELL;cv.height=CELL
+;const cx=cv.getContext("2d",{willReadFrequently:true});cx.drawImage(im,0,0)
+;const img=cx.getImageData(0,0,CELL,CELL);const mask=whaleMask(img.data);if(!mask)return null
+;const p=img.data
+;for(let i=0;i<mask.length;i++)if(mask[i])p[i*4+3]=0
+;cx.putImageData(img,0,0);propCache.set(key,cv)
+;if(propCache.size>PROP_CACHE_MAX)propCache.delete(propCache.keys().next().value);return cv}
 function computeWorn(){let next=null
-;for(const acc of manifest.accessories||[]){const on=manualAcc[acc.id]!==undefined?manualAcc[acc.id]==="on":autoAcc.has(acc.id)
-;if(on){next=acc;break}}
-if(!next!==!wornAcc||next&&wornAcc&&next.id!==wornAcc.id){wornAcc=next;if(wornAcc)accImg(wornAcc)}else wornAcc=next}
+;for(const acc of manifest.accessories||[]){if(manualAcc[acc.id]==="off")continue
+;if(manualAcc[acc.id]==="on"){next=acc;break}}
+;if(!next)for(const acc of manifest.accessories||[]){if(manualAcc[acc.id]==="off")continue
+;if(autoAcc.has(acc.id)){next=acc;break}}
+;const changed=!next!==!wornAcc||next&&wornAcc&&next.id!==wornAcc.id
+;wornAcc=next;if(changed&&wornAcc)accImg(wornAcc)}
 function syncAuto(snap){autoAcc.clear()
 ;for(const acc of manifest.accessories||[]){if(!acc.auto)continue
 ;try{if(new RegExp(acc.auto,"i").test(snap.model||""))autoAcc.add(acc.id)}catch{}}
@@ -116,11 +173,12 @@ function renderMenu(){if(!menu)return;menu.textContent=""
 ;menu.append(mi("Go away",goAway),mi("Feed",menuFeed),mi("Accessories ▸",toggleSub))
 ;if(!menuSub)return;const sep=document.createElement("div");sep.className="mi-sep";menu.append(sep)
 ;for(const acc of manifest.accessories||[]){const mode=manualAcc[acc.id]!==undefined?manualAcc[acc.id]:"auto"
-;const worn=manualAcc[acc.id]!==undefined?manualAcc[acc.id]==="on":autoAcc.has(acc.id)
+;const worn=!!(wornAcc&&wornAcc.id===acc.id)
 ;menu.append(mi(acc.name+" "+(worn?"✓":"·")+" "+mode,()=>cycleAcc(acc)))}
 ;if(manifest.accessories&&manifest.accessories.length)menu.append(mi("automatic",clearManual,"sub"))}
 function cycleAcc(acc){const cur=manualAcc[acc.id]
-;if(cur===undefined)manualAcc[acc.id]="on";else if(cur==="on")manualAcc[acc.id]="off";else delete manualAcc[acc.id]
+;if(cur===undefined){for(const k of Object.keys(manualAcc))if(k!==acc.id&&manualAcc[k]==="on")delete manualAcc[k]
+;manualAcc[acc.id]="on"}else if(cur==="on")manualAcc[acc.id]="off";else delete manualAcc[acc.id]
 ;api.setAccessories({...manualAcc});computeWorn();if(wornAcc)accImg(wornAcc);renderMenu();fitMenu()}
 function clearManual(){for(const k of Object.keys(manualAcc))delete manualAcc[k]
 ;api.setAccessories({});computeWorn();renderMenu();fitMenu()}

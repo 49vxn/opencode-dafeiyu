@@ -9,7 +9,21 @@ const{app:app,BrowserWindow:BrowserWindow,ipcMain:ipcMain,Tray:Tray,Menu:Menu,gl
 ;const MANIFEST=JSON.parse(fs.readFileSync(path.join(__dirname,"assets","sprites.json"),"utf8"))
 ;const ANCHORS=(()=>{try{return JSON.parse(fs.readFileSync(path.join(__dirname,"assets","accessories","anchors.json"),"utf8"))}catch{return{}}})()
 ;const RUNTIME=(()=>{const d=app.isPackaged?path.join(app.getPath("userData"),"runtime"):path.join(__dirname,"runtime");try{fs.mkdirSync(d,{recursive:true})}catch{}process.env.DAFEIYU_RUNTIME=d;return d})()
-;const MAIN_LOG=path.join(RUNTIME,"main.log");function mlog(kind,detail){const line=`[${new Date().toISOString()}] ${kind}${detail?" "+detail:""}\n`;try{fs.appendFileSync(MAIN_LOG,line)}catch{}console.log(`[main] ${kind}${detail?" "+detail:""}`)}
+;const MAIN_LOG=path.join(RUNTIME,"main.log");const LOG_MAX=2*1024*1024
+// A broken stdout/stderr pipe must never become an uncaughtException: the
+// handler below logs, and logging again would throw again, forever. Swallow the
+// stream error, and make every console method non-throwing for the same reason.
+;for(const s of [process.stdout,process.stderr])try{s.on("error",()=>{})}catch{}
+;for(const m of ["log","warn","error","info","debug"]){const raw=console[m].bind(console);console[m]=(...a)=>{try{raw(...a)}catch{}}}
+function trimLog(){try{const st=fs.statSync(MAIN_LOG);if(st.size>LOG_MAX)fs.truncateSync(MAIN_LOG,0)}catch{}}
+;let mlogBusy=false;let mlogWrites=0
+;function mlog(kind,detail){if(mlogBusy)return;mlogBusy=true
+;try{const line=`[${new Date().toISOString()}] ${kind}${detail?" "+detail:""}\n`
+;try{fs.appendFileSync(MAIN_LOG,line)}catch{}
+;if(++mlogWrites%200===0)trimLog()
+;try{console.log(`[main] ${kind}${detail?" "+detail:""}`)}catch{}
+}finally{mlogBusy=false}}
+;trimLog()
 ;process.on("uncaughtException",err=>{mlog("uncaughtException",String(err&&err.stack||err).split("\n").slice(0,6).join(" | "))})
 ;process.on("unhandledRejection",r=>{mlog("unhandledRejection",String(r&&r.stack||r))})
 ;process.on("exit",code=>{try{fs.appendFileSync(MAIN_LOG,`[${new Date().toISOString()}] exit code=${code}\n`)}catch{}})

@@ -8,10 +8,23 @@
    "name": "Devil horns",
    "src": "assets/accessories/devil-horns.png",
    "auto": "deepseek",
+   "anchor": "head",
    "parts": [
     { "sx": 13, "sy": 29, "w": 7, "h": 13 },
     { "sx": 35, "sy": 29, "w": 7, "h": 13 }
    ]
+  },
+  {
+   "id": "skateboard",
+   "name": "Skateboard",
+   "src": "assets/accessories/skateboard.png",
+   "anchor": "under"
+  },
+  {
+   "id": "surfboard",
+   "name": "Surfboard",
+   "src": "assets/accessories/surfboard.png",
+   "anchor": "under"
   }
  ],
  "states": {
