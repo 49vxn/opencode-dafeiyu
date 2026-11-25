@@ -56,7 +56,7 @@ function dropHandle(dbPath){const h=handles.get(dbPath);if(!h)return;try{h.db.cl
 function readThread(db,now){
 return db.prepare(`
     select id, title, updated_at, turn_state, auto_run, auto_run_started_at, auto_run_stopped_at, agent_mode, attention_reason, last_turn_outcome, model,
-           turn_alive_at, last_turn_finished_at
+           turn_alive_at, last_turn_finished_at, last_prompt_at
     from threads
     order by (turn_state = 'running' and turn_alive_at is not null and turn_alive_at > ?) desc, updated_at desc
     limit 1
@@ -98,7 +98,10 @@ const now=Date.now()
 const ttl=busy?PARTS_BUSY_MS:PARTS_IDLE_MS
 const same=h.threadId===threadId&&h.parts
 const moved=h.stamp!==stamp
-if(same&&(!moved||now-h.at<ttl))return h.parts
+// A stale stamp must not pin the parts cache forever: re-read on a bounded
+// age even when the mtime has not moved (observed: a running turn stuck on the
+// previous turn's finished state for minutes).
+if(same&&now-h.at<(moved?ttl:ttl*4))return h.parts
 let rm=null
 try{
   const row=h.db.prepare("select json_extract(harness_state, '$.runtimeMove') as rm from threads where id = ?").get(threadId)
@@ -184,15 +187,22 @@ if(sinceEnd<60000)return{state:"waiting-prompt",detail:"finished",confident:true
 if(sinceEnd<10*60000)return{state:"idle",detail:"resting",confident:true}
 return{state:"sleeping",detail:sinceEnd<30*60000?"asleep":"long idle",confident:true}}
 
+const OUTCOME_STATES=new Set(["interrupted","error","success","run-failed","tests-fail","tests-pass"])
 class Smoother{constructor(){this.current=null;this.adoptedAt=0;this.pending=null
-;this.pendingSince=0;this.pendingConfident=false}push(cand,now){if(!this.current){this.adopt(cand,now)
-;return this.current}if(cand.state===this.current.state){this.pending=null;return this.current}
+;this.pendingSince=0;this.pendingConfident=false;this.turnKey=null}push(cand,now,turnKey){if(!this.current){this.adopt(cand,now,turnKey)
+;return this.current}
+// A new turn owns the cell: the previous turn's outcome is not news anymore.
+if(turnKey!==this.turnKey){this.adopt(cand,now,turnKey);return this.current}
+if(cand.state===this.current.state){this.pending=null;return this.current}
 if(this.pending!==cand.state){this.pending=cand.state;this.pendingSince=now;this.pendingConfident=cand.confident}
 const waited=now-this.pendingSince;const held=now-this.adoptedAt
-;if(!cand.confident&&this.current.confident)return this.current;if(waited<CONFIRM_MS)return this.current
+// An outcome state is news for OUTCOME_HOLD_MS; after that it must never block
+// a low-confidence candidate (a running turn whose parts are not readable yet).
+const spentOutcome=OUTCOME_STATES.has(this.current.state)&&held>OUTCOME_HOLD_MS
+;if(!cand.confident&&this.current.confident&&!spentOutcome)return this.current;if(waited<CONFIRM_MS)return this.current
 ;if(held<MIN_HOLD_MS)return this.current;const cur=WEIGHT[this.current.state]??1;const next=WEIGHT[cand.state]??1
-;if(next<cur&&held<MIN_HOLD_MS*3)return this.current;this.adopt(cand,now);return this.current}adopt(cand,now){
-this.current={state:cand.state,detail:cand.detail,confident:cand.confident};this.adoptedAt=now;this.pending=null}}
+;if(next<cur&&held<MIN_HOLD_MS*3)return this.current;this.adopt(cand,now,turnKey);return this.current}adopt(cand,now,turnKey){
+this.current={state:cand.state,detail:cand.detail,confident:cand.confident};this.turnKey=turnKey;this.adoptedAt=now;this.pending=null}}
 
 // side queries (queue + mission) only when the WAL actually moved
 const sideCache=new Map()
@@ -250,7 +260,7 @@ try{
   const cand=classify({thread:thread,part:part,outType:outType,queueRunning:side.queueRunning,
     toolLive:toolLive,partLive:partLive,dbFresh:best.walFresh,reasonMs:reasonMs,dwell:dwell,
     missionActive:side.missionActive},now)
-  const chosen=smoother.push(cand,now)
+  const chosen=smoother.push(cand,now,thread.id+":"+(thread.last_prompt_at||0))
   return{...chosen,thread:thread.id.slice(0,8),mode:thread.agent_mode,model:thread.model||null,turn:thread.turn_state,ts:now,
     agents:(pool.length?pool.sort((a,b)=>b.score-a.score).slice(0,MAX_AGENTS):[{t:thread,fresh:thread.turn_state==="running",score:0}]).map(({t:t,fresh:fresh})=>({id:t.id.slice(0,8),
       title:t.title&&t.title.trim()||t.id.slice(0,6),state:t.id===thread.id?chosen.state:coarseState(t,now),running:!!fresh,updatedAt:t.updated_at
@@ -269,3 +279,7 @@ if (process.argv.includes("--watch")) runWatch({
   sig: (p) => p.state + "|" + (p.detail || "") + "|" + (p.turn || "") + "|" + (p.mode || "")
     + "|" + (p.agents || []).map((a) => a.id + ":" + a.state + ":" + (a.running ? 1 : 0)).join(","),
 });
+
+// Tools only: the smoother is pure, so the turn-boundary rules can be tested
+// without a database. See tools/test-freebuff-smoother.js.
+module.exports = { Smoother, classify };

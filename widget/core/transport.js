@@ -79,7 +79,7 @@ function runWatch({ tag, port, file, pollMs, sample, Smoother, sig, onEvent }) {
     }
     if (payload.state !== lastLogged) {
       lastLogged = payload.state;
-      console.log(`${tag} ${String(payload.state).padEnd(14)} ${payload.detail ?? ""}`);
+      console.log(`${new Date().toISOString()} ${tag} ${String(payload.state).padEnd(14)} ${payload.detail ?? ""}`);
     }
   };
 
